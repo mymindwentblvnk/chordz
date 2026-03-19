@@ -577,20 +577,21 @@
 
             historySection.style.display = 'block';
 
-            // Group by note + octave
+            // Group by note only (ignore octave)
             const grouped = {};
             noteHistory.forEach(item => {
-                const key = `${item.noteName}${item.octave}`;
+                const key = item.noteName;
                 if (!grouped[key]) {
                     grouped[key] = {
                         noteName: item.noteName,
-                        octave: item.octave,
+                        octaves: new Set(),
                         totalDuration: 0,
                         totalConfidence: 0,
                         count: 0,
                         frequencies: []
                     };
                 }
+                grouped[key].octaves.add(item.octave);
                 grouped[key].totalDuration += item.duration;
                 grouped[key].totalConfidence += item.confidence;
                 grouped[key].count += 1;
@@ -600,7 +601,7 @@
             // Convert to array and calculate averages
             const aggregated = Object.values(grouped).map(group => ({
                 noteName: group.noteName,
-                octave: group.octave,
+                octaves: Array.from(group.octaves).sort((a, b) => a - b),
                 duration: group.totalDuration,
                 confidence: group.totalConfidence / group.count,
                 avgFrequency: group.frequencies.reduce((a, b) => a + b, 0) / group.frequencies.length,
@@ -620,6 +621,11 @@
                 const confidencePercent = Math.round(item.confidence * 100);
                 const score = Math.round(item.confidence * item.duration);
 
+                // Format octaves display
+                const octavesDisplay = item.octaves.length === 1
+                    ? item.octaves[0]
+                    : item.octaves.join(', ');
+
                 // Add special class for top 3
                 let rowClass = 'history-row';
                 if (index === 0) rowClass += ' top-1';
@@ -634,7 +640,7 @@
                                 <span class="note-name-cell">${item.noteName}</span>
                             </a>
                         </td>
-                        <td class="octave-cell">${item.octave}</td>
+                        <td class="octave-cell">${octavesDisplay}</td>
                         <td class="duration-cell">${durationSec}s</td>
                         <td class="confidence-cell">
                             <div class="confidence-bar-cell">
@@ -654,7 +660,7 @@
                         <tr>
                             <th>Rank</th>
                             <th>Note</th>
-                            <th>Octave</th>
+                            <th>Octave(s)</th>
                             <th>Total Duration</th>
                             <th>Avg Confidence</th>
                             <th>Times Played</th>
