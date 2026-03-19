@@ -13,37 +13,16 @@
             <p class="subtitle">Generate beautiful chord progressions in any key</p>
         </header>
 
-        <!-- Pitch Detector Section -->
-        <div class="pitch-detector">
-            <h2 class="pitch-title">🎤 Pitch Detector</h2>
-            <p class="pitch-subtitle">Find the right key by detecting notes from your instrument or voice</p>
-
-            <button id="pitch-button" class="pitch-button">
-                Start Listening
-            </button>
-
-            <div id="pitch-display" class="pitch-display" style="display: none;">
-                <div class="note-display">
-                    <div class="note-label">Detected Note</div>
-                    <div id="note-name" class="note-name">—</div>
-                </div>
-
-                <div class="pitch-info">
-                    <div class="frequency-display">
-                        <span class="info-label">Frequency:</span>
-                        <span id="frequency-display" class="info-value">—</span>
-                    </div>
-
-                    <div class="confidence-display">
-                        <span class="info-label">Confidence:</span>
-                        <div class="confidence-bar-container">
-                            <div id="confidence-bar" class="confidence-bar"></div>
-                        </div>
-                    </div>
+        <!-- Pitch Detector Link -->
+        <div class="feature-banner">
+            <div class="feature-content">
+                <div class="feature-icon">🎤</div>
+                <div class="feature-text">
+                    <h3>Try our Pitch Detector!</h3>
+                    <p>Find the right key by detecting notes from your instrument or voice</p>
                 </div>
             </div>
-
-            <div id="pitch-error" class="pitch-error" style="display: none;"></div>
+            <a href="pitch-detector.html" class="feature-button">Open Pitch Detector →</a>
         </div>
 
         <div class="controls">
@@ -91,8 +70,6 @@
 
     <script src="music-theory.js"></script>
     <script src="chord-data.js"></script>
-    <script src="pitch-detector.js"></script>
-    <script src="pitch-ui.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

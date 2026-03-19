@@ -23,11 +23,6 @@ function init() {
         filter.addEventListener('click', handleMoodFilterClick);
     });
 
-    // Initialize pitch detection UI if available
-    if (typeof initPitchUI === 'function') {
-        initPitchUI();
-    }
-
     // Initial render
     renderProgressions();
 }

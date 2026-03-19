@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pitch Detector - Find Your Note</title>
+    <link rel="stylesheet" href="pitch-detector-styles.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="back-nav">
+            <a href="index.html" class="back-link">← Back to Chord Generator</a>
+        </nav>
+
+        <header>
+            <div class="header-icon">🎤</div>
+            <h1>Pitch Detector</h1>
+            <p class="subtitle">Discover what note you're playing or singing in real-time</p>
+        </header>
+
+        <div class="main-card">
+            <div class="instructions">
+                <h3>How it works</h3>
+                <ol>
+                    <li>Click the "Start Listening" button below</li>
+                    <li>Allow microphone access when prompted</li>
+                    <li>Play a note on your instrument or sing</li>
+                    <li>See the detected note, frequency, and confidence level</li>
+                </ol>
+                <p class="note-hint">💡 Works best with clear, sustained notes. Try playing single notes on a guitar, piano, or singing.</p>
+            </div>
+
+            <div class="controls-section">
+                <button id="pitch-button" class="pitch-button">
+                    <span class="button-icon">🎵</span>
+                    <span class="button-text">Start Listening</span>
+                </button>
+
+                <div id="status-text" class="status-text"></div>
+            </div>
+
+            <div id="pitch-display" class="pitch-display" style="display: none;">
+                <div class="note-container">
+                    <div class="note-label">Detected Note</div>
+                    <div id="note-name" class="note-name">—</div>
+                    <div id="note-hint" class="note-hint-text"></div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">📊</div>
+                        <div class="metric-label">Frequency</div>
+                        <div id="frequency-display" class="metric-value">— Hz</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon">🎯</div>
+                        <div class="metric-label">Confidence</div>
+                        <div class="confidence-container">
+                            <div class="confidence-bar-bg">
+                                <div id="confidence-bar" class="confidence-bar" style="width: 0%"></div>
+                            </div>
+                            <div id="confidence-text" class="metric-value">0%</div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon">🎼</div>
+                        <div class="metric-label">Octave</div>
+                        <div id="octave-display" class="metric-value">—</div>
+                    </div>
+                </div>
+
+                <div class="visual-indicator">
+                    <canvas id="waveform" width="800" height="150"></canvas>
+                </div>
+            </div>
+
+            <div id="pitch-error" class="pitch-error" style="display: none;"></div>
+
+            <div class="browser-support">
+                <h4>Browser Support</h4>
+                <p>✅ Chrome, Edge, Firefox (full support)</p>
+                <p>⚠️ Safari requires HTTPS or localhost</p>
+                <p>📱 Mobile browsers require HTTPS</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="music-theory.js"></script>
+    <script>
+        // Pitch Detector Implementation
+        class PitchDetector {
+            constructor() {
+                this.audioContext = null;
+                this.analyser = null;
+                this.microphone = null;
+                this.mediaStream = null;
+                this.animationFrameId = null;
+                this.isRunning = false;
+                this.bufferSize = 2048;
+                this.sampleRate = null;
+                this.minFrequency = 80;
+                this.maxFrequency = 1200;
+                this.minConfidence = 0.85;
+                this.onPitchDetected = null;
+
+                console.log('PitchDetector initialized');
+            }
+
+            async start() {
+                console.log('Starting pitch detector...');
+                if (this.isRunning) {
+                    console.log('Already running');
+                    return;
+                }
+
+                try {
+                    console.log('Requesting microphone access...');
+                    this.mediaStream = await navigator.mediaDevices.getUserMedia({
+                        audio: {
+                            echoCancellation: false,
+                            autoGainControl: false,
+                            noiseSuppression: false,
+                            latency: 0
+                        }
+                    });
+                    console.log('Microphone access granted');
+
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    this.sampleRate = this.audioContext.sampleRate;
+                    console.log('Audio context created, sample rate:', this.sampleRate);
+
+                    this.analyser = this.audioContext.createAnalyser();
+                    this.analyser.fftSize = this.bufferSize * 2;
+                    this.analyser.smoothingTimeConstant = 0;
+
+                    this.microphone = this.audioContext.createMediaStreamSource(this.mediaStream);
+                    this.microphone.connect(this.analyser);
+                    console.log('Audio pipeline connected');
+
+                    this.isRunning = true;
+                    this.detect();
+                } catch (error) {
+                    console.error('Error starting pitch detector:', error);
+                    this.cleanup();
+                    throw error;
+                }
+            }
+
+            stop() {
+                console.log('Stopping pitch detector...');
+                this.cleanup();
+            }
+
+            cleanup() {
+                this.isRunning = false;
+                if (this.animationFrameId) {
+                    cancelAnimationFrame(this.animationFrameId);
+                    this.animationFrameId = null;
+                }
+                if (this.microphone) {
+                    this.microphone.disconnect();
+                    this.microphone = null;
+                }
+                if (this.analyser) {
+                    this.analyser = null;
+                }
+                if (this.mediaStream) {
+                    this.mediaStream.getTracks().forEach(track => {
+                        track.stop();
+                        console.log('Stopped media track');
+                    });
+                    this.mediaStream = null;
+                }
+                if (this.audioContext) {
+                    this.audioContext.close();
+                    this.audioContext = null;
+                }
+                console.log('Cleanup complete');
+            }
+
+            detect() {
+                if (!this.isRunning) return;
+
+                const buffer = new Float32Array(this.bufferSize);
+                this.analyser.getFloatTimeDomainData(buffer);
+
+                const result = this.detectPitch(buffer);
+
+                if (this.onPitchDetected) {
+                    this.onPitchDetected(result, buffer);
+                }
+
+                this.animationFrameId = requestAnimationFrame(() => this.detect());
+            }
+
+            detectPitch(buffer) {
+                const rms = this.calculateRMS(buffer);
+                if (rms < 0.005) {
+                    return null;
+                }
+
+                const autocorrelation = this.autoCorrelate(buffer);
+                if (!autocorrelation) {
+                    return null;
+                }
+
+                const { frequency, confidence } = autocorrelation;
+
+                if (frequency < this.minFrequency ||
+                    frequency > this.maxFrequency ||
+                    confidence < this.minConfidence) {
+                    return null;
+                }
+
+                const note = this.frequencyToNote(frequency);
+                const octave = this.getOctave(frequency);
+
+                return {
+                    frequency: Math.round(frequency * 10) / 10,
+                    note: note,
+                    octave: octave,
+                    confidence: Math.round(confidence * 100) / 100,
+                    rms: rms
+                };
+            }
+
+            calculateRMS(buffer) {
+                let sum = 0;
+                for (let i = 0; i < buffer.length; i++) {
+                    sum += buffer[i] * buffer[i];
+                }
+                return Math.sqrt(sum / buffer.length);
+            }
+
+            autoCorrelate(buffer) {
+                const size = buffer.length;
+                const maxSamples = Math.floor(size / 2);
+                const correlations = new Array(maxSamples);
+
+                for (let lag = 0; lag < maxSamples; lag++) {
+                    let sum = 0;
+                    for (let i = 0; i < maxSamples; i++) {
+                        sum += buffer[i] * buffer[i + lag];
+                    }
+                    correlations[lag] = sum;
+                }
+
+                const normalization = correlations[0];
+                if (normalization === 0) return null;
+
+                for (let i = 0; i < correlations.length; i++) {
+                    correlations[i] /= normalization;
+                }
+
+                const minLag = Math.floor(this.sampleRate / this.maxFrequency);
+                const maxLag = Math.floor(this.sampleRate / this.minFrequency);
+
+                let i = minLag;
+                while (i < maxLag && correlations[i] > 0.5) i++;
+                while (i < maxLag && correlations[i] <= 0.5) i++;
+
+                let peakLag = -1;
+                let peakValue = -1;
+                for (; i < maxLag; i++) {
+                    if (correlations[i] > peakValue) {
+                        peakValue = correlations[i];
+                        peakLag = i;
+                    }
+                }
+
+                if (peakLag === -1 || peakValue < 0.5) return null;
+
+                let refinedLag = peakLag;
+                if (peakLag > 0 && peakLag < correlations.length - 1) {
+                    const alpha = correlations[peakLag - 1];
+                    const beta = correlations[peakLag];
+                    const gamma = correlations[peakLag + 1];
+                    refinedLag = peakLag + (alpha - gamma) / (2 * (2 * beta - gamma - alpha));
+                }
+
+                const frequency = this.sampleRate / refinedLag;
+                return { frequency, confidence: peakValue };
+            }
+
+            frequencyToNote(frequency) {
+                const A4 = 440;
+                const A4_INDEX = 9;
+                const semitones = 12 * Math.log2(frequency / A4);
+                const roundedSemitones = Math.round(semitones);
+                const noteIndex = (A4_INDEX + roundedSemitones) % 12;
+                const positiveIndex = noteIndex < 0 ? noteIndex + 12 : noteIndex;
+                return CHROMATIC_SCALE[positiveIndex];
+            }
+
+            getOctave(frequency) {
+                const A4 = 440;
+                const semitones = 12 * Math.log2(frequency / A4);
+                const octave = 4 + Math.floor((semitones + 9) / 12);
+                return octave;
+            }
+        }
+
+        // UI Controller
+        let detector = null;
+        let canvas = null;
+        let ctx = null;
+
+        function init() {
+            console.log('Initializing UI...');
+
+            const pitchButton = document.getElementById('pitch-button');
+            const pitchDisplay = document.getElementById('pitch-display');
+            const pitchError = document.getElementById('pitch-error');
+            const statusText = document.getElementById('status-text');
+            const noteName = document.getElementById('note-name');
+            const frequencyDisplay = document.getElementById('frequency-display');
+            const confidenceBar = document.getElementById('confidence-bar');
+            const confidenceText = document.getElementById('confidence-text');
+            const octaveDisplay = document.getElementById('octave-display');
+            const noteHint = document.getElementById('note-hint');
+
+            canvas = document.getElementById('waveform');
+            ctx = canvas.getContext('2d');
+
+            // Check browser support
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                showError('Your browser does not support microphone access. Please use Chrome, Firefox, or Edge.');
+                pitchButton.disabled = true;
+                return;
+            }
+
+            detector = new PitchDetector();
+
+            detector.onPitchDetected = (result, buffer) => {
+                drawWaveform(buffer);
+
+                if (!result) {
+                    noteName.textContent = '—';
+                    frequencyDisplay.textContent = '— Hz';
+                    confidenceBar.style.width = '0%';
+                    confidenceText.textContent = '0%';
+                    octaveDisplay.textContent = '—';
+                    noteHint.textContent = 'Play a note...';
+                    return;
+                }
+
+                const { frequency, note, octave, confidence } = result;
+
+                if (noteName.textContent !== note) {
+                    noteName.style.transform = 'scale(1.15)';
+                    noteName.textContent = note;
+                    setTimeout(() => {
+                        noteName.style.transform = 'scale(1)';
+                    }, 150);
+                }
+
+                frequencyDisplay.textContent = `${frequency} Hz`;
+                octaveDisplay.textContent = `Octave ${octave}`;
+
+                const confidencePercent = Math.round(confidence * 100);
+                confidenceBar.style.width = `${confidencePercent}%`;
+                confidenceText.textContent = `${confidencePercent}%`;
+
+                noteHint.textContent = `${note}${octave} - Perfect for ${note} major or ${note} minor!`;
+            };
+
+            pitchButton.addEventListener('click', async () => {
+                if (detector.isRunning) {
+                    detector.stop();
+                    pitchButton.innerHTML = '<span class="button-icon">🎵</span><span class="button-text">Start Listening</span>';
+                    pitchButton.classList.remove('listening');
+                    pitchDisplay.style.display = 'none';
+                    statusText.textContent = '';
+                    hideError();
+                } else {
+                    try {
+                        hideError();
+                        statusText.textContent = 'Requesting microphone access...';
+                        pitchButton.disabled = true;
+
+                        await detector.start();
+
+                        pitchButton.innerHTML = '<span class="button-icon">⏹</span><span class="button-text">Stop Listening</span>';
+                        pitchButton.classList.add('listening');
+                        pitchButton.disabled = false;
+                        pitchDisplay.style.display = 'block';
+                        statusText.textContent = '🎧 Listening... Play or sing a note!';
+                        statusText.style.color = 'var(--accent-happy)';
+                    } catch (error) {
+                        console.error('Error:', error);
+                        pitchButton.disabled = false;
+                        pitchButton.innerHTML = '<span class="button-icon">🎵</span><span class="button-text">Start Listening</span>';
+                        statusText.textContent = '';
+
+                        if (error.name === 'NotAllowedError') {
+                            showError('❌ Microphone access denied. Please allow access and try again.');
+                        } else if (error.name === 'NotFoundError') {
+                            showError('❌ No microphone found. Please connect a microphone.');
+                        } else {
+                            showError('❌ Error: ' + error.message);
+                        }
+                    }
+                }
+            });
+
+            console.log('UI initialized');
+        }
+
+        function drawWaveform(buffer) {
+            if (!ctx) return;
+
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.3)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#6366f1';
+            ctx.beginPath();
+
+            const sliceWidth = canvas.width / buffer.length;
+            let x = 0;
+
+            for (let i = 0; i < buffer.length; i++) {
+                const v = buffer[i];
+                const y = (v + 1) * canvas.height / 2;
+
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+
+                x += sliceWidth;
+            }
+
+            ctx.stroke();
+        }
+
+        function showError(message) {
+            const errorEl = document.getElementById('pitch-error');
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+        }
+
+        function hideError() {
+            const errorEl = document.getElementById('pitch-error');
+            errorEl.style.display = 'none';
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>
