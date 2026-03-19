@@ -552,9 +552,10 @@ h1 {
     z-index: 1;
 }
 
-.frequency-cell {
+.count-cell {
     font-family: 'Courier New', monospace;
     color: var(--text-secondary);
+    font-weight: 600;
 }
 
 .score-cell {

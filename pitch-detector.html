@@ -84,7 +84,7 @@
                     <h3>📝 Detected Notes History</h3>
                     <div class="history-controls">
                         <button id="clear-history" class="clear-button">Clear History</button>
-                        <div class="sort-info">↓ Sorted by score (confidence × duration)</div>
+                        <div class="sort-info">↓ Grouped by note • Sorted by score</div>
                     </div>
                 </div>
                 <div id="note-history" class="note-history">
@@ -511,8 +511,38 @@
 
             historySection.style.display = 'block';
 
+            // Group by note + octave
+            const grouped = {};
+            noteHistory.forEach(item => {
+                const key = `${item.noteName}${item.octave}`;
+                if (!grouped[key]) {
+                    grouped[key] = {
+                        noteName: item.noteName,
+                        octave: item.octave,
+                        totalDuration: 0,
+                        totalConfidence: 0,
+                        count: 0,
+                        frequencies: []
+                    };
+                }
+                grouped[key].totalDuration += item.duration;
+                grouped[key].totalConfidence += item.confidence;
+                grouped[key].count += 1;
+                grouped[key].frequencies.push(item.frequency);
+            });
+
+            // Convert to array and calculate averages
+            const aggregated = Object.values(grouped).map(group => ({
+                noteName: group.noteName,
+                octave: group.octave,
+                duration: group.totalDuration,
+                confidence: group.totalConfidence / group.count,
+                avgFrequency: group.frequencies.reduce((a, b) => a + b, 0) / group.frequencies.length,
+                count: group.count
+            }));
+
             // Sort by confidence * duration (higher = better)
-            const sorted = [...noteHistory].sort((a, b) => {
+            const sorted = aggregated.sort((a, b) => {
                 const scoreA = a.confidence * a.duration;
                 const scoreB = b.confidence * b.duration;
                 return scoreB - scoreA;
@@ -544,7 +574,7 @@
                                 <span class="confidence-text">${confidencePercent}%</span>
                             </div>
                         </td>
-                        <td class="frequency-cell">${item.frequency} Hz</td>
+                        <td class="count-cell">${item.count}×</td>
                         <td class="score-cell">${score}</td>
                     </tr>
                 `;
@@ -557,9 +587,9 @@
                             <th>Rank</th>
                             <th>Note</th>
                             <th>Octave</th>
-                            <th>Duration</th>
-                            <th>Confidence</th>
-                            <th>Frequency</th>
+                            <th>Total Duration</th>
+                            <th>Avg Confidence</th>
+                            <th>Times Played</th>
                             <th>Score</th>
                         </tr>
                     </thead>
