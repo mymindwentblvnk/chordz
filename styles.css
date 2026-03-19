@@ -63,78 +63,27 @@ h1 {
 .subtitle {
     font-size: 1.1rem;
     color: var(--text-secondary);
+    margin-bottom: 16px;
 }
 
-/* Feature Banner */
-.feature-banner {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    border-radius: var(--border-radius);
-    padding: 24px 32px;
-    margin-bottom: 40px;
-    box-shadow: var(--shadow-lg);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-    transition: all 0.3s ease;
-}
-
-.feature-banner:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg), 0 0 30px rgba(99, 102, 241, 0.3);
-}
-
-.feature-content {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    flex: 1;
-}
-
-.feature-icon {
-    font-size: 3rem;
-    animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-    0%, 100% {
-        transform: translateY(0px);
-    }
-    50% {
-        transform: translateY(-5px);
-    }
-}
-
-.feature-text h3 {
-    font-size: 1.4rem;
-    font-weight: 600;
-    margin-bottom: 4px;
-    color: white;
-}
-
-.feature-text p {
-    font-size: 0.95rem;
-    color: rgba(255, 255, 255, 0.9);
-    margin: 0;
-}
-
-.feature-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
-    background: white;
-    color: var(--primary-color);
+/* Pitch Detector Link */
+.pitch-detector-link {
+    display: inline-block;
+    padding: 8px 16px;
+    background: var(--surface-light);
+    color: var(--text-secondary);
     text-decoration: none;
-    font-weight: 600;
-    border-radius: 8px;
+    font-size: 0.9rem;
+    border-radius: 6px;
     transition: all 0.2s ease;
-    white-space: nowrap;
+    border: 1px solid transparent;
 }
 
-.feature-button:hover {
-    transform: translateX(4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+.pitch-detector-link:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
 }
 
 /* Controls Section */
@@ -399,19 +348,9 @@ h1 {
         font-size: 1rem;
     }
 
-    .feature-banner {
-        flex-direction: column;
-        padding: 20px;
-        text-align: center;
-    }
-
-    .feature-content {
-        flex-direction: column;
-    }
-
-    .feature-button {
-        width: 100%;
-        justify-content: center;
+    .pitch-detector-link {
+        font-size: 0.85rem;
+        padding: 6px 14px;
     }
 
     .controls {
