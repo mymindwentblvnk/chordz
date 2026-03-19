@@ -438,6 +438,12 @@
                     hideError();
                 } else {
                     try {
+                        // Clear history when starting a new session
+                        noteHistory = [];
+                        currentNote = null;
+                        noteStartTime = null;
+                        updateNoteHistory();
+
                         hideError();
                         statusText.textContent = 'Requesting microphone access...';
                         pitchButton.disabled = true;
@@ -450,11 +456,6 @@
                         pitchDisplay.style.display = 'block';
                         statusText.textContent = '🎧 Listening... Play or sing a note!';
                         statusText.style.color = 'var(--accent-happy)';
-
-                        // Show history section if there's existing history
-                        if (noteHistory.length > 0) {
-                            noteHistorySection.style.display = 'block';
-                        }
                     } catch (error) {
                         console.error('Error:', error);
                         pitchButton.disabled = false;
