@@ -78,6 +78,20 @@
 
             <div id="pitch-error" class="pitch-error" style="display: none;"></div>
 
+            <!-- Note History Section -->
+            <div id="note-history-section" class="note-history-section" style="display: none;">
+                <div class="history-header">
+                    <h3>📝 Detected Notes History</h3>
+                    <div class="history-controls">
+                        <button id="clear-history" class="clear-button">Clear History</button>
+                        <div class="sort-info">Sorted by confidence × duration</div>
+                    </div>
+                </div>
+                <div id="note-history" class="note-history">
+                    <!-- History items will be added here -->
+                </div>
+            </div>
+
             <div class="browser-support">
                 <h4>Browser Support</h4>
                 <p>✅ Chrome, Edge, Firefox (full support)</p>
@@ -307,6 +321,11 @@
         let canvas = null;
         let ctx = null;
 
+        // Note history tracking
+        let noteHistory = [];
+        let currentNote = null;
+        let noteStartTime = null;
+
         function init() {
             console.log('Initializing UI...');
 
@@ -320,9 +339,19 @@
             const confidenceText = document.getElementById('confidence-text');
             const octaveDisplay = document.getElementById('octave-display');
             const noteHint = document.getElementById('note-hint');
+            const noteHistorySection = document.getElementById('note-history-section');
+            const clearHistoryButton = document.getElementById('clear-history');
 
             canvas = document.getElementById('waveform');
             ctx = canvas.getContext('2d');
+
+            // Clear history button handler
+            clearHistoryButton.addEventListener('click', () => {
+                noteHistory = [];
+                currentNote = null;
+                noteStartTime = null;
+                updateNoteHistory();
+            });
 
             // Check browser support
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -337,6 +366,10 @@
                 drawWaveform(buffer);
 
                 if (!result) {
+                    // No note detected - end current note if one was playing
+                    if (currentNote) {
+                        endCurrentNote();
+                    }
                     noteName.textContent = '—';
                     frequencyDisplay.textContent = '— Hz';
                     confidenceBar.style.width = '0%';
@@ -347,6 +380,31 @@
                 }
 
                 const { frequency, note, octave, confidence } = result;
+                const fullNote = `${note}${octave}`;
+
+                // Track note changes
+                if (!currentNote || currentNote.note !== fullNote) {
+                    // End previous note
+                    if (currentNote) {
+                        endCurrentNote();
+                    }
+                    // Start new note
+                    currentNote = {
+                        note: fullNote,
+                        noteName: note,
+                        octave: octave,
+                        frequency: frequency,
+                        confidence: confidence,
+                        confidenceSum: confidence,
+                        confidenceCount: 1
+                    };
+                    noteStartTime = Date.now();
+                } else {
+                    // Same note continuing - update confidence average
+                    currentNote.confidenceSum += confidence;
+                    currentNote.confidenceCount++;
+                    currentNote.frequency = frequency; // Update to latest frequency
+                }
 
                 if (noteName.textContent !== note) {
                     noteName.style.transform = 'scale(1.15)';
@@ -368,6 +426,10 @@
 
             pitchButton.addEventListener('click', async () => {
                 if (detector.isRunning) {
+                    // Save current note before stopping
+                    if (currentNote) {
+                        endCurrentNote();
+                    }
                     detector.stop();
                     pitchButton.innerHTML = '<span class="button-icon">🎵</span><span class="button-text">Start Listening</span>';
                     pitchButton.classList.remove('listening');
@@ -388,6 +450,11 @@
                         pitchDisplay.style.display = 'block';
                         statusText.textContent = '🎧 Listening... Play or sing a note!';
                         statusText.style.color = 'var(--accent-happy)';
+
+                        // Show history section if there's existing history
+                        if (noteHistory.length > 0) {
+                            noteHistorySection.style.display = 'block';
+                        }
                     } catch (error) {
                         console.error('Error:', error);
                         pitchButton.disabled = false;
@@ -406,6 +473,90 @@
             });
 
             console.log('UI initialized');
+        }
+
+        function endCurrentNote() {
+            if (!currentNote || !noteStartTime) return;
+
+            const duration = Date.now() - noteStartTime;
+            const avgConfidence = currentNote.confidenceSum / currentNote.confidenceCount;
+
+            // Only record notes that lasted at least 100ms
+            if (duration >= 100) {
+                noteHistory.push({
+                    note: currentNote.note,
+                    noteName: currentNote.noteName,
+                    octave: currentNote.octave,
+                    frequency: Math.round(currentNote.frequency * 10) / 10,
+                    duration: duration,
+                    confidence: Math.round(avgConfidence * 100) / 100,
+                    timestamp: Date.now()
+                });
+
+                updateNoteHistory();
+            }
+
+            currentNote = null;
+            noteStartTime = null;
+        }
+
+        function updateNoteHistory() {
+            const historySection = document.getElementById('note-history-section');
+            const historyContainer = document.getElementById('note-history');
+
+            if (noteHistory.length === 0) {
+                historySection.style.display = 'none';
+                return;
+            }
+
+            historySection.style.display = 'block';
+
+            // Sort by confidence * duration (higher = better)
+            const sorted = [...noteHistory].sort((a, b) => {
+                const scoreA = a.confidence * a.duration;
+                const scoreB = b.confidence * b.duration;
+                return scoreB - scoreA;
+            });
+
+            // Generate HTML
+            const historyHTML = sorted.map((item, index) => {
+                const durationSec = (item.duration / 1000).toFixed(2);
+                const confidencePercent = Math.round(item.confidence * 100);
+                const score = Math.round(item.confidence * item.duration);
+
+                return `
+                    <div class="history-item">
+                        <div class="history-rank">#${index + 1}</div>
+                        <div class="history-note">
+                            <div class="history-note-name">${item.noteName}</div>
+                            <div class="history-octave">Octave ${item.octave}</div>
+                        </div>
+                        <div class="history-metrics">
+                            <div class="history-metric">
+                                <span class="metric-icon-small">⏱</span>
+                                <span class="metric-label-small">Duration:</span>
+                                <span class="metric-value-small">${durationSec}s</span>
+                            </div>
+                            <div class="history-metric">
+                                <span class="metric-icon-small">🎯</span>
+                                <span class="metric-label-small">Confidence:</span>
+                                <span class="metric-value-small">${confidencePercent}%</span>
+                            </div>
+                            <div class="history-metric">
+                                <span class="metric-icon-small">📊</span>
+                                <span class="metric-label-small">Frequency:</span>
+                                <span class="metric-value-small">${item.frequency} Hz</span>
+                            </div>
+                        </div>
+                        <div class="history-score">
+                            <div class="score-label">Score</div>
+                            <div class="score-value">${score}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            historyContainer.innerHTML = historyHTML;
         }
 
         function drawWaveform(buffer) {

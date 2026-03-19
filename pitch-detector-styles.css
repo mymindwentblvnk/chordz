@@ -346,6 +346,172 @@ h1 {
     font-weight: 500;
 }
 
+/* Note History Section */
+.note-history-section {
+    background: var(--surface-light);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    animation: fadeIn 0.5s ease;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.history-header h3 {
+    color: var(--text-primary);
+    font-size: 1.3rem;
+    margin: 0;
+}
+
+.history-controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.clear-button {
+    padding: 8px 16px;
+    background: var(--accent-tense);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.clear-button:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+}
+
+.sort-info {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.note-history {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.history-item {
+    background: var(--background);
+    border-radius: 10px;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: 40px 1fr auto 80px;
+    gap: 16px;
+    align-items: center;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.history-item:hover {
+    border-color: var(--primary-color);
+    transform: translateX(4px);
+}
+
+.history-item:nth-child(1) {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), var(--background));
+    border-color: var(--accent-happy);
+}
+
+.history-item:nth-child(2) {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), var(--background));
+    border-color: var(--accent-sad);
+}
+
+.history-item:nth-child(3) {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), var(--background));
+    border-color: var(--accent-energetic);
+}
+
+.history-rank {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-align: center;
+    font-family: 'Courier New', monospace;
+}
+
+.history-note {
+    display: flex;
+    flex-direction: column;
+}
+
+.history-note-name {
+    font-size: 1.4rem;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+    color: var(--text-primary);
+}
+
+.history-octave {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.history-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.history-metric {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+}
+
+.metric-icon-small {
+    font-size: 1rem;
+}
+
+.metric-label-small {
+    color: var(--text-secondary);
+    min-width: 80px;
+}
+
+.metric-value-small {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-family: 'Courier New', monospace;
+}
+
+.history-score {
+    text-align: center;
+}
+
+.score-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.score-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-dreamy));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
 /* Browser Support */
 .browser-support {
     background: var(--surface-light);
@@ -453,6 +619,25 @@ h1 {
     .metric-card {
         padding: 20px;
     }
+
+    .history-item {
+        grid-template-columns: 40px 1fr 70px;
+        gap: 12px;
+    }
+
+    .history-metrics {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid var(--surface-light);
+    }
+
+    .metric-label-small {
+        min-width: auto;
+    }
 }
 
 @media (max-width: 480px) {
@@ -493,5 +678,45 @@ h1 {
 
     #waveform {
         height: 100px;
+    }
+
+    .note-history-section {
+        padding: 16px;
+    }
+
+    .history-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .history-controls {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .clear-button {
+        width: 100%;
+    }
+
+    .history-item {
+        grid-template-columns: 30px 1fr 60px;
+        padding: 12px;
+    }
+
+    .history-rank {
+        font-size: 1rem;
+    }
+
+    .history-note-name {
+        font-size: 1.2rem;
+    }
+
+    .history-metrics {
+        grid-template-columns: 1fr;
+    }
+
+    .score-value {
+        font-size: 1.1rem;
     }
 }
