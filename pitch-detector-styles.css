@@ -106,36 +106,38 @@ h1 {
 
 /* Instructions */
 .instructions {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+    background: var(--surface-light);
     border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 32px;
-    border: 1px solid rgba(99, 102, 241, 0.2);
+    padding: 20px;
+    margin-top: 24px;
+    margin-bottom: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .instructions h3 {
-    color: var(--primary-color);
-    margin-bottom: 16px;
-    font-size: 1.3rem;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    font-size: 1.1rem;
 }
 
 .instructions ol {
     margin-left: 20px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .instructions li {
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     color: var(--text-secondary);
+    font-size: 0.9rem;
 }
 
 .note-hint {
-    background: var(--surface-light);
-    padding: 12px 16px;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    color: var(--text-primary);
-    border-left: 4px solid var(--accent-energetic);
+    background: var(--background);
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    border-left: 3px solid var(--text-secondary);
 }
 
 /* Controls Section */
