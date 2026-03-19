@@ -84,7 +84,7 @@
                     <h3>📝 Detected Notes History</h3>
                     <div class="history-controls">
                         <button id="clear-history" class="clear-button">Clear History</button>
-                        <div class="sort-info">Sorted by confidence × duration</div>
+                        <div class="sort-info">↓ Sorted by score (confidence × duration)</div>
                     </div>
                 </div>
                 <div id="note-history" class="note-history">
@@ -518,45 +518,56 @@
                 return scoreB - scoreA;
             });
 
-            // Generate HTML
-            const historyHTML = sorted.map((item, index) => {
+            // Generate table HTML
+            const tableRows = sorted.map((item, index) => {
                 const durationSec = (item.duration / 1000).toFixed(2);
                 const confidencePercent = Math.round(item.confidence * 100);
                 const score = Math.round(item.confidence * item.duration);
 
+                // Add special class for top 3
+                let rowClass = 'history-row';
+                if (index === 0) rowClass += ' top-1';
+                else if (index === 1) rowClass += ' top-2';
+                else if (index === 2) rowClass += ' top-3';
+
                 return `
-                    <div class="history-item">
-                        <div class="history-rank">#${index + 1}</div>
-                        <div class="history-note">
-                            <div class="history-note-name">${item.noteName}</div>
-                            <div class="history-octave">Octave ${item.octave}</div>
-                        </div>
-                        <div class="history-metrics">
-                            <div class="history-metric">
-                                <span class="metric-icon-small">⏱</span>
-                                <span class="metric-label-small">Duration:</span>
-                                <span class="metric-value-small">${durationSec}s</span>
+                    <tr class="${rowClass}">
+                        <td class="rank-cell">#${index + 1}</td>
+                        <td class="note-cell">
+                            <span class="note-name-cell">${item.noteName}</span>
+                        </td>
+                        <td class="octave-cell">${item.octave}</td>
+                        <td class="duration-cell">${durationSec}s</td>
+                        <td class="confidence-cell">
+                            <div class="confidence-bar-cell">
+                                <div class="confidence-fill" style="width: ${confidencePercent}%"></div>
+                                <span class="confidence-text">${confidencePercent}%</span>
                             </div>
-                            <div class="history-metric">
-                                <span class="metric-icon-small">🎯</span>
-                                <span class="metric-label-small">Confidence:</span>
-                                <span class="metric-value-small">${confidencePercent}%</span>
-                            </div>
-                            <div class="history-metric">
-                                <span class="metric-icon-small">📊</span>
-                                <span class="metric-label-small">Frequency:</span>
-                                <span class="metric-value-small">${item.frequency} Hz</span>
-                            </div>
-                        </div>
-                        <div class="history-score">
-                            <div class="score-label">Score</div>
-                            <div class="score-value">${score}</div>
-                        </div>
-                    </div>
+                        </td>
+                        <td class="frequency-cell">${item.frequency} Hz</td>
+                        <td class="score-cell">${score}</td>
+                    </tr>
                 `;
             }).join('');
 
-            historyContainer.innerHTML = historyHTML;
+            historyContainer.innerHTML = `
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Note</th>
+                            <th>Octave</th>
+                            <th>Duration</th>
+                            <th>Confidence</th>
+                            <th>Frequency</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tableRows}
+                    </tbody>
+                </table>
+            `;
         }
 
         function drawWaveform(buffer) {
