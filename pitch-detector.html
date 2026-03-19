@@ -295,7 +295,9 @@
                 }
 
                 const frequency = this.sampleRate / refinedLag;
-                return { frequency, confidence: peakValue };
+                // Clamp confidence to 0-1 range (can exceed due to floating point)
+                const clampedConfidence = Math.min(1.0, Math.max(0.0, peakValue));
+                return { frequency, confidence: clampedConfidence };
             }
 
             frequencyToNote(frequency) {
@@ -571,14 +573,20 @@
             });
 
             // Convert to array and calculate averages
-            const aggregated = Object.values(grouped).map(group => ({
-                noteName: group.noteName,
-                octaves: Array.from(group.octaves).sort((a, b) => a - b),
-                duration: group.totalDuration,
-                confidence: group.totalConfidence / group.count,
-                avgFrequency: group.frequencies.reduce((a, b) => a + b, 0) / group.frequencies.length,
-                count: group.count
-            }));
+            const aggregated = Object.values(grouped).map(group => {
+                // Calculate average confidence and clamp to 0-1
+                const avgConfidence = group.totalConfidence / group.count;
+                const clampedConfidence = Math.min(1.0, Math.max(0.0, avgConfidence));
+
+                return {
+                    noteName: group.noteName,
+                    octaves: Array.from(group.octaves).sort((a, b) => a - b),
+                    duration: group.totalDuration,
+                    confidence: clampedConfidence,
+                    avgFrequency: group.frequencies.reduce((a, b) => a + b, 0) / group.frequencies.length,
+                    count: group.count
+                };
+            });
 
             // Sort by confidence * duration (higher = better)
             const sorted = aggregated.sort((a, b) => {
