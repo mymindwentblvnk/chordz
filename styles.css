@@ -19,14 +19,9 @@
     --text-secondary: #cbd5e1;
     --accent-happy: #10b981;
     --accent-sad: #3b82f6;
-    --accent-dark: #8b5cf6;
     --accent-energetic: #f59e0b;
     --accent-dreamy: #ec4899;
     --accent-tense: #ef4444;
-    --accent-unsettling: #eab308;
-    --accent-dissonant: #dc2626;
-    --accent-weird: #a855f7;
-    --accent-eerie: #22c55e;
     --border-radius: 12px;
     --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
@@ -218,10 +213,14 @@ h1 {
     text-transform: capitalize;
 }
 
-.mood-happy,
-.mood-uplifting {
+.mood-happy {
     background: rgba(16, 185, 129, 0.2);
     color: var(--accent-happy);
+}
+
+.mood-uplifting {
+    background: rgba(99, 102, 241, 0.2);
+    color: var(--primary-color);
 }
 
 .mood-sad,
@@ -230,49 +229,19 @@ h1 {
     color: var(--accent-sad);
 }
 
-.mood-dark,
-.mood-mysterious,
-.mood-epic {
-    background: rgba(139, 92, 246, 0.2);
-    color: var(--accent-dark);
-}
-
-.mood-energetic {
-    background: rgba(245, 158, 11, 0.2);
-    color: var(--accent-energetic);
-}
-
 .mood-dreamy {
     background: rgba(236, 72, 153, 0.2);
     color: var(--accent-dreamy);
 }
 
-.mood-tense {
+.mood-unsettling {
+    background: rgba(245, 158, 11, 0.2);
+    color: var(--accent-energetic);
+}
+
+.mood-uncomfortable {
     background: rgba(239, 68, 68, 0.2);
     color: var(--accent-tense);
-}
-
-.mood-unsettling,
-.mood-uncomfortable {
-    background: rgba(234, 179, 8, 0.2);
-    color: var(--accent-unsettling);
-}
-
-.mood-dissonant,
-.mood-chaotic {
-    background: rgba(220, 38, 38, 0.2);
-    color: var(--accent-dissonant);
-}
-
-.mood-weird,
-.mood-experimental {
-    background: rgba(168, 85, 247, 0.2);
-    color: var(--accent-weird);
-}
-
-.mood-eerie {
-    background: rgba(34, 197, 94, 0.2);
-    color: var(--accent-eerie);
 }
 
 /* Chords Display */
