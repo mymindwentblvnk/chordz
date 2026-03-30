@@ -23,7 +23,7 @@ function init() {
         filter.addEventListener('click', handleMoodFilterClick);
     });
 
-    // Check for URL parameter to pre-select note
+    // Check for URL parameter to pre-select note (takes priority over localStorage)
     const urlParams = new URLSearchParams(window.location.search);
     const noteParam = urlParams.get('note');
     if (noteParam) {
@@ -34,6 +34,20 @@ function init() {
         if (option) {
             noteSelector.value = noteParam;
             currentNote = noteParam;
+            // Save to localStorage for persistence
+            localStorage.setItem('rootNote', noteParam);
+        }
+    } else {
+        // Load from localStorage if no URL parameter
+        const savedNote = localStorage.getItem('rootNote');
+        if (savedNote) {
+            const option = Array.from(noteSelector.options).find(
+                opt => opt.value === savedNote
+            );
+            if (option) {
+                noteSelector.value = savedNote;
+                currentNote = savedNote;
+            }
         }
     }
 
@@ -47,6 +61,8 @@ function init() {
  */
 function handleNoteChange(event) {
     currentNote = event.target.value;
+    // Save to localStorage for persistence
+    localStorage.setItem('rootNote', currentNote);
     renderProgressions();
 }
 
@@ -156,9 +172,12 @@ function createProgressionCard(progression) {
         ? `chord-builder.html?note=${encodeURIComponent(currentNote)}&progression=${encodeURIComponent(progression.progression.join('-'))}`
         : `chord-builder.html?progression=${encodeURIComponent(progression.progression.join('-'))}`;
 
+    const progressionValue = progression.progression.join('-');
+
     const builderLink = `
         <a href="${builderUrl}"
            class="builder-link"
+           onclick="localStorage.setItem('selectedProgression', '${progressionValue}')"
            style="display: inline-block; margin-top: 12px; padding: 8px 16px; background: var(--primary-color); color: white; text-decoration: none; border-radius: 6px; font-size: 0.9rem; transition: all 0.2s ease;"
            onmouseover="this.style.background='var(--secondary-color)'; this.style.transform='translateY(-2px)'"
            onmouseout="this.style.background='var(--primary-color)'; this.style.transform='translateY(0)'">

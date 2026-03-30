@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chord Progression Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <nav style="margin-bottom: 20px;">
+            <a href="index.html" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">← Back to Pitch Detector</a>
+        </nav>
+
+        <header>
+            <h1>🎵 Chord Progression Generator</h1>
+            <p class="subtitle">Generate beautiful chord progressions in any key</p>
+            <div class="header-links">
+                <a href="chord-builder.html" class="header-link">🎹 Interactive Chord Builder</a>
+                <a href="guide.html" class="header-link">📖 How to Play Guide</a>
+            </div>
+        </header>
+
+        <div class="controls">
+            <div class="input-section">
+                <label for="note-selector">Select Root Note (optional):</label>
+                <select id="note-selector">
+                    <option value="all">All Keys</option>
+                    <option value="C">C</option>
+                    <option value="C#">C# / Db</option>
+                    <option value="D">D</option>
+                    <option value="D#">D# / Eb</option>
+                    <option value="E">E</option>
+                    <option value="F">F</option>
+                    <option value="F#">F# / Gb</option>
+                    <option value="G">G</option>
+                    <option value="G#">G# / Ab</option>
+                    <option value="A">A</option>
+                    <option value="A#">A# / Bb</option>
+                    <option value="B">B</option>
+                </select>
+            </div>
+
+            <div class="filter-section">
+                <label>Filter by Mood:</label>
+                <div class="mood-filters">
+                    <button class="mood-filter active" data-mood="all">All</button>
+                    <button class="mood-filter" data-mood="happy">Happy</button>
+                    <button class="mood-filter" data-mood="uplifting">Uplifting</button>
+                    <button class="mood-filter" data-mood="sad">Sad</button>
+                    <button class="mood-filter" data-mood="melancholic">Melancholic</button>
+                    <button class="mood-filter" data-mood="dreamy">Dreamy</button>
+                    <button class="mood-filter" data-mood="unsettling">Unsettling</button>
+                    <button class="mood-filter" data-mood="uncomfortable">Uncomfortable</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="results" class="results">
+            <!-- Chord progression cards will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <script src="music-theory.js"></script>
+    <script src="chord-data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
