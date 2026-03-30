@@ -1,43 +1,91 @@
-# 🎵 Chord Progression Generator
+# 🎵 Chords - Learn to Play Music
 
-A web application that generates chord progressions for music production. Browse progressions in Roman numeral notation or transpose them to any key to see the exact chords and notes to play!
+A complete web application for discovering and learning chord progressions. Find your root note, search for progressions by mood, and learn exactly which keys to play!
+
+## 🚀 [Try it Live](https://mymindwentblvnk.github.io/chords/)
+
+**[→ Open the App](https://mymindwentblvnk.github.io/chords/)**
 
 ## Features
 
-### Chord Progression Generator
-- **Browse All Progressions**: View all 18 progressions without selecting a key
-- **Transpose to Any Key**: Select any of the 12 chromatic notes to see chords in that key
-- **Individual Note Breakdown**: See exactly which notes to press for each chord (e.g., Am = A + C + E)
-- **Mood Filtering**: Filter by Happy, Sad, Dark, Energetic, Dreamy, and more
-- **Educational**: Includes Roman numeral notation and detailed descriptions
-- **Responsive Design**: Works beautifully on desktop and mobile devices
-
-### Pitch Detector
+### 🎤 Find Note
 - **Real-Time Note Detection**: Detect notes from your instrument or voice using your microphone
 - **100% Local Processing**: All audio processing happens in your browser - no data is sent to external services
-- **Note History Tracking**: See which notes you played most frequently and for how long
-- **Direct Integration**: Click detected notes to instantly open the chord generator in that key
+- **Smart Note History**: See which notes you played most frequently with confidence scores
+- **One-Click Navigation**: Click any detected note to instantly search for chord progressions in that key
 - **Privacy First**: Your microphone audio never leaves your device
+- **Compact Metadata**: Frequency, confidence, and octave displayed in a clean status line
+
+### 🎵 Search Chords
+- **Extensive Library**: Browse chord progressions without selecting a key (displayed in Roman numerals)
+- **Transpose to Any Key**: Select any of the 12 chromatic notes to see exact chords in that key
+- **Individual Note Breakdown**: See exactly which notes to press for each chord (e.g., Am = A + C + E)
+- **Mood Filtering**: Filter by Happy, Uplifting, Sad, Melancholic, Dreamy, Unsettling, and Uncomfortable
+- **Learn to Play**: Each progression has a "Learn to Play This" button that opens the interactive chord builder
+- **Educational**: Includes Roman numeral notation and detailed descriptions
+
+### 🎹 Play Chords
+- **Interactive Breakdown**: See the complete step-by-step breakdown from scale to keyboard keys
+- **Scale Builder**: Watch how the W-W-H-W-W-W-H pattern builds your major scale
+- **Chord Construction**: Visual explanation of how to build each chord from the scale
+- **Borrowed Chord Detection**: Automatically identifies and explains chords borrowed from parallel keys
+- **Keyboard Mapping**: Shows exact keys to press for each chord
+- **Custom Progressions**: Enter any progression in Roman numerals to learn how to play it
+
+### 📖 Guide
+- **Complete Theory**: Learn the W-W-H-W-W-W-H pattern for building major scales
+- **Roman Numerals Explained**: Understand what I, IV, V, vi, etc. actually mean
+- **Chord Building**: Master the skip-pick-skip-pick method for natural chords
+- **Borrowed Chords**: Learn about ♭VII, ♭VI, iv, and other color chords
+- **Minor Keys**: Understand how to work with progressions in minor keys
+- **Practical Examples**: Step-by-step walkthroughs with real progressions
+
+### ✨ Design & UX
+- **Seamless Workflow**: Find Note → Search Chords → Play Chords → Practice!
+- **Responsive Design**: Optimized for desktop, tablet, and mobile devices
+- **Dark Theme**: Beautiful dark interface with animated floating emoji icons
+- **State Persistence**: App remembers your selected root note across pages
+- **Consistent Navigation**: Unified navigation bar across all pages
 
 ## Usage
 
-### Chord Progression Generator
+### Complete Workflow
 
-1. **Browse Progressions**: By default, all 18 progressions are shown in Roman numeral notation (I, IV, V, etc.)
-2. **Select a Key** (optional): Choose a root note (C, C#, D, etc.) to transpose progressions and see:
-   - Actual chord names (C, Am, F, G, etc.)
-   - Individual notes for each chord (C = C + E + G, Am = A + C + E, etc.)
-3. **Filter by Mood** (optional): Click mood tags to filter progressions
-4. **Learn**: Each progression shows mood tags, descriptions, and use cases
+The app is designed for a seamless learning experience:
 
-### Pitch Detector
+1. **🎤 Find Note** (Home Page)
+   - Click "Start Listening" and allow microphone access
+   - Play a note on your instrument or sing
+   - See the detected note with real-time confidence and frequency
+   - Review your note history sorted by score or play order
+   - Click "Find Chords →" on any note to continue
 
-1. **Access**: Click the "🎤 Pitch Detector" link in the header
-2. **Start Listening**: Click the "Start Listening" button and allow microphone access
-3. **Play Notes**: Play notes on your instrument or sing
-4. **View Results**: See detected notes with confidence levels in real-time
-5. **Check History**: Review all detected notes sorted by frequency and duration
-6. **Explore Chords**: Click any detected note to open the chord generator in that key
+2. **🎵 Search Chords**
+   - Browse chord progressions by mood (Happy, Sad, Dreamy, etc.)
+   - Your root note is automatically selected from the previous step
+   - See exact chord names and notes to play for your key
+   - Click "📖 Learn to Play This" on any progression to continue
+
+3. **🎹 Play Chords**
+   - See the complete breakdown from scale to keyboard keys
+   - Watch how the W-W-H-W-W-W-H pattern builds your scale
+   - Understand which scale positions create which chords
+   - View exactly which keys to press for each chord
+   - Learn about borrowed chords if your progression uses them
+
+4. **📖 Guide**
+   - Deep dive into music theory concepts
+   - Learn the master W-W-H-W-W-W-H pattern
+   - Understand Roman numeral notation
+   - Master the skip-pick method for building chords
+   - Explore borrowed chords and minor keys
+
+### Quick Access
+
+You can also:
+- Jump directly to Search Chords and browse without a key selected
+- Use Play Chords with any custom progression in Roman numerals
+- Start with the Guide to learn theory first
 
 ## Examples
 
@@ -59,9 +107,9 @@ A web application that generates chord progressions for music production. Browse
   - F#m = F# + A + C#
   - D = D + F# + A
 
-## How Pitch Detection Works
+## How Find Note Works
 
-The pitch detector uses advanced audio processing **entirely within your browser** - no external services or APIs are involved.
+Find Note uses advanced audio processing **entirely within your browser** - no external services or APIs are involved.
 
 ### Privacy & Security
 - ✅ **100% Local Processing**: All audio analysis happens on your device
@@ -84,15 +132,26 @@ The pitch detector uses advanced audio processing **entirely within your browser
 
 ## Technology
 
-- Pure HTML, CSS, and JavaScript (no frameworks or build tools)
-- Web Audio API for real-time audio processing
-- Autocorrelation algorithm for pitch detection
-- Automatic deployment to GitHub Pages via GitHub Actions
-- Music theory implementation using chromatic scale and Roman numeral notation
+- **Pure Vanilla Stack**: HTML, CSS, and JavaScript (no frameworks or build tools)
+- **Web Audio API**: Real-time audio processing for pitch detection
+- **Autocorrelation Algorithm**: Mathematical pitch detection from sound waves
+- **LocalStorage**: Persistent state across page navigation
+- **Responsive Design**: Mobile-first CSS with media queries
+- **Music Theory Engine**: Chromatic scale, interval formulas, borrowed chords
+- **GitHub Pages**: Automatic deployment via GitHub Actions
+- **Dark Theme**: Custom CSS variables for consistent theming
 
 ## Local Development
 
 Simply open `index.html` in your browser. No build process or dependencies required!
+
+**Pages:**
+- `index.html` - Find Note (pitch detector, home page)
+- `chord-generator.html` - Search Chords
+- `chord-builder.html` - Play Chords (interactive builder)
+- `guide.html` - Guide (music theory)
+
+**Note:** For microphone access, you may need to serve the files over HTTPS or use `localhost`.
 
 ## Deployment
 
@@ -104,8 +163,37 @@ The app uses Roman numeral notation to represent chord progressions:
 - **Uppercase** (I, IV, V) = Major chords
 - **Lowercase** (ii, iii, vi) = Minor chords
 - **Degree symbol** (vii°) = Diminished chords
+- **Accidentals** (♭VII, ♭VI) = Borrowed chords from parallel minor/major
+
+### Building Chords
+
+**Natural chords** (from the major scale):
+- Use the skip-pick-skip-pick method from the scale
+- Example: In C major, to build I chord, start at C → skip D → pick E → skip F → pick G = C-E-G
+
+**Borrowed chords** (outside the major scale):
+- Use interval formulas (root + semitones)
+- Major: Root + 4 semitones + 3 semitones
+- Minor: Root + 3 semitones + 4 semitones
+- Example: ♭VII in C major = B♭ major = B♭ + D + F
 
 Progressions are transposed to any key using chromatic scale intervals and major/minor scale formulas.
+
+## Project Structure
+
+```
+chords/
+├── index.html              # Find Note (pitch detector, home)
+├── chord-generator.html    # Search Chords
+├── chord-builder.html      # Play Chords (interactive builder)
+├── guide.html             # Guide (music theory)
+├── styles.css             # Main styles
+├── pitch-detector-styles.css  # Find Note specific styles
+├── app.js                 # Search Chords logic
+├── music-theory.js        # Core music theory functions
+├── chord-data.js          # Chord progression library
+└── README.md
+```
 
 ## License
 
