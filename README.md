@@ -147,8 +147,8 @@ Simply open `index.html` in your browser. No build process or dependencies requi
 
 **Pages:**
 - `index.html` - Find Note (pitch detector, home page)
-- `chord-generator.html` - Search Chords
-- `chord-builder.html` - Play Chords (interactive builder)
+- `search-chords.html` - Search Chords
+- `play-chords.html` - Play Chords (interactive builder)
 - `guide.html` - Guide (music theory)
 
 **Note:** For microphone access, you may need to serve the files over HTTPS or use `localhost`.
@@ -184,8 +184,8 @@ Progressions are transposed to any key using chromatic scale intervals and major
 ```
 chords/
 ├── index.html              # Find Note (pitch detector, home)
-├── chord-generator.html    # Search Chords
-├── chord-builder.html      # Play Chords (interactive builder)
+├── search-chords.html    # Search Chords
+├── play-chords.html      # Play Chords (interactive builder)
 ├── guide.html             # Guide (music theory)
 ├── styles.css             # Main styles
 ├── pitch-detector-styles.css  # Find Note specific styles

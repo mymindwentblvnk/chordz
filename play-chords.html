@@ -101,13 +101,46 @@
             color: white;
             transform: translateX(-4px);
         }
+
+        /* Responsive table for mobile */
+        @media (max-width: 768px) {
+            .scale-notes-table {
+                display: block !important;
+            }
+
+            .scale-notes-table tr {
+                display: grid !important;
+                grid-template-columns: 120px 1fr !important;
+                gap: 15px !important;
+                margin-bottom: 10px !important;
+                background: none !important;
+            }
+
+            .scale-notes-table td:first-child {
+                grid-column: 1 !important;
+                font-weight: bold !important;
+                color: var(--primary-color) !important;
+            }
+
+            .scale-notes-table td:not(:first-child) {
+                grid-column: 2 !important;
+                border-bottom: 1px solid var(--surface-light) !important;
+                padding: 5px 10px !important;
+            }
+
+            .scale-notes-table td:not(:first-child):before {
+                content: attr(data-position) ": " !important;
+                font-weight: 600 !important;
+                margin-right: 5px !important;
+            }
+        }
     </style>
 </head>
 <body>
     <nav class="main-nav">
         <a href="index.html" class="nav-link">🎤 Find Note</a>
-        <a href="chord-generator.html" class="nav-link">🎵 Search Chords</a>
-        <a href="chord-builder.html" class="nav-link active">🎹 Play Chords</a>
+        <a href="search-chords.html" class="nav-link">🎵 Search Chords</a>
+        <a href="play-chords.html" class="nav-link active">🎹 Play Chords</a>
         <a href="guide.html" class="nav-link">📖 Guide</a>
     </nav>
 
@@ -168,14 +201,6 @@
             </ul>
         </div>
 
-        <div style="text-align: center; margin: 40px 0;">
-            <a href="chord-generator.html" style="display: inline-block; padding: 14px 32px; background: var(--primary-color); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin-right: 10px;">
-                ← Back to Search Chords
-            </a>
-            <a href="guide.html" style="display: inline-block; padding: 14px 32px; background: var(--secondary-color); color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">
-                📖 Read Full Guide
-            </a>
-        </div>
     </div>
 
     <script src="music-theory.js"></script>
@@ -289,14 +314,14 @@
             html += `
                 <h3 style="color: var(--accent-happy);">Step 2: Number Your Scale Notes</h3>
                 <div style="background: var(--background); padding: 20px; border-radius: 8px; margin: 15px 0;">
-                    <table style="margin: 0; width: 100%;">
+                    <table class="scale-notes-table" style="margin: 0; width: 100%;">
                         <tr style="background: none;">
                             <td style="border: none; padding: 10px; font-weight: bold; color: var(--primary-color);">Position:</td>
-                            ${scale.map((_, i) => `<td style="border: none; padding: 10px;">${i + 1}${['st', 'nd', 'rd', 'th', 'th', 'th', 'th'][i]}</td>`).join('')}
+                            ${scale.map((_, i) => `<td data-position="${i + 1}${['st', 'nd', 'rd', 'th', 'th', 'th', 'th'][i]}" style="border: none; padding: 10px;">${i + 1}${['st', 'nd', 'rd', 'th', 'th', 'th', 'th'][i]}</td>`).join('')}
                         </tr>
                         <tr style="background: none;">
                             <td style="border: none; padding: 10px; font-weight: bold; color: var(--primary-color);">Note:</td>
-                            ${scale.map(note => `<td style="border: none; padding: 10px; font-family: 'Courier New', monospace; color: var(--accent-happy);">${note}</td>`).join('')}
+                            ${scale.map((note, i) => `<td data-position="${i + 1}${['st', 'nd', 'rd', 'th', 'th', 'th', 'th'][i]}" style="border: none; padding: 10px; font-family: 'Courier New', monospace; color: var(--accent-happy);">${note}</td>`).join('')}
                         </tr>
                     </table>
                 </div>
