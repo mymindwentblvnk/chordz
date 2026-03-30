@@ -16,14 +16,14 @@ const CHORD_PROGRESSIONS = [
         progression: ["vi", "IV", "I", "V"],
         mood: ["sad", "melancholic"],
         keyMode: "major",
-        description: "A touching progression that starts on the minor vi chord, creating an emotional and introspective feel. Perfect for heartfelt ballads and emotional storytelling."
+        description: "A touching progression that starts on the minor vi chord, creating an emotional and introspective feel. Featured in 'Grenade' by Bruno Mars and 'Africa' by Toto. Perfect for heartfelt ballads and emotional storytelling."
     },
     {
         name: "Epic Minor Anthem",
         progression: ["i", "VI", "III", "VII"],
         mood: ["sad", "melancholic"],
         keyMode: "minor",
-        description: "A powerful minor key progression with dramatic movement. Creates an epic, cinematic atmosphere often used in film scores and dramatic rock songs."
+        description: "A powerful minor key progression with dramatic movement. Used in 'Stairway to Heaven' by Led Zeppelin and 'Losing My Religion' by R.E.M. Creates an epic, cinematic atmosphere often used in film scores and dramatic rock songs."
     },
     {
         name: "Classic '50s Progression",
@@ -44,7 +44,7 @@ const CHORD_PROGRESSIONS = [
         progression: ["I", "IV", "vi", "V"],
         mood: ["happy", "uplifting"],
         keyMode: "major",
-        description: "An optimistic progression with a warm, comfortable feel. The IV chord adds brightness while the vi creates gentle emotional depth."
+        description: "An optimistic progression with a warm, comfortable feel. Featured in 'I'm Yours' by Jason Mraz and 'She Will Be Loved' by Maroon 5. The IV chord adds brightness while the vi creates gentle emotional depth."
     },
     {
         name: "Dark Tension",
@@ -65,7 +65,7 @@ const CHORD_PROGRESSIONS = [
         progression: ["ii", "V", "I"],
         mood: ["uplifting"],
         keyMode: "major",
-        description: "The fundamental jazz progression, also called the ii-V-I turnaround. Sophisticated and smooth, this is the backbone of jazz harmony and creates strong resolution."
+        description: "The fundamental jazz progression, also called the ii-V-I turnaround. Found in countless jazz standards like 'Autumn Leaves', 'Fly Me to the Moon', and 'Satin Doll'. Sophisticated and smooth, this is the backbone of jazz harmony and creates strong resolution."
     },
     {
         name: "Cinematic Minor",
@@ -79,14 +79,14 @@ const CHORD_PROGRESSIONS = [
         progression: ["i", "VII", "VI", "V"],
         mood: ["unsettling"],
         keyMode: "minor",
-        description: "An ancient progression with roots in flamenco and baroque music. Creates a mysterious, exotic feel with strong Spanish and Mediterranean character."
+        description: "An ancient progression with roots in flamenco and baroque music. Featured in 'Sultans of Swing' by Dire Straits and 'Hit the Road Jack' by Ray Charles. Creates a mysterious, exotic feel with strong Spanish and Mediterranean character."
     },
     {
         name: "Uplifting Major Anthem",
         progression: ["I", "V", "IV", "V"],
         mood: ["happy", "uplifting"],
         keyMode: "major",
-        description: "A driving, anthemic progression that builds energy and excitement. The repeated V chord creates momentum and forward motion."
+        description: "A driving, anthemic progression that builds energy and excitement. Used in 'You Give Love a Bad Name' by Bon Jovi and many rock anthems. The repeated V chord creates momentum and forward motion."
     },
     {
         name: "Melancholic Descent",
@@ -107,7 +107,7 @@ const CHORD_PROGRESSIONS = [
         progression: ["I", "IV", "I", "V"],
         mood: ["happy", "uplifting"],
         keyMode: "major",
-        description: "A high-energy progression that alternates between the tonic and dominant areas. Creates driving momentum perfect for rock and upbeat pop."
+        description: "A high-energy progression that alternates between the tonic and dominant areas. Featured in 'Wild Thing' by The Troggs and 'Louie Louie' by The Kingsmen. Creates driving momentum perfect for rock and upbeat pop."
     },
     {
         name: "Tense Suspense",
@@ -121,14 +121,14 @@ const CHORD_PROGRESSIONS = [
         progression: ["I", "IV", "V", "IV"],
         mood: ["uplifting"],
         keyMode: "major",
-        description: "A regal, triumphant progression that moves through the primary chords. Creates a sense of majesty and celebration, common in anthems and celebratory music."
+        description: "A regal, triumphant progression that moves through the primary chords. Used in 'Twist and Shout' by The Beatles and 'La Bamba' by Ritchie Valens. Creates a sense of majesty and celebration, common in anthems and celebratory music."
     },
     {
         name: "Bittersweet Journey",
         progression: ["I", "vi", "ii", "V"],
         mood: ["dreamy", "melancholic"],
         keyMode: "major",
-        description: "A progression that balances light and shadow, moving from major to minor territories. Creates a bittersweet, reflective mood with gentle sophistication."
+        description: "A progression that balances light and shadow, moving from major to minor territories. The classic 'Heart and Soul' progression, also used in 'Blue Moon' by The Marcels. Creates a bittersweet, reflective mood with gentle sophistication."
     },
     {
         name: "Chromatic Descent",
@@ -184,7 +184,7 @@ const CHORD_PROGRESSIONS = [
         progression: ["i", "II", "i", "II"],
         mood: ["unsettling"],
         keyMode: "minor",
-        description: "The Phrygian II (major chord on the flattened second) creates an exotic, menacing quality. Common in metal and horror soundtracks."
+        description: "The Phrygian II (major chord on the flattened second) creates an exotic, menacing quality. Used in 'Set the Controls for the Heart of the Sun' by Pink Floyd. Common in metal and horror soundtracks."
     },
     {
         name: "Deceptive Loop",
