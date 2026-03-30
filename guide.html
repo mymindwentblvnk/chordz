@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Play Chord Progressions - Guide</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .guide-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .guide-section {
+            background: var(--surface);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .guide-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .guide-section h3 {
+            color: var(--text-primary);
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .guide-section p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .example-box {
+            background: var(--surface-light);
+            border-left: 4px solid var(--primary-color);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .example-box strong {
+            color: var(--primary-color);
+        }
+
+        .step-list {
+            margin-left: 20px;
+        }
+
+        .step-list li {
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .step-list strong {
+            color: var(--text-primary);
+        }
+
+        .keyboard-diagram {
+            background: var(--background);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .key-white {
+            display: inline-block;
+            padding: 8px 12px;
+            background: #f0f0f0;
+            color: #000;
+            border: 1px solid #333;
+            margin: 2px;
+            min-width: 30px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .key-black {
+            display: inline-block;
+            padding: 8px 12px;
+            background: #333;
+            color: #fff;
+            border: 1px solid #000;
+            margin: 2px;
+            min-width: 30px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .chord-formula {
+            background: var(--background);
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            color: var(--accent-happy);
+            margin: 15px 0;
+        }
+
+        .tip-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid var(--accent-happy);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .tip-box strong {
+            color: var(--accent-happy);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table th,
+        table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--surface-light);
+        }
+
+        table th {
+            background: var(--surface-light);
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        table td {
+            color: var(--text-secondary);
+        }
+
+        .back-nav {
+            margin-bottom: 30px;
+        }
+
+        .back-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background: var(--surface);
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .back-link:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateX(-4px);
+        }
+    </style>
+</head>
+<body>
+    <div class="guide-container">
+        <nav class="back-nav">
+            <a href="index.html" class="back-link">← Back to Chord Generator</a>
+        </nav>
+
+        <header style="text-align: center; margin-bottom: 40px;">
+            <h1 style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">How to Play Chord Progressions</h1>
+            <p class="subtitle">From Roman Numerals to Keyboard Keys</p>
+        </header>
+
+        <!-- Section 1: Understanding Roman Numerals -->
+        <div class="guide-section">
+            <h2>1. Understanding Roman Numerals</h2>
+            <p>Roman numerals represent chords built on different scale degrees. Here's what they mean:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Roman Numeral</th>
+                        <th>Chord Quality</th>
+                        <th>Example in C Major</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>I, IV, V</strong></td>
+                        <td>Major chords (uppercase)</td>
+                        <td>C, F, G</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ii, iii, vi</strong></td>
+                        <td>Minor chords (lowercase)</td>
+                        <td>Dm, Em, Am</td>
+                    </tr>
+                    <tr>
+                        <td><strong>vii°</strong></td>
+                        <td>Diminished chord</td>
+                        <td>Bdim</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="tip-box">
+                <strong>💡 Quick Tip:</strong> Uppercase = bright/happy major chord. Lowercase = darker/sadder minor chord.
+            </div>
+        </div>
+
+        <!-- Section 2: The Chromatic Scale -->
+        <div class="guide-section">
+            <h2>2. The Chromatic Scale (All 12 Notes)</h2>
+            <p>These are all the notes available on a keyboard, repeating every octave:</p>
+
+            <div class="keyboard-diagram">
+                <span class="key-white">C</span>
+                <span class="key-black">C#</span>
+                <span class="key-white">D</span>
+                <span class="key-black">D#</span>
+                <span class="key-white">E</span>
+                <span class="key-white">F</span>
+                <span class="key-black">F#</span>
+                <span class="key-white">G</span>
+                <span class="key-black">G#</span>
+                <span class="key-white">A</span>
+                <span class="key-black">A#</span>
+                <span class="key-white">B</span>
+            </div>
+
+            <p>White boxes = white keys. Black boxes = black keys.</p>
+            <p><strong>Note:</strong> C# and Db are the same key (enharmonic equivalents).</p>
+        </div>
+
+        <!-- Section 3: Building a Major Scale -->
+        <div class="guide-section">
+            <h2>3. Building a Major Scale from Your Root Note</h2>
+            <p>A major scale uses specific notes from the chromatic scale following this pattern:</p>
+
+            <div class="chord-formula">
+                Pattern: Whole - Whole - Half - Whole - Whole - Whole - Half
+            </div>
+
+            <h3>Example: C Major Scale</h3>
+            <ol class="step-list">
+                <li><strong>I</strong> (Root): C</li>
+                <li><strong>II</strong> (Whole step up): D</li>
+                <li><strong>III</strong> (Whole step up): E</li>
+                <li><strong>IV</strong> (Half step up): F</li>
+                <li><strong>V</strong> (Whole step up): G</li>
+                <li><strong>VI</strong> (Whole step up): A</li>
+                <li><strong>VII</strong> (Whole step up): B</li>
+            </ol>
+
+            <div class="example-box">
+                <strong>C Major Scale:</strong> C - D - E - F - G - A - B - C
+            </div>
+
+            <h3>Example: G Major Scale</h3>
+            <p>Starting from G and following the same pattern:</p>
+            <div class="example-box">
+                <strong>G Major Scale:</strong> G - A - B - C - D - E - F# - G<br>
+                (Note: F# is needed to maintain the pattern)
+            </div>
+        </div>
+
+        <!-- Section 4: Building Chords -->
+        <div class="guide-section">
+            <h2>4. Building Chords from Scale Notes</h2>
+            <p>Chords are built by stacking notes in thirds (skip one note in the scale):</p>
+
+            <h3>Major Chord Formula (I, IV, V):</h3>
+            <div class="chord-formula">
+                Root + Skip 1 + Skip 1 = Root + 3rd + 5th
+            </div>
+
+            <div class="example-box">
+                <strong>Example: C Major (I in C)</strong><br>
+                • Root: C (1st note)<br>
+                • Skip D<br>
+                • 3rd: E (3rd note)<br>
+                • Skip F<br>
+                • 5th: G (5th note)<br>
+                <strong>→ Play: C + E + G</strong>
+            </div>
+
+            <h3>Minor Chord Formula (ii, iii, vi):</h3>
+            <p>Same process but the 3rd note is one half-step lower:</p>
+
+            <div class="example-box">
+                <strong>Example: Am (vi in C)</strong><br>
+                • Root: A (6th note of C major)<br>
+                • 3rd: C (instead of C#)<br>
+                • 5th: E<br>
+                <strong>→ Play: A + C + E</strong>
+            </div>
+        </div>
+
+        <!-- Section 5: Step-by-Step Guide -->
+        <div class="guide-section">
+            <h2>5. Complete Step-by-Step Process</h2>
+            <p>Let's play the progression <strong>I - V - vi - IV</strong> in the key of <strong>G major</strong>:</p>
+
+            <h3>Step 1: Find Your Scale</h3>
+            <p>G major scale: <strong>G - A - B - C - D - E - F#</strong></p>
+
+            <h3>Step 2: Map Roman Numerals to Notes</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Roman Numeral</th>
+                        <th>Scale Degree</th>
+                        <th>Root Note</th>
+                        <th>Chord</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>I</td>
+                        <td>1st</td>
+                        <td>G</td>
+                        <td>G major</td>
+                    </tr>
+                    <tr>
+                        <td>V</td>
+                        <td>5th</td>
+                        <td>D</td>
+                        <td>D major</td>
+                    </tr>
+                    <tr>
+                        <td>vi</td>
+                        <td>6th</td>
+                        <td>E</td>
+                        <td>E minor</td>
+                    </tr>
+                    <tr>
+                        <td>IV</td>
+                        <td>4th</td>
+                        <td>C</td>
+                        <td>C major</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Step 3: Build Each Chord</h3>
+            <div class="example-box">
+                <strong>I (G major):</strong> G + B + D<br>
+                <strong>V (D major):</strong> D + F# + A<br>
+                <strong>vi (E minor):</strong> E + G + B<br>
+                <strong>IV (C major):</strong> C + E + G
+            </div>
+
+            <h3>Step 4: Play on Keyboard!</h3>
+            <p>Press all three notes of each chord simultaneously, then move to the next chord.</p>
+        </div>
+
+        <!-- Section 6: Quick Reference -->
+        <div class="guide-section">
+            <h2>6. Quick Reference: Major Scale Chords</h2>
+            <p>In ANY major key, the chord qualities are always the same:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Degree</th>
+                        <th>Roman Numeral</th>
+                        <th>Quality</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1st</td><td>I</td><td>Major</td></tr>
+                    <tr><td>2nd</td><td>ii</td><td>Minor</td></tr>
+                    <tr><td>3rd</td><td>iii</td><td>Minor</td></tr>
+                    <tr><td>4th</td><td>IV</td><td>Major</td></tr>
+                    <tr><td>5th</td><td>V</td><td>Major</td></tr>
+                    <tr><td>6th</td><td>vi</td><td>Minor</td></tr>
+                    <tr><td>7th</td><td>vii°</td><td>Diminished</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Section 7: Pro Tips -->
+        <div class="guide-section">
+            <h2>7. Pro Tips</h2>
+
+            <div class="tip-box">
+                <strong>💡 Use the Chord Generator!</strong><br>
+                The easiest way: Select your root note in the chord generator, and it shows you exactly which notes to play for each chord!
+            </div>
+
+            <ol class="step-list">
+                <li><strong>Start Simple:</strong> Begin with C major - it uses only white keys!</li>
+                <li><strong>Learn Patterns:</strong> Once you know C major chords, other keys use the same finger patterns.</li>
+                <li><strong>Use Inversions:</strong> You don't always need to play the root note on bottom. Try different voicings.</li>
+                <li><strong>Play Along:</strong> Use the pitch detector to verify you're playing the right notes.</li>
+            </ol>
+        </div>
+
+        <div style="text-align: center; margin: 40px 0;">
+            <a href="index.html" class="pitch-button" style="display: inline-block; padding: 14px 32px; background: var(--primary-color); color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">
+                Try the Chord Generator →
+            </a>
+        </div>
+    </div>
+</body>
+</html>
