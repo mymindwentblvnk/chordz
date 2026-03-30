@@ -1,4 +1,4 @@
-# 🎵 Chords - Learn to Play Music
+# 🎵 Chordz - Learn to Play Music
 
 A complete web application for discovering and learning chord progressions. Find your root note, search for progressions by mood, and learn exactly which keys to play!
 

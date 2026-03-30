@@ -1,0 +1,18 @@
+{
+  "name": "Chordz - Learn to Play Music",
+  "short_name": "Chordz",
+  "description": "Find your root note, search for chord progressions, and learn exactly which keys to play",
+  "start_url": "/chords/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🎵</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
