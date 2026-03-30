@@ -108,30 +108,47 @@
                 display: block !important;
             }
 
+            .scale-notes-table tbody {
+                display: block !important;
+            }
+
             .scale-notes-table tr {
-                display: grid !important;
-                grid-template-columns: 120px 1fr !important;
-                gap: 15px !important;
-                margin-bottom: 10px !important;
+                display: flex !important;
+                flex-wrap: wrap !important;
+                border: none !important;
                 background: none !important;
             }
 
+            .scale-notes-table td {
+                border: none !important;
+                padding: 8px 12px !important;
+            }
+
+            /* Hide the label cells */
             .scale-notes-table td:first-child {
-                grid-column: 1 !important;
-                font-weight: bold !important;
-                color: var(--primary-color) !important;
+                display: none !important;
             }
 
-            .scale-notes-table td:not(:first-child) {
-                grid-column: 2 !important;
-                border-bottom: 1px solid var(--surface-light) !important;
-                padding: 5px 10px !important;
-            }
-
-            .scale-notes-table td:not(:first-child):before {
-                content: attr(data-position) ": " !important;
+            /* Position cells - pair with note below */
+            .scale-notes-table tr:first-child td:not(:first-child) {
+                width: 100% !important;
                 font-weight: 600 !important;
-                margin-right: 5px !important;
+                padding-bottom: 2px !important;
+                border-bottom: 1px solid var(--surface-light) !important;
+                margin-bottom: 10px !important;
+            }
+
+            .scale-notes-table tr:first-child td:not(:first-child)::after {
+                content: ' ' attr(data-note);
+                font-family: 'Courier New', monospace;
+                color: var(--accent-happy);
+                margin-left: 10px;
+                font-weight: 700;
+            }
+
+            /* Hide note row on mobile since we're showing it inline */
+            .scale-notes-table tr:last-child {
+                display: none !important;
             }
         }
     </style>
@@ -315,14 +332,16 @@
                 <h3 style="color: var(--accent-happy);">Step 2: Number Your Scale Notes</h3>
                 <div style="background: var(--background); padding: 20px; border-radius: 8px; margin: 15px 0;">
                     <table class="scale-notes-table" style="margin: 0; width: 100%;">
-                        <tr style="background: none;">
-                            <td style="border: none; padding: 10px; font-weight: bold; color: var(--primary-color);">Position:</td>
-                            ${scale.map((_, i) => `<td data-position="${i + 1}${['st', 'nd', 'rd', 'th', 'th', 'th', 'th'][i]}" style="border: none; padding: 10px;">${i + 1}${['st', 'nd', 'rd', 'th', 'th', 'th', 'th'][i]}</td>`).join('')}
-                        </tr>
-                        <tr style="background: none;">
-                            <td style="border: none; padding: 10px; font-weight: bold; color: var(--primary-color);">Note:</td>
-                            ${scale.map((note, i) => `<td data-position="${i + 1}${['st', 'nd', 'rd', 'th', 'th', 'th', 'th'][i]}" style="border: none; padding: 10px; font-family: 'Courier New', monospace; color: var(--accent-happy);">${note}</td>`).join('')}
-                        </tr>
+                        <tbody>
+                            <tr style="background: none;">
+                                <td style="border: none; padding: 10px; font-weight: bold; color: var(--primary-color);">Position:</td>
+                                ${scale.map((note, i) => `<td data-note="${note}" style="border: none; padding: 10px;">${i + 1}${['st', 'nd', 'rd', 'th', 'th', 'th', 'th'][i]}</td>`).join('')}
+                            </tr>
+                            <tr style="background: none;">
+                                <td style="border: none; padding: 10px; font-weight: bold; color: var(--primary-color);">Note:</td>
+                                ${scale.map(note => `<td style="border: none; padding: 10px; font-family: 'Courier New', monospace; color: var(--accent-happy);">${note}</td>`).join('')}
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
             `;
