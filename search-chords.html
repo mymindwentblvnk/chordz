@@ -27,23 +27,33 @@
         </header>
 
         <div class="controls">
-            <div class="input-section">
-                <label for="note-selector" style="display: block; margin-bottom: 10px; font-weight: 600; color: var(--text-primary);">Root Note:</label>
-                <select id="note-selector" style="width: 100%; padding: 12px; font-size: 1rem; background: var(--background); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 8px; cursor: pointer; height: 48px; box-sizing: border-box;">
-                    <option value="all">All Keys</option>
-                    <option value="C">C</option>
-                    <option value="C#">C# / Db</option>
-                    <option value="D">D</option>
-                    <option value="D#">D# / Eb</option>
-                    <option value="E">E</option>
-                    <option value="F">F</option>
-                    <option value="F#">F# / Gb</option>
-                    <option value="G">G</option>
-                    <option value="G#">G# / Ab</option>
-                    <option value="A">A</option>
-                    <option value="A#">A# / Bb</option>
-                    <option value="B">B</option>
-                </select>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+                <div class="input-section">
+                    <label for="scale-type-selector" style="display: block; margin-bottom: 10px; font-weight: 600; color: var(--text-primary);">Scale Type:</label>
+                    <select id="scale-type-selector" style="width: 100%; padding: 12px; font-size: 1rem; background: var(--background); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 8px; cursor: pointer; height: 48px; box-sizing: border-box;">
+                        <option value="all">All Types</option>
+                        <option value="major">Major</option>
+                        <option value="minor">Minor</option>
+                    </select>
+                </div>
+                <div class="input-section">
+                    <label for="note-selector" style="display: block; margin-bottom: 10px; font-weight: 600; color: var(--text-primary);">Root Note:</label>
+                    <select id="note-selector" style="width: 100%; padding: 12px; font-size: 1rem; background: var(--background); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 8px; cursor: pointer; height: 48px; box-sizing: border-box;">
+                        <option value="all">All Keys</option>
+                        <option value="C">C</option>
+                        <option value="C#">C# / Db</option>
+                        <option value="D">D</option>
+                        <option value="D#">D# / Eb</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="F#">F# / Gb</option>
+                        <option value="G">G</option>
+                        <option value="G#">G# / Ab</option>
+                        <option value="A">A</option>
+                        <option value="A#">A# / Bb</option>
+                        <option value="B">B</option>
+                    </select>
+                </div>
             </div>
 
             <div class="filter-section">

@@ -5,9 +5,11 @@
 
 // State
 let currentNote = 'all';
+let currentScaleType = 'all';
 let activeMoods = ['all'];
 
 // DOM Elements
+const scaleTypeSelector = document.getElementById('scale-type-selector');
 const noteSelector = document.getElementById('note-selector');
 const moodFilters = document.querySelectorAll('.mood-filter');
 const resultsContainer = document.getElementById('results');
@@ -17,6 +19,7 @@ const resultsContainer = document.getElementById('results');
  */
 function init() {
     // Set up event listeners
+    scaleTypeSelector.addEventListener('change', handleScaleTypeChange);
     noteSelector.addEventListener('change', handleNoteChange);
 
     moodFilters.forEach(filter => {
@@ -62,6 +65,15 @@ function init() {
 }
 
 /**
+ * Handle scale type selection change
+ * @param {Event} event - Change event
+ */
+function handleScaleTypeChange(event) {
+    currentScaleType = event.target.value;
+    renderProgressions();
+}
+
+/**
  * Handle note selection change
  * @param {Event} event - Change event
  */
@@ -76,7 +88,18 @@ function handleNoteChange(event) {
  * Handle random chord button click
  */
 function handleRandomChord() {
-    const randomIndex = Math.floor(Math.random() * CHORD_PROGRESSIONS.length);
+    // Get filtered progressions based on current filters
+    const filteredProgressions = getFilteredProgressions();
+
+    if (filteredProgressions.length === 0) {
+        alert('No progressions match your current filters. Try changing your filters.');
+        return;
+    }
+
+    // Pick a random progression from filtered list
+    const randomProgression = filteredProgressions[Math.floor(Math.random() * filteredProgressions.length)];
+    const randomIndex = CHORD_PROGRESSIONS.indexOf(randomProgression);
+
     const keyToPass = currentNote !== 'all' ? currentNote : (localStorage.getItem('rootNote') || 'C');
     const key = keyToPass !== 'all' ? keyToPass : 'C';
     window.location.href = `chord-detail.html?id=${randomIndex}&key=${key}`;
@@ -120,18 +143,26 @@ function handleMoodFilterClick(event) {
 }
 
 /**
- * Filter progressions based on active moods
+ * Filter progressions based on active moods and scale type
  * @returns {array} Filtered chord progressions
  */
 function getFilteredProgressions() {
-    if (activeMoods.includes('all')) {
-        return CHORD_PROGRESSIONS;
+    let filtered = CHORD_PROGRESSIONS;
+
+    // Filter by scale type
+    if (currentScaleType !== 'all') {
+        filtered = filtered.filter(progression => progression.keyMode === currentScaleType);
     }
 
-    return CHORD_PROGRESSIONS.filter(progression => {
-        // Check if progression has any of the active moods
-        return progression.mood.some(mood => activeMoods.includes(mood));
-    });
+    // Filter by mood
+    if (!activeMoods.includes('all')) {
+        filtered = filtered.filter(progression => {
+            // Check if progression has any of the active moods
+            return progression.mood.some(mood => activeMoods.includes(mood));
+        });
+    }
+
+    return filtered;
 }
 
 /**
