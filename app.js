@@ -172,9 +172,15 @@ function getFilteredProgressions() {
  * @returns {string} HTML string
  */
 function createProgressionCard(progression, index) {
+    // Create scale type tag
+    const scaleTypeTag = `<span class="mood-tag mood-${progression.keyMode === 'major' ? 'happy' : 'sad'}" style="font-weight: 700;">${progression.keyMode === 'major' ? 'Major' : 'Minor'}</span>`;
+
     const moodTags = progression.mood.map(mood =>
         `<span class="mood-tag mood-${mood}">${mood}</span>`
     ).join('');
+
+    // Combine scale type tag with mood tags
+    const allTags = scaleTypeTag + moodTags;
 
     // Check if a specific key is selected
     const isSpecificKey = currentNote !== 'all';
@@ -240,7 +246,7 @@ function createProgressionCard(progression, index) {
     return `
         <div class="progression-card" style="cursor: pointer;" onclick="window.location.href='${detailUrl}'">
             <h3 class="progression-name">${progression.name}</h3>
-            <div class="mood-tags">${moodTags}</div>
+            <div class="mood-tags">${allTags}</div>
             <div class="chords">${chordsDisplay}</div>
             ${chordNotesSection}
             <p class="progression-description">${progression.description}</p>
