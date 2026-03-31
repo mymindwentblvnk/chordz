@@ -102,6 +102,17 @@
             transform: translateX(-4px);
         }
 
+        /* Responsive controls for mobile */
+        @media (max-width: 768px) {
+            .builder-controls-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .builder-controls-grid > div {
+                grid-column: span 1 !important;
+            }
+        }
+
         /* Responsive table for mobile */
         @media (max-width: 768px) {
             .scale-notes-table {
@@ -174,7 +185,14 @@
 
             <!-- Interactive Controls -->
             <div style="background: var(--surface-light); padding: 25px; border-radius: 12px; margin: 25px 0;">
-                <div class="builder-controls-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start;">
+                <div class="builder-controls-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; align-items: start;">
+                    <div>
+                        <label for="interactive-scale-type" style="display: block; margin-bottom: 10px; font-weight: 600; color: var(--text-primary);">Scale Type:</label>
+                        <select id="interactive-scale-type" style="width: 100%; padding: 12px; font-size: 1rem; background: var(--background); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 8px; cursor: pointer; height: 48px; box-sizing: border-box;">
+                            <option value="major">Major</option>
+                            <option value="minor">Minor</option>
+                        </select>
+                    </div>
                     <div>
                         <label for="interactive-root" style="display: block; margin-bottom: 10px; font-weight: 600; color: var(--text-primary);">Root Note:</label>
                         <select id="interactive-root" style="width: 100%; padding: 12px; font-size: 1rem; background: var(--background); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 8px; cursor: pointer; height: 48px; box-sizing: border-box;">
@@ -192,10 +210,10 @@
                             <option value="B">B</option>
                         </select>
                     </div>
-                    <div>
+                    <div style="grid-column: span 2;">
                         <label for="interactive-progression" style="display: block; margin-bottom: 10px; font-weight: 600; color: var(--text-primary);">Chord Progression:</label>
                         <input type="text" id="interactive-progression" value="I-V-vi-IV" placeholder="e.g., I-V-vi-IV or I IV V" style="width: 100%; padding: 12px; font-size: 1rem; background: var(--background); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 8px; font-family: 'Courier New', monospace; height: 48px; box-sizing: border-box;">
-                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 8px;">Separate with dashes or spaces. Examples: I-IV-V, vi-IV-I-V, I ii iii IV</p>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 8px;">Separate with dashes or spaces. Examples: I-IV-V, vi-IV-I-V, i-VI-III-VII</p>
                     </div>
                 </div>
             </div>
@@ -210,11 +228,13 @@
         <div class="builder-section">
             <h2>💡 Quick Tips</h2>
             <ul style="color: var(--text-secondary); line-height: 1.8; margin-left: 20px;">
+                <li><strong>Major vs Minor:</strong> Major uses W-W-H-W-W-W-H (bright), Minor uses W-H-W-W-H-W-W (dark)</li>
                 <li><strong>Natural chords</strong> (I, ii, iii, IV, V, vi, vii°) use skip-pick-skip-pick from your scale</li>
                 <li><strong>Borrowed chords</strong> (like VI instead of vi) use interval formulas and will be highlighted in orange</li>
-                <li><strong>Start simple:</strong> Try C major - it's all white keys!</li>
-                <li><strong>Experiment:</strong> Change the root note to see how the same progression works in different keys</li>
-                <li><strong>Common progressions:</strong> I-V-vi-IV, I-IV-V, vi-IV-I-V, I-vi-IV-V</li>
+                <li><strong>Start simple:</strong> Try C major or A minor - both use all white keys!</li>
+                <li><strong>Experiment:</strong> Change the scale type and root note to explore different moods</li>
+                <li><strong>Common major progressions:</strong> I-V-vi-IV, I-IV-V, vi-IV-I-V</li>
+                <li><strong>Common minor progressions:</strong> i-VI-III-VII, i-iv-VII-VI, i-VI-VII</li>
             </ul>
         </div>
 
@@ -225,6 +245,7 @@
         // Play Chords Logic
         const CHROMATIC = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
         const MAJOR_INTERVALS = [0, 2, 4, 5, 7, 9, 11]; // W-W-H-W-W-W-H pattern in semitones
+        const MINOR_INTERVALS = [0, 2, 3, 5, 7, 8, 10]; // W-H-W-W-H-W-W pattern in semitones
 
         // Get note at interval
         function getNoteAt(root, semitones) {
@@ -232,9 +253,15 @@
             return CHROMATIC[(rootIndex + semitones) % 12];
         }
 
-        // Build major scale from root
+        // Build scale from root (major or minor)
+        function buildScale(root, scaleType) {
+            const intervals = scaleType === 'minor' ? MINOR_INTERVALS : MAJOR_INTERVALS;
+            return intervals.map(interval => getNoteAt(root, interval));
+        }
+
+        // Build major scale from root (legacy - for compatibility)
         function buildMajorScale(root) {
-            return MAJOR_INTERVALS.map(interval => getNoteAt(root, interval));
+            return buildScale(root, 'major');
         }
 
         // Parse Roman numeral
@@ -289,6 +316,7 @@
         // Update the interactive display
         function updateInteractive() {
             const root = document.getElementById('interactive-root').value;
+            const scaleType = document.getElementById('interactive-scale-type').value;
             const progressionInput = document.getElementById('interactive-progression').value;
 
             // Parse progression (split by dash or space)
@@ -299,8 +327,8 @@
                 return;
             }
 
-            // Build the major scale
-            const scale = buildMajorScale(root);
+            // Build the scale (major or minor)
+            const scale = buildScale(root, scaleType);
 
             // Build scale with steps
             let scaleSteps = [];
@@ -314,16 +342,21 @@
 
             let html = '';
 
+            // Determine pattern text and color based on scale type
+            const patternText = scaleType === 'minor' ? 'W-H-W-W-H-W-W' : 'W-W-H-W-W-W-H';
+            const scaleTypeName = scaleType === 'minor' ? 'minor' : 'major';
+            const scaleColor = scaleType === 'minor' ? 'var(--accent-sad)' : 'var(--accent-happy)';
+
             // Step 1: Build Scale
             html += `
-                <h3 style="color: var(--accent-happy);">Step 1: Build Your Scale Using the Pattern</h3>
+                <h3 style="color: ${scaleColor};">Step 1: Build Your ${scaleTypeName.charAt(0).toUpperCase() + scaleTypeName.slice(1)} Scale Using the Pattern</h3>
                 <div style="background: var(--background); padding: 20px; border-radius: 8px; margin: 15px 0;">
                     <p><strong>Start:</strong> ${root} (our root note)</p>
-                    <p><strong>Apply W-W-H-W-W-W-H:</strong></p>
-                    <div style="font-family: 'Courier New', monospace; font-size: 1.1rem; color: var(--accent-happy); margin: 10px 0;">
+                    <p><strong>Apply ${patternText}:</strong></p>
+                    <div style="font-family: 'Courier New', monospace; font-size: 1.1rem; color: ${scaleColor}; margin: 10px 0;">
                         ${scaleSteps.join(' ')}
                     </div>
-                    <p style="margin-top: 15px;"><strong>Result:</strong> ${root} major scale = <strong>${scale.join(' - ')}</strong></p>
+                    <p style="margin-top: 15px;"><strong>Result:</strong> ${root} ${scaleTypeName} scale = <strong>${scale.join(' - ')}</strong></p>
                 </div>
             `;
 
@@ -418,7 +451,7 @@
             html += `
                 <h3 style="color: var(--accent-happy);">Step 4: Play on Keyboard!</h3>
                 <div class="tip-box" style="font-size: 1.1rem;">
-                    <strong>Your complete progression ${progression.join(' - ')} in ${root} major:</strong><br><br>
+                    <strong>Your complete progression ${progression.join(' - ')} in ${root} ${scaleTypeName}:</strong><br><br>
                     <div style="font-family: 'Courier New', monospace; font-size: 1.2rem; line-height: 2;">
                         ${chordResults.join('<br>')}
                     </div>
@@ -432,9 +465,11 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
+            const scaleTypeSelect = document.getElementById('interactive-scale-type');
             const rootSelect = document.getElementById('interactive-root');
             const progressionInput = document.getElementById('interactive-progression');
 
+            scaleTypeSelect.addEventListener('change', updateInteractive);
             rootSelect.addEventListener('change', updateInteractive);
             progressionInput.addEventListener('input', updateInteractive);
 
