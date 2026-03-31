@@ -256,7 +256,13 @@
         // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const progressionIndex = parseInt(urlParams.get('id'));
-        let selectedKey = urlParams.get('key') || 'C';
+
+        // Get key from URL, then localStorage, then default to 'C'
+        let selectedKey = urlParams.get('key');
+        if (!selectedKey || selectedKey === 'all') {
+            const savedNote = localStorage.getItem('rootNote');
+            selectedKey = (savedNote && savedNote !== 'all') ? savedNote : 'C';
+        }
 
         // Get the progression data
         const progression = CHORD_PROGRESSIONS[progressionIndex];

@@ -77,7 +77,8 @@ function handleNoteChange(event) {
  */
 function handleRandomChord() {
     const randomIndex = Math.floor(Math.random() * CHORD_PROGRESSIONS.length);
-    const key = currentNote !== 'all' ? currentNote : 'C';
+    const keyToPass = currentNote !== 'all' ? currentNote : (localStorage.getItem('rootNote') || 'C');
+    const key = keyToPass !== 'all' ? keyToPass : 'C';
     window.location.href = `chord-detail.html?id=${randomIndex}&key=${key}`;
 }
 
@@ -201,8 +202,9 @@ function createProgressionCard(progression, index) {
         </a>
     `;
 
-    // Create detail view link
-    const detailUrl = `chord-detail.html?id=${index}&key=${isSpecificKey ? currentNote : 'C'}`;
+    // Create detail view link - pass current note or saved note from localStorage
+    const keyToPass = isSpecificKey ? currentNote : (localStorage.getItem('rootNote') || 'C');
+    const detailUrl = `chord-detail.html?id=${index}&key=${keyToPass !== 'all' ? keyToPass : 'C'}`;
 
     return `
         <div class="progression-card" style="cursor: pointer;" onclick="window.location.href='${detailUrl}'">
