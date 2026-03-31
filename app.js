@@ -23,6 +23,12 @@ function init() {
         filter.addEventListener('click', handleMoodFilterClick);
     });
 
+    // Random chord button
+    const randomBtn = document.getElementById('random-chord-btn');
+    if (randomBtn) {
+        randomBtn.addEventListener('click', handleRandomChord);
+    }
+
     // Check for URL parameter to pre-select note (takes priority over localStorage)
     const urlParams = new URLSearchParams(window.location.search);
     const noteParam = urlParams.get('note');
@@ -64,6 +70,15 @@ function handleNoteChange(event) {
     // Save to localStorage for persistence
     localStorage.setItem('rootNote', currentNote);
     renderProgressions();
+}
+
+/**
+ * Handle random chord button click
+ */
+function handleRandomChord() {
+    const randomIndex = Math.floor(Math.random() * CHORD_PROGRESSIONS.length);
+    const key = currentNote !== 'all' ? currentNote : 'C';
+    window.location.href = `chord-detail.html?id=${randomIndex}&key=${key}`;
 }
 
 /**
@@ -121,9 +136,10 @@ function getFilteredProgressions() {
 /**
  * Create HTML for a chord progression card
  * @param {object} progression - Chord progression object
+ * @param {number} index - Index in CHORD_PROGRESSIONS array
  * @returns {string} HTML string
  */
-function createProgressionCard(progression) {
+function createProgressionCard(progression, index) {
     const moodTags = progression.mood.map(mood =>
         `<span class="mood-tag mood-${mood}">${mood}</span>`
     ).join('');
@@ -185,8 +201,11 @@ function createProgressionCard(progression) {
         </a>
     `;
 
+    // Create detail view link
+    const detailUrl = `chord-detail.html?id=${index}&key=${isSpecificKey ? currentNote : 'C'}`;
+
     return `
-        <div class="progression-card">
+        <div class="progression-card" style="cursor: pointer;" onclick="window.location.href='${detailUrl}'">
             <h3 class="progression-name">${progression.name}</h3>
             <div class="mood-tags">${moodTags}</div>
             <div class="chords">${chordsDisplay}</div>
@@ -215,7 +234,10 @@ function renderProgressions() {
     }
 
     const html = filteredProgressions
-        .map(progression => createProgressionCard(progression))
+        .map(progression => {
+            const index = CHORD_PROGRESSIONS.indexOf(progression);
+            return createProgressionCard(progression, index);
+        })
         .join('');
 
     resultsContainer.innerHTML = html;

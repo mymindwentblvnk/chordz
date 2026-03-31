@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Chordz">
+    <title>Chordz - Chord Details</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .detail-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px 40px 20px;
+        }
+
+        .detail-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .detail-name {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+
+        .detail-card {
+            background: var(--surface);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .progression-display {
+            text-align: center;
+            margin: 30px 0;
+            padding: 25px;
+            background: var(--background);
+            border-radius: 12px;
+        }
+
+        .progression-display .roman {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .progression-display .chords {
+            font-size: 1.8rem;
+            color: var(--accent-happy);
+            font-family: 'Courier New', monospace;
+            margin-bottom: 10px;
+        }
+
+        .chord-breakdown-section {
+            margin: 30px 0;
+        }
+
+        .chord-breakdown-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .chord-item {
+            background: var(--surface-light);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .chord-item-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .chord-item-notes {
+            font-size: 1.1rem;
+            color: var(--accent-happy);
+            font-family: 'Courier New', monospace;
+        }
+
+        .description-section {
+            margin: 30px 0;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .action-btn {
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .action-btn.primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .action-btn.secondary {
+            background: var(--surface-light);
+            color: var(--text-primary);
+        }
+
+        .action-btn.secondary:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .key-selector-inline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            padding: 20px;
+            background: var(--surface-light);
+            border-radius: 8px;
+        }
+
+        .key-selector-inline label {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .key-selector-inline select {
+            padding: 10px 15px;
+            font-size: 1rem;
+            background: var(--background);
+            color: var(--text-primary);
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .detail-card {
+                padding: 25px;
+            }
+
+            .detail-name {
+                font-size: 2rem;
+            }
+
+            .progression-display .roman {
+                font-size: 1.5rem;
+            }
+
+            .progression-display .chords {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="main-nav">
+        <a href="index.html" class="nav-link">🎤 Find Note</a>
+        <a href="search-chords.html" class="nav-link">🎵 Search Chords</a>
+        <a href="play-chords.html" class="nav-link">🎹 Play Chords</a>
+        <a href="guide.html" class="nav-link">📖 Guide</a>
+    </nav>
+
+    <div class="detail-container">
+        <div style="text-align: right; margin-bottom: 20px;">
+            <a href="search-chords.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: var(--surface); color: var(--text-secondary); text-decoration: none; border-radius: 8px; transition: all 0.2s ease;">
+                <span style="font-size: 1.2rem;">✕</span>
+                <span>Close</span>
+            </a>
+        </div>
+
+        <div class="detail-header">
+            <h1 class="detail-name" id="chord-name">Loading...</h1>
+            <div id="mood-tags"></div>
+        </div>
+
+        <div class="detail-card">
+            <div class="key-selector-inline">
+                <label for="key-selector">Select Key:</label>
+                <select id="key-selector">
+                    <option value="C">C</option>
+                    <option value="C#">C# / Db</option>
+                    <option value="D">D</option>
+                    <option value="D#">D# / Eb</option>
+                    <option value="E">E</option>
+                    <option value="F">F</option>
+                    <option value="F#">F# / Gb</option>
+                    <option value="G">G</option>
+                    <option value="G#">G# / Ab</option>
+                    <option value="A">A</option>
+                    <option value="A#">A# / Bb</option>
+                    <option value="B">B</option>
+                </select>
+            </div>
+
+            <div class="progression-display">
+                <div class="roman" id="roman-numerals">I - V - vi - IV</div>
+                <div class="chords" id="chord-names">C - G - Am - F</div>
+            </div>
+
+            <div class="chord-breakdown-section">
+                <h3 style="color: var(--primary-color); margin-bottom: 15px;">Notes to Play:</h3>
+                <div class="chord-breakdown-grid" id="chord-breakdown">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+
+            <div class="description-section">
+                <h3 style="color: var(--primary-color); margin-bottom: 15px;">About This Progression:</h3>
+                <p id="chord-description">Loading description...</p>
+            </div>
+
+            <div class="action-buttons">
+                <a href="#" id="learn-to-play" class="action-btn primary">
+                    🎹 Play Chords
+                </a>
+                <button id="another-random" class="action-btn secondary" style="border: none; cursor: pointer;">
+                    🎲 Another Random
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="music-theory.js"></script>
+    <script src="chord-data.js"></script>
+    <script>
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const progressionIndex = parseInt(urlParams.get('id'));
+        let selectedKey = urlParams.get('key') || 'C';
+
+        // Get the progression data
+        const progression = CHORD_PROGRESSIONS[progressionIndex];
+
+        if (!progression) {
+            document.querySelector('.detail-container').innerHTML = `
+                <div style="text-align: center; padding: 60px 20px;">
+                    <h2 style="color: var(--text-primary);">Chord progression not found</h2>
+                    <p style="color: var(--text-secondary); margin: 20px 0;">The requested chord progression could not be found.</p>
+                    <a href="search-chords.html" class="action-btn primary">← Back to Search</a>
+                </div>
+            `;
+        } else {
+            // Display the progression details
+            document.getElementById('chord-name').textContent = progression.name;
+
+            // Display mood tags
+            const moodTags = progression.mood.map(mood =>
+                `<span class="mood-tag mood-${mood}">${mood}</span>`
+            ).join('');
+            document.getElementById('mood-tags').innerHTML = moodTags;
+
+            // Set initial key
+            document.getElementById('key-selector').value = selectedKey;
+
+            // Update display function
+            function updateDisplay() {
+                selectedKey = document.getElementById('key-selector').value;
+
+                // Display Roman numerals
+                document.getElementById('roman-numerals').textContent = progression.progression.join(' - ');
+
+                // Transpose and display chords
+                const chords = transposeProgression(progression.progression, selectedKey, progression.keyMode);
+                document.getElementById('chord-names').textContent = chords.join(' - ');
+
+                // Display chord breakdown
+                const breakdownHTML = chords.map(chord => {
+                    const notes = getChordNotes(chord);
+                    return `
+                        <div class="chord-item">
+                            <div class="chord-item-name">${chord}</div>
+                            <div class="chord-item-notes">${notes.join(' + ')}</div>
+                        </div>
+                    `;
+                }).join('');
+                document.getElementById('chord-breakdown').innerHTML = breakdownHTML;
+
+                // Update Learn to Play link
+                const learnLink = `play-chords.html?note=${encodeURIComponent(selectedKey)}&progression=${encodeURIComponent(progression.progression.join('-'))}`;
+                document.getElementById('learn-to-play').href = learnLink;
+            }
+
+            // Display description
+            document.getElementById('chord-description').textContent = progression.description;
+
+            // Event listener for key change
+            document.getElementById('key-selector').addEventListener('change', updateDisplay);
+
+            // Event listener for "Another Random" button
+            document.getElementById('another-random').addEventListener('click', () => {
+                const randomIndex = Math.floor(Math.random() * CHORD_PROGRESSIONS.length);
+                window.location.href = `chord-detail.html?id=${randomIndex}&key=${selectedKey}`;
+            });
+
+            // Initial display
+            updateDisplay();
+        }
+    </script>
+</body>
+</html>
