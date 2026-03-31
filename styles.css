@@ -409,10 +409,6 @@ h1 {
         padding: 20px;
     }
 
-    .controls > div[style*="grid-template-columns"] {
-        grid-template-columns: 1fr !important;
-    }
-
     .results {
         grid-template-columns: 1fr;
         gap: 16px;

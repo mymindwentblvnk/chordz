@@ -5,13 +5,14 @@
 
 // State
 let currentNote = 'all';
-let currentScaleType = 'all';
-let activeMoods = ['all'];
+let activeFilters = {
+    scale: 'all', // all, major, minor
+    moods: ['all'] // all, happy, sad, etc.
+};
 
 // DOM Elements
-const scaleTypeSelector = document.getElementById('scale-type-selector');
 const noteSelector = document.getElementById('note-selector');
-const moodFilters = document.querySelectorAll('.mood-filter');
+const filterButtons = document.querySelectorAll('.mood-filter');
 const resultsContainer = document.getElementById('results');
 
 /**
@@ -19,11 +20,10 @@ const resultsContainer = document.getElementById('results');
  */
 function init() {
     // Set up event listeners
-    scaleTypeSelector.addEventListener('change', handleScaleTypeChange);
     noteSelector.addEventListener('change', handleNoteChange);
 
-    moodFilters.forEach(filter => {
-        filter.addEventListener('click', handleMoodFilterClick);
+    filterButtons.forEach(filter => {
+        filter.addEventListener('click', handleFilterClick);
     });
 
     // Random chord button
@@ -65,15 +65,6 @@ function init() {
 }
 
 /**
- * Handle scale type selection change
- * @param {Event} event - Change event
- */
-function handleScaleTypeChange(event) {
-    currentScaleType = event.target.value;
-    renderProgressions();
-}
-
-/**
  * Handle note selection change
  * @param {Event} event - Change event
  */
@@ -106,36 +97,64 @@ function handleRandomChord() {
 }
 
 /**
- * Handle mood filter button click
+ * Handle filter button click (scale type and moods)
  * @param {Event} event - Click event
  */
-function handleMoodFilterClick(event) {
+function handleFilterClick(event) {
     const button = event.target;
-    const mood = button.dataset.mood;
+    const filter = button.dataset.filter;
+    const type = button.dataset.type; // 'scale', 'mood', or undefined for 'all'
 
     // Handle "All" button
-    if (mood === 'all') {
+    if (filter === 'all') {
         // Deactivate all other filters
-        moodFilters.forEach(filter => filter.classList.remove('active'));
+        filterButtons.forEach(btn => btn.classList.remove('active'));
         button.classList.add('active');
-        activeMoods = ['all'];
-    } else {
-        // Remove "All" filter if active
-        const allButton = document.querySelector('[data-mood="all"]');
+        activeFilters.scale = 'all';
+        activeFilters.moods = ['all'];
+    } else if (type === 'scale') {
+        // Handle scale type filter (major/minor)
+        const allButton = document.querySelector('[data-filter="all"]');
         allButton.classList.remove('active');
 
-        // Toggle this filter
+        // Deactivate other scale buttons
+        document.querySelectorAll('[data-type="scale"]').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        // Activate this scale button
+        button.classList.add('active');
+        activeFilters.scale = filter;
+
+        // If no mood filters are active, set moods to all
+        if (activeFilters.moods.includes('all')) {
+            activeFilters.moods = ['all'];
+        }
+    } else if (type === 'mood') {
+        // Handle mood filter
+        const allButton = document.querySelector('[data-filter="all"]');
+        allButton.classList.remove('active');
+
+        // Toggle this mood filter
         button.classList.toggle('active');
 
         // Update active moods array
-        activeMoods = Array.from(document.querySelectorAll('.mood-filter.active'))
-            .map(filter => filter.dataset.mood)
-            .filter(m => m !== 'all');
+        const activeMoodButtons = Array.from(document.querySelectorAll('[data-type="mood"].active'));
 
-        // If no filters active, activate "All"
-        if (activeMoods.length === 0) {
-            allButton.classList.add('active');
-            activeMoods = ['all'];
+        if (activeMoodButtons.length === 0) {
+            // No moods selected, check if scale is selected
+            const activeScaleButtons = Array.from(document.querySelectorAll('[data-type="scale"].active'));
+            if (activeScaleButtons.length === 0) {
+                // No filters active, activate "All"
+                allButton.classList.add('active');
+                activeFilters.scale = 'all';
+                activeFilters.moods = ['all'];
+            } else {
+                // Scale is active but no moods
+                activeFilters.moods = ['all'];
+            }
+        } else {
+            activeFilters.moods = activeMoodButtons.map(btn => btn.dataset.filter);
         }
     }
 
@@ -143,22 +162,22 @@ function handleMoodFilterClick(event) {
 }
 
 /**
- * Filter progressions based on active moods and scale type
+ * Filter progressions based on active filters (scale type and moods)
  * @returns {array} Filtered chord progressions
  */
 function getFilteredProgressions() {
     let filtered = CHORD_PROGRESSIONS;
 
     // Filter by scale type
-    if (currentScaleType !== 'all') {
-        filtered = filtered.filter(progression => progression.keyMode === currentScaleType);
+    if (activeFilters.scale !== 'all') {
+        filtered = filtered.filter(progression => progression.keyMode === activeFilters.scale);
     }
 
     // Filter by mood
-    if (!activeMoods.includes('all')) {
+    if (!activeFilters.moods.includes('all')) {
         filtered = filtered.filter(progression => {
             // Check if progression has any of the active moods
-            return progression.mood.some(mood => activeMoods.includes(mood));
+            return progression.mood.some(mood => activeFilters.moods.includes(mood));
         });
     }
 
