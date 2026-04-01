@@ -51,6 +51,7 @@ const CHORD_PROGRESSIONS = [
         progression: ["i", "VII", "VI", "V"],
         mood: ["unsettling"],
         keyMode: "minor",
+        hasBorrowedChords: true,
         description: "A minor progression with building tension through the descending chords. Hip hop: Popular in UK drill and dark trap beats by producers like Metro Boomin. The major V at the end creates unresolved energy and drama."
     },
     {
@@ -79,6 +80,7 @@ const CHORD_PROGRESSIONS = [
         progression: ["i", "VII", "VI", "V"],
         mood: ["unsettling"],
         keyMode: "minor",
+        hasBorrowedChords: true,
         description: "An ancient progression with roots in flamenco and baroque music. Featured in 'Sultans of Swing' by Dire Straits and 'Hit the Road Jack' by Ray Charles. Hip hop: Used in 'Stan' by Eminem (sampled from Dido's 'Thank You'). Creates a mysterious, exotic feel with strong Spanish and Mediterranean character."
     },
     {
@@ -93,6 +95,7 @@ const CHORD_PROGRESSIONS = [
         progression: ["i", "VI", "iv", "V"],
         mood: ["sad", "melancholic"],
         keyMode: "minor",
+        hasBorrowedChords: true,
         description: "A descending progression in minor that creates a gentle, falling sensation. Deeply emotional and introspective with classical influences."
     },
     {
@@ -114,6 +117,7 @@ const CHORD_PROGRESSIONS = [
         progression: ["i", "ii", "V", "i"],
         mood: ["unsettling"],
         keyMode: "minor",
+        hasBorrowedChords: true,
         description: "A progression that builds tension through the diminished ii chord and major V, creating suspense and drama before resolving back to i."
     },
     {
@@ -135,6 +139,7 @@ const CHORD_PROGRESSIONS = [
         progression: ["I", "VII", "VI", "V"],
         mood: ["unsettling"],
         keyMode: "major",
+        hasBorrowedChords: true,
         description: "A chromatic walkdown from the tonic. The VII (major) is borrowed from the parallel minor, creating an uneasy, descending feeling that defies expectations."
     },
     {
@@ -149,6 +154,7 @@ const CHORD_PROGRESSIONS = [
         progression: ["I", "II", "I", "II"],
         mood: ["uncomfortable"],
         keyMode: "major",
+        hasBorrowedChords: true,
         description: "The II major chord (borrowed from modal mixture) creates a jarring tritone relationship. This oscillation between stable and unstable feels wrong and unsettling."
     },
     {
@@ -156,6 +162,7 @@ const CHORD_PROGRESSIONS = [
         progression: ["I", "III", "I", "III"],
         mood: ["unsettling"],
         keyMode: "major",
+        hasBorrowedChords: true,
         description: "The major III chord (not iii) creates a chromatic mediant relationship - a dramatic, film-score-like shift that sounds alien and unexpected."
     },
     {
@@ -163,6 +170,7 @@ const CHORD_PROGRESSIONS = [
         progression: ["I", "iv", "I", "iv"],
         mood: ["uncomfortable"],
         keyMode: "major",
+        hasBorrowedChords: true,
         description: "The minor iv borrowed from parallel minor creates modal mixture. This major-minor oscillation feels unstable and psychologically unsettling."
     },
     {
@@ -170,6 +178,7 @@ const CHORD_PROGRESSIONS = [
         progression: ["I", "III", "VI", "ii"],
         mood: ["uncomfortable"],
         keyMode: "major",
+        hasBorrowedChords: true,
         description: "All major chords create augmented relationships (4 semitones apart). This symmetrical division sounds dreamlike yet disturbing, like a Salvador Dalí painting."
     },
     {
@@ -177,6 +186,7 @@ const CHORD_PROGRESSIONS = [
         progression: ["I", "II", "III", "IV"],
         mood: ["dreamy", "uncomfortable"],
         keyMode: "major",
+        hasBorrowedChords: true,
         description: "All major chords moving in whole tones. Destroys the sense of key center - sounds floating, directionless, and surreal. Very experimental."
     },
     {
@@ -184,6 +194,7 @@ const CHORD_PROGRESSIONS = [
         progression: ["i", "II", "i", "II"],
         mood: ["unsettling"],
         keyMode: "minor",
+        hasBorrowedChords: true,
         description: "The Phrygian II (major chord on the flattened second) creates an exotic, menacing quality. Used in 'Set the Controls for the Heart of the Sun' by Pink Floyd. Common in metal and horror soundtracks."
     },
     {
@@ -191,6 +202,7 @@ const CHORD_PROGRESSIONS = [
         progression: ["I", "vi", "VII", "III"],
         mood: ["uncomfortable"],
         keyMode: "major",
+        hasBorrowedChords: true,
         description: "Expected resolutions are constantly denied. The VII and major III are borrowed chords that create a cycle that never truly resolves - musically frustrating."
     },
     {
@@ -198,6 +210,7 @@ const CHORD_PROGRESSIONS = [
         progression: ["i", "II", "III", "iv"],
         mood: ["uncomfortable"],
         keyMode: "minor",
+        hasBorrowedChords: true,
         description: "Chromatic ascent mixing major and minor chords. Each chord contradicts the last, creating harmonic chaos and maximum instability."
     },
     {
@@ -205,6 +218,7 @@ const CHORD_PROGRESSIONS = [
         progression: ["I", "II", "I", "vii°"],
         mood: ["uncomfortable"],
         keyMode: "major",
+        hasBorrowedChords: true,
         description: "Uses the raised fourth (Lydian mode). The II major and vii° create floating, otherworldly quality. Sounds futuristic and alien."
     },
     {
@@ -212,6 +226,7 @@ const CHORD_PROGRESSIONS = [
         progression: ["I", "VII", "IV", "III"],
         mood: ["unsettling"],
         keyMode: "major",
+        hasBorrowedChords: true,
         description: "Completely abandons functional harmony. Chords don't follow any traditional pattern - they just drift. Sounds avant-garde and unpredictable."
     },
     {
@@ -219,6 +234,7 @@ const CHORD_PROGRESSIONS = [
         progression: ["i°", "II", "III", "iv"],
         mood: ["uncomfortable"],
         keyMode: "minor",
+        hasBorrowedChords: true,
         description: "Built on the unstable Locrian mode with a diminished tonic. Every chord feels wrong because there's no stable home. Pure harmonic anxiety."
     },
     {
@@ -226,6 +242,7 @@ const CHORD_PROGRESSIONS = [
         progression: ["I", "i", "VII", "vii°"],
         mood: ["unsettling"],
         keyMode: "major",
+        hasBorrowedChords: true,
         description: "Parallel major/minor shifts combined with chromatic movement. Creates a shadowy, doppelgänger effect - familiar yet disturbing."
     },
     {
@@ -233,6 +250,7 @@ const CHORD_PROGRESSIONS = [
         progression: ["I", "IV", "iv", "I"],
         mood: ["uncomfortable"],
         keyMode: "major",
+        hasBorrowedChords: true,
         description: "The sudden shift from IV to iv (major to minor) creates harmonic whiplash. The brightness crashes into darkness abruptly."
     }
 ];

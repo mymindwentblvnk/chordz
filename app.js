@@ -7,7 +7,8 @@
 let currentNote = 'all';
 let activeFilters = {
     scale: 'all', // all, major, minor
-    moods: ['all'] // all, happy, sad, etc.
+    moods: ['all'], // all, happy, sad, etc.
+    borrowedChords: false // true to show only borrowed chord progressions
 };
 
 // DOM Elements
@@ -112,6 +113,28 @@ function handleFilterClick(event) {
         button.classList.add('active');
         activeFilters.scale = 'all';
         activeFilters.moods = ['all'];
+        activeFilters.borrowedChords = false;
+    } else if (type === 'borrowed') {
+        // Handle borrowed chords filter
+        const allButton = document.querySelector('[data-filter="all"]');
+        allButton.classList.remove('active');
+
+        // Toggle borrowed chords filter
+        button.classList.toggle('active');
+        activeFilters.borrowedChords = button.classList.contains('active');
+
+        // If no filters active, activate "All"
+        const anyFilterActive =
+            document.querySelector('[data-type="scale"].active') ||
+            document.querySelector('[data-type="borrowed"].active') ||
+            document.querySelector('[data-type="mood"].active');
+
+        if (!anyFilterActive) {
+            allButton.classList.add('active');
+            activeFilters.scale = 'all';
+            activeFilters.moods = ['all'];
+            activeFilters.borrowedChords = false;
+        }
     } else if (type === 'scale') {
         // Handle scale type filter (major/minor)
         const allButton = document.querySelector('[data-filter="all"]');
@@ -162,7 +185,7 @@ function handleFilterClick(event) {
 }
 
 /**
- * Filter progressions based on active filters (scale type and moods)
+ * Filter progressions based on active filters (scale type, moods, and borrowed chords)
  * @returns {array} Filtered chord progressions
  */
 function getFilteredProgressions() {
@@ -179,6 +202,11 @@ function getFilteredProgressions() {
             // Check if progression has any of the active moods
             return progression.mood.some(mood => activeFilters.moods.includes(mood));
         });
+    }
+
+    // Filter by borrowed chords
+    if (activeFilters.borrowedChords) {
+        filtered = filtered.filter(progression => progression.hasBorrowedChords === true);
     }
 
     return filtered;
