@@ -61,28 +61,24 @@ class AnimatedPiano {
     }
 
     renderOctaves() {
-        // Render 2 octaves (C to B, twice)
+        // Render 1 octave (C to B)
         const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
         const sharps = ['C#', 'D#', 'F#', 'G#', 'A#'];
 
         let html = '<div class="piano-octave">';
 
-        // Render white keys for 2 octaves
-        for (let octave = 0; octave < 2; octave++) {
-            for (const note of notes) {
-                html += `<div class="piano-key white" data-note="${note}${octave}">
-                    <span class="piano-key-label">${note}</span>
-                </div>`;
-            }
+        // Render white keys for 1 octave
+        for (const note of notes) {
+            html += `<div class="piano-key white" data-note="${note}0">
+                <span class="piano-key-label">${note}</span>
+            </div>`;
         }
 
-        // Render black keys for 2 octaves
-        for (let octave = 0; octave < 2; octave++) {
-            for (const note of sharps) {
-                html += `<div class="piano-key black" data-note="${note}${octave}">
-                    <span class="piano-key-label">${note}</span>
-                </div>`;
-            }
+        // Render black keys for 1 octave
+        for (const note of sharps) {
+            html += `<div class="piano-key black" data-note="${note}0">
+                <span class="piano-key-label">${note}</span>
+            </div>`;
         }
 
         html += '</div>';
@@ -120,25 +116,17 @@ class AnimatedPiano {
         const allKeys = this.container.querySelectorAll('.piano-key');
         allKeys.forEach(key => {
             key.classList.remove('active');
-            key.classList.remove('active-secondary');
         });
 
-        // Highlight active keys
-        // First, highlight the main 3 notes in octave 0 strongly
+        // Highlight only the 3 notes in the single octave
         notes.forEach(note => {
             // Normalize the note (remove octave if present)
             const normalizedNote = note.replace(/[0-9]/g, '');
 
-            // Find the primary key in octave 0
-            const primaryKey = this.container.querySelector(`.piano-key[data-note="${normalizedNote}0"]`);
-            if (primaryKey) {
-                primaryKey.classList.add('active');
-            }
-
-            // Find and highlight duplicates in other octaves more lightly
-            const secondaryKey = this.container.querySelector(`.piano-key[data-note="${normalizedNote}1"]`);
-            if (secondaryKey) {
-                secondaryKey.classList.add('active-secondary');
+            // Find the key in octave 0
+            const key = this.container.querySelector(`.piano-key[data-note="${normalizedNote}0"]`);
+            if (key) {
+                key.classList.add('active');
             }
         });
     }
