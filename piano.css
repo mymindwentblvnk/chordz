@@ -276,6 +276,32 @@
     .piano-key[data-note$="2"] {
         display: none;
     }
+
+    /* Reposition octave 1 black keys when side octaves are hidden */
+    .piano-key.black[data-note="C#1"],
+    .piano-key.black[data-note="Db1"] {
+        left: 26px !important;
+    }
+
+    .piano-key.black[data-note="D#1"],
+    .piano-key.black[data-note="Eb1"] {
+        left: 66px !important;
+    }
+
+    .piano-key.black[data-note="F#1"],
+    .piano-key.black[data-note="Gb1"] {
+        left: 146px !important;
+    }
+
+    .piano-key.black[data-note="G#1"],
+    .piano-key.black[data-note="Ab1"] {
+        left: 186px !important;
+    }
+
+    .piano-key.black[data-note="A#1"],
+    .piano-key.black[data-note="Bb1"] {
+        left: 226px !important;
+    }
 }
 
 @media (max-width: 768px) {
@@ -301,27 +327,27 @@
     /* Mobile - 35px per white key - Octave 1 only (octave 0 and 2 hidden) */
     .piano-key.black[data-note="C#1"],
     .piano-key.black[data-note="Db1"] {
-        left: 23px;
+        left: 23px !important;
     }
 
     .piano-key.black[data-note="D#1"],
     .piano-key.black[data-note="Eb1"] {
-        left: 58px;
+        left: 58px !important;
     }
 
     .piano-key.black[data-note="F#1"],
     .piano-key.black[data-note="Gb1"] {
-        left: 128px;
+        left: 128px !important;
     }
 
     .piano-key.black[data-note="G#1"],
     .piano-key.black[data-note="Ab1"] {
-        left: 163px;
+        left: 163px !important;
     }
 
     .piano-key.black[data-note="A#1"],
     .piano-key.black[data-note="Bb1"] {
-        left: 198px;
+        left: 198px !important;
     }
 
     .piano-header {
@@ -348,26 +374,26 @@
     /* Small mobile - 30px per white key - Octave 1 only (octave 0 and 2 hidden) */
     .piano-key.black[data-note="C#1"],
     .piano-key.black[data-note="Db1"] {
-        left: 20px;
+        left: 20px !important;
     }
 
     .piano-key.black[data-note="D#1"],
     .piano-key.black[data-note="Eb1"] {
-        left: 50px;
+        left: 50px !important;
     }
 
     .piano-key.black[data-note="F#1"],
     .piano-key.black[data-note="Gb1"] {
-        left: 110px;
+        left: 110px !important;
     }
 
     .piano-key.black[data-note="G#1"],
     .piano-key.black[data-note="Ab1"] {
-        left: 140px;
+        left: 140px !important;
     }
 
     .piano-key.black[data-note="A#1"],
     .piano-key.black[data-note="Bb1"] {
-        left: 170px;
+        left: 170px !important;
     }
 }
