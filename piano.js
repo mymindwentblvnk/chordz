@@ -10,7 +10,11 @@ class AnimatedPiano {
         this.chordNames = chordNames; // Array of chord names to display
         this.currentChordIndex = 0;
         this.isPlaying = true;
-        this.isMuted = true; // Default to muted
+
+        // Load mute preference from localStorage, default to unmuted
+        const savedMuteState = localStorage.getItem('piano-muted');
+        this.isMuted = savedMuteState === null ? false : savedMuteState === 'true';
+
         this.speed = 2000; // milliseconds per chord
         this.intervalId = null;
         this.synth = null;
@@ -40,8 +44,8 @@ class AnimatedPiano {
                         <button class="piano-control-btn" id="piano-play-pause-${this.container.id}">
                             ⏸ Pause
                         </button>
-                        <button class="piano-control-btn" id="piano-mute-${this.container.id}">
-                            🔇 Muted
+                        <button class="piano-control-btn ${this.isMuted ? 'paused' : ''}" id="piano-mute-${this.container.id}">
+                            ${this.isMuted ? '🔇 Muted' : '🔊 Sound On'}
                         </button>
                         <label class="piano-speed-label">Speed:</label>
                         <select class="piano-speed-select" id="piano-speed-${this.container.id}">
@@ -421,6 +425,9 @@ class AnimatedPiano {
         const btn = document.getElementById(`piano-mute-${this.container.id}`);
 
         this.isMuted = !this.isMuted;
+
+        // Save mute preference to localStorage
+        localStorage.setItem('piano-muted', this.isMuted.toString());
 
         if (this.isMuted) {
             btn.textContent = '🔇 Muted';
