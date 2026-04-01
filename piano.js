@@ -11,8 +11,10 @@ class AnimatedPiano {
         this.currentChordIndex = 0;
         this.isPlaying = true;
         this.isMuted = true; // Default to muted
+        this.isRandomMode = false; // Random rhythm mode
         this.speed = 2000; // milliseconds per chord
         this.intervalId = null;
+        this.randomTimeoutId = null;
         this.synth = null;
 
         this.init();
@@ -37,6 +39,9 @@ class AnimatedPiano {
                     <div class="piano-controls">
                         <button class="piano-control-btn" id="piano-play-pause-${this.container.id}">
                             ⏸ Pause
+                        </button>
+                        <button class="piano-control-btn" id="piano-random-${this.container.id}">
+                            🎲 Random Play
                         </button>
                         <button class="piano-control-btn" id="piano-mute-${this.container.id}">
                             🔇 Muted
@@ -119,6 +124,10 @@ class AnimatedPiano {
         // Play/Pause button
         const playPauseBtn = document.getElementById(`piano-play-pause-${this.container.id}`);
         playPauseBtn.addEventListener('click', () => this.togglePlayPause());
+
+        // Random mode button
+        const randomBtn = document.getElementById(`piano-random-${this.container.id}`);
+        randomBtn.addEventListener('click', () => this.toggleRandomMode());
 
         // Mute button
         const muteBtn = document.getElementById(`piano-mute-${this.container.id}`);
@@ -219,16 +228,76 @@ class AnimatedPiano {
     }
 
     startAnimation() {
-        this.intervalId = setInterval(() => {
-            this.currentChordIndex = (this.currentChordIndex + 1) % this.chords.length;
-            this.updateDisplay();
-        }, this.speed);
+        if (this.isRandomMode) {
+            this.startRandomMode();
+        } else {
+            this.intervalId = setInterval(() => {
+                this.currentChordIndex = (this.currentChordIndex + 1) % this.chords.length;
+                this.updateDisplay();
+            }, this.speed);
+        }
     }
 
     stopAnimation() {
         if (this.intervalId) {
             clearInterval(this.intervalId);
             this.intervalId = null;
+        }
+        if (this.randomTimeoutId) {
+            clearTimeout(this.randomTimeoutId);
+            this.randomTimeoutId = null;
+        }
+    }
+
+    startRandomMode() {
+        const playRandomChord = () => {
+            // Pick a random chord
+            this.currentChordIndex = Math.floor(Math.random() * this.chords.length);
+            this.updateDisplay();
+
+            // Random delay between 300ms and 2000ms
+            const randomDelay = Math.floor(Math.random() * 1700) + 300;
+            this.randomTimeoutId = setTimeout(playRandomChord, randomDelay);
+        };
+
+        playRandomChord();
+    }
+
+    toggleRandomMode() {
+        const btn = document.getElementById(`piano-random-${this.container.id}`);
+
+        this.isRandomMode = !this.isRandomMode;
+
+        if (this.isRandomMode) {
+            btn.textContent = '🎲 Stop Random';
+            btn.style.background = 'var(--accent-energetic)';
+
+            // Stop regular animation and start random mode
+            if (this.intervalId) {
+                clearInterval(this.intervalId);
+                this.intervalId = null;
+            }
+            this.startRandomMode();
+
+            // Update play/pause button
+            const playPauseBtn = document.getElementById(`piano-play-pause-${this.container.id}`);
+            playPauseBtn.textContent = '⏸ Pause';
+            playPauseBtn.classList.remove('paused');
+            this.isPlaying = true;
+        } else {
+            btn.textContent = '🎲 Random Play';
+            btn.style.background = '';
+
+            // Stop random mode
+            if (this.randomTimeoutId) {
+                clearTimeout(this.randomTimeoutId);
+                this.randomTimeoutId = null;
+            }
+
+            // Resume regular animation if playing
+            if (this.isPlaying) {
+                this.startAnimation();
+            }
         }
     }
 
@@ -275,5 +344,8 @@ class AnimatedPiano {
 
     destroy() {
         this.stopAnimation();
+        if (this.synth) {
+            this.synth.dispose();
+        }
     }
 }
