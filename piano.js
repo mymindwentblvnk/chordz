@@ -11,9 +11,9 @@ class AnimatedPiano {
         this.currentChordIndex = 0;
         this.isPlaying = true;
 
-        // Load mute preference from localStorage, default to unmuted
+        // Load mute preference from localStorage, default to muted
         const savedMuteState = localStorage.getItem('piano-muted');
-        this.isMuted = savedMuteState === null ? false : savedMuteState === 'true';
+        this.isMuted = savedMuteState === null ? true : savedMuteState === 'true';
 
         this.speed = 2000; // milliseconds per chord
         this.intervalId = null;
