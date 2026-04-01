@@ -66,42 +66,42 @@ class AnimatedPiano {
     }
 
     renderOctaves() {
-        // Render 2 octaves: C2-B2 (left) and C3-C4 (right, with ending C4)
-        // Highlight only in right octave (C3-C4)
+        // Render 2 octaves: C3-B3 (left) and C4-C5 (right, with ending C5)
+        // Highlight only in right octave (C4-C5), which starts at middle C
         const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
         const sharps = ['C#', 'D#', 'F#', 'G#', 'A#'];
 
         let html = '<div class="piano-octave">';
 
-        // Render white keys for octave 2 (left octave)
-        for (const note of notes) {
-            html += `<div class="piano-key white octave-2" data-note="${note}2">
-                <span class="piano-key-label">${note}</span>
-            </div>`;
-        }
-
-        // Render white keys for octave 3 (right octave)
+        // Render white keys for octave 3 (left octave)
         for (const note of notes) {
             html += `<div class="piano-key white octave-3" data-note="${note}3">
                 <span class="piano-key-label">${note}</span>
             </div>`;
         }
 
-        // Add the final C4
-        html += `<div class="piano-key white octave-end octave-4" data-note="C4">
-            <span class="piano-key-label">C</span>
-        </div>`;
-
-        // Render black keys for octave 2 (left octave)
-        for (const note of sharps) {
-            html += `<div class="piano-key black octave-2" data-note="${note}2">
+        // Render white keys for octave 4 (right octave - middle C)
+        for (const note of notes) {
+            html += `<div class="piano-key white octave-4" data-note="${note}4">
                 <span class="piano-key-label">${note}</span>
             </div>`;
         }
 
-        // Render black keys for octave 3 (right octave)
+        // Add the final C5
+        html += `<div class="piano-key white octave-end octave-5" data-note="C5">
+            <span class="piano-key-label">C</span>
+        </div>`;
+
+        // Render black keys for octave 3 (left octave)
         for (const note of sharps) {
             html += `<div class="piano-key black octave-3" data-note="${note}3">
+                <span class="piano-key-label">${note}</span>
+            </div>`;
+        }
+
+        // Render black keys for octave 4 (right octave)
+        for (const note of sharps) {
+            html += `<div class="piano-key black octave-4" data-note="${note}4">
                 <span class="piano-key-label">${note}</span>
             </div>`;
         }
@@ -164,7 +164,7 @@ class AnimatedPiano {
                         const currentNotes = getChordNotes(this.chords[this.currentChordIndex]);
                         const isInCurrentChord = currentNotes.some(note => {
                             const normalizedNote = note.replace(/[0-9]/g, '');
-                            return noteData === `${normalizedNote}3`;
+                            return noteData === `${normalizedNote}4`;
                         });
                         if (!isInCurrentChord) {
                             key.classList.remove('active');
@@ -197,13 +197,13 @@ class AnimatedPiano {
             key.classList.remove('active');
         });
 
-        // Highlight only the 3 notes in the middle octave (octave 3)
+        // Highlight only the 3 notes in the right octave (octave 4 - middle C range)
         notes.forEach(note => {
             // Normalize the note (remove octave if present)
             const normalizedNote = note.replace(/[0-9]/g, '');
 
-            // Find the key in octave 3 (middle octave)
-            const key = this.container.querySelector(`.piano-key[data-note="${normalizedNote}3"]`);
+            // Find the key in octave 4 (right octave)
+            const key = this.container.querySelector(`.piano-key[data-note="${normalizedNote}4"]`);
             if (key) {
                 key.classList.add('active');
             }

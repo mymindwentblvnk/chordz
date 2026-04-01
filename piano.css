@@ -144,45 +144,45 @@
     transform: translateY(2px);
 }
 
-/* Position black keys - Octave 2 (left octave) */
-.piano-octave .piano-key.black.octave-2[data-note="C#2"] {
+/* Position black keys - Octave 3 (left octave) */
+.piano-octave .piano-key.black.octave-3[data-note="C#3"] {
     left: 26px !important;
 }
 
-.piano-octave .piano-key.black.octave-2[data-note="D#2"] {
+.piano-octave .piano-key.black.octave-3[data-note="D#3"] {
     left: 66px !important;
 }
 
-.piano-octave .piano-key.black.octave-2[data-note="F#2"] {
+.piano-octave .piano-key.black.octave-3[data-note="F#3"] {
     left: 146px !important;
 }
 
-.piano-octave .piano-key.black.octave-2[data-note="G#2"] {
+.piano-octave .piano-key.black.octave-3[data-note="G#3"] {
     left: 186px !important;
 }
 
-.piano-octave .piano-key.black.octave-2[data-note="A#2"] {
+.piano-octave .piano-key.black.octave-3[data-note="A#3"] {
     left: 226px !important;
 }
 
-/* Position black keys - Octave 3 (right octave, 280px = 7 white keys * 40px) */
-.piano-octave .piano-key.black.octave-3[data-note="C#3"] {
+/* Position black keys - Octave 4 (right octave, 280px = 7 white keys * 40px) */
+.piano-octave .piano-key.black.octave-4[data-note="C#4"] {
     left: 306px !important; /* 280 + 26 */
 }
 
-.piano-octave .piano-key.black.octave-3[data-note="D#3"] {
+.piano-octave .piano-key.black.octave-4[data-note="D#4"] {
     left: 346px !important; /* 280 + 66 */
 }
 
-.piano-octave .piano-key.black.octave-3[data-note="F#3"] {
+.piano-octave .piano-key.black.octave-4[data-note="F#4"] {
     left: 426px !important; /* 280 + 146 */
 }
 
-.piano-octave .piano-key.black.octave-3[data-note="G#3"] {
+.piano-octave .piano-key.black.octave-4[data-note="G#4"] {
     left: 466px !important; /* 280 + 186 */
 }
 
-.piano-octave .piano-key.black.octave-3[data-note="A#3"] {
+.piano-octave .piano-key.black.octave-4[data-note="A#4"] {
     left: 506px !important; /* 280 + 226 */
 }
 
@@ -235,35 +235,35 @@
 
 /* Responsive Design */
 @media (max-width: 1100px) {
-    /* Hide left octave on medium screens, show only right octave (C3-C4) */
-    .piano-key.octave-2 {
+    /* Hide left octave on medium screens, show only right octave (C4-C5) */
+    .piano-key.octave-3 {
         display: none !important;
     }
 
-    /* Keep octave 3 and ending C4 visible */
-    .piano-key.octave-3,
-    .piano-key.octave-4 {
+    /* Keep octave 4 and ending C5 visible */
+    .piano-key.octave-4,
+    .piano-key.octave-5 {
         display: block !important;
     }
 
-    /* Reposition octave 3 black keys to start from left when octave 2 is hidden */
-    .piano-key.black.octave-3[data-note="C#3"] {
+    /* Reposition octave 4 black keys to start from left when octave 3 is hidden */
+    .piano-key.black.octave-4[data-note="C#4"] {
         left: 26px !important;
     }
 
-    .piano-key.black.octave-3[data-note="D#3"] {
+    .piano-key.black.octave-4[data-note="D#4"] {
         left: 66px !important;
     }
 
-    .piano-key.black.octave-3[data-note="F#3"] {
+    .piano-key.black.octave-4[data-note="F#4"] {
         left: 146px !important;
     }
 
-    .piano-key.black.octave-3[data-note="G#3"] {
+    .piano-key.black.octave-4[data-note="G#4"] {
         left: 186px !important;
     }
 
-    .piano-key.black.octave-3[data-note="A#3"] {
+    .piano-key.black.octave-4[data-note="A#4"] {
         left: 226px !important;
     }
 
@@ -293,24 +293,24 @@
         height: 90px;
     }
 
-    /* Mobile - 35px per white key - Octave 3 only (octave 2 hidden) */
-    .piano-key.black.octave-3[data-note="C#3"] {
+    /* Mobile - 35px per white key - Octave 4 only (octave 3 hidden) */
+    .piano-key.black.octave-4[data-note="C#4"] {
         left: 23px !important;
     }
 
-    .piano-key.black.octave-3[data-note="D#3"] {
+    .piano-key.black.octave-4[data-note="D#4"] {
         left: 58px !important;
     }
 
-    .piano-key.black.octave-3[data-note="F#3"] {
+    .piano-key.black.octave-4[data-note="F#4"] {
         left: 128px !important;
     }
 
-    .piano-key.black.octave-3[data-note="G#3"] {
+    .piano-key.black.octave-4[data-note="G#4"] {
         left: 163px !important;
     }
 
-    .piano-key.black.octave-3[data-note="A#3"] {
+    .piano-key.black.octave-4[data-note="A#4"] {
         left: 198px !important;
     }
 
@@ -400,24 +400,24 @@
     }
 }
 
-    /* Small mobile - 30px per white key - Octave 3 only (octave 2 hidden) */
-    .piano-key.black.octave-3[data-note="C#3"] {
+    /* Small mobile - 30px per white key - Octave 4 only (octave 3 hidden) */
+    .piano-key.black.octave-4[data-note="C#4"] {
         left: 20px !important;
     }
 
-    .piano-key.black.octave-3[data-note="D#3"] {
+    .piano-key.black.octave-4[data-note="D#4"] {
         left: 50px !important;
     }
 
-    .piano-key.black.octave-3[data-note="F#3"] {
+    .piano-key.black.octave-4[data-note="F#4"] {
         left: 110px !important;
     }
 
-    .piano-key.black.octave-3[data-note="G#3"] {
+    .piano-key.black.octave-4[data-note="G#4"] {
         left: 140px !important;
     }
 
-    .piano-key.black.octave-3[data-note="A#3"] {
+    .piano-key.black.octave-4[data-note="A#4"] {
         left: 170px !important;
     }
 }
