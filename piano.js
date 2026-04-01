@@ -21,7 +21,6 @@ class AnimatedPiano {
 
     init() {
         this.render();
-        this.updateOctaveDisplay();
         this.updateDisplay();
         this.startAnimation();
     }
@@ -51,7 +50,7 @@ class AnimatedPiano {
                         </select>
                         <div class="piano-octave-controls">
                             <button class="piano-octave-btn" id="piano-octave-down-${this.container.id}" title="Lower octave">−</button>
-                            <span class="piano-octave-label" id="piano-octave-label-${this.container.id}">C3-C5</span>
+                            <span class="piano-octave-label">oct</span>
                             <button class="piano-octave-btn" id="piano-octave-up-${this.container.id}" title="Raise octave">+</button>
                         </div>
                     </div>
@@ -59,11 +58,6 @@ class AnimatedPiano {
 
                 <div class="piano-keyboard" id="piano-keyboard-${this.container.id}">
                     ${this.renderOctaves()}
-                </div>
-
-                <div class="piano-notes-display">
-                    <div class="piano-notes-label">Press these keys:</div>
-                    <div class="piano-notes-list" id="piano-notes-${this.container.id}"></div>
                 </div>
             </div>
         `;
@@ -93,14 +87,16 @@ class AnimatedPiano {
             // Render white key
             const octaveClass = isEndNote ? `octave-end octave-${endOctave}` : (isLeftOctave ? `octave-${leftOctave}` : `octave-${rightOctave}`);
             const classes = `piano-key white ${octaveClass}`;
+            const whiteKeyLabel = noteName === 'C' ? `${noteName}${octave}` : noteName;
             html += `<div class="${classes}" data-note="${noteName}${octave}" data-key-index="${index}">
-                <span class="piano-key-label">${noteName}</span>
+                <span class="piano-key-label">${whiteKeyLabel}</span>
             </div>`;
 
             // Render black key after this white key (if it has one)
             if (hasSharp && !isEndNote) {
+                const blackKeyLabel = noteName === 'C' ? `${noteName}#${octave}` : `${noteName}#`;
                 html += `<div class="piano-key black octave-${octave}" data-note="${noteName}#${octave}" data-key-index="${index}">
-                    <span class="piano-key-label">${noteName}#</span>
+                    <span class="piano-key-label">${blackKeyLabel}</span>
                 </div>`;
             }
         };
@@ -134,6 +130,11 @@ class AnimatedPiano {
     attachEventListeners() {
         // Initialize Tone.js synth
         if (typeof Tone !== 'undefined') {
+            // Dispose old synth if it exists
+            if (this.synth) {
+                this.synth.dispose();
+            }
+
             this.synth = new Tone.PolySynth(Tone.Synth, {
                 oscillator: {
                     type: 'sine'
@@ -147,7 +148,7 @@ class AnimatedPiano {
             }).toDestination();
 
             // Start audio context if not muted
-            if (!this.isMuted) {
+            if (!this.isMuted && Tone.context.state !== 'running') {
                 Tone.start().catch(() => {
                     // If autoplay is blocked, mute by default and update UI
                     this.isMuted = true;
@@ -197,7 +198,6 @@ class AnimatedPiano {
                 this.isPlaying = wasPlaying;
                 this.isMuted = wasMuted;
                 this.speed = currentSpeed;
-                this.updateOctaveDisplay();
                 this.updateDisplay();
 
                 // Update button states
@@ -224,7 +224,6 @@ class AnimatedPiano {
                 this.isPlaying = wasPlaying;
                 this.isMuted = wasMuted;
                 this.speed = currentSpeed;
-                this.updateOctaveDisplay();
                 this.updateDisplay();
 
                 // Update button states
@@ -252,12 +251,6 @@ class AnimatedPiano {
                     // Visual feedback - briefly flash the key
                     key.classList.add('active');
 
-                    // Also highlight the corresponding note in the notes list
-                    const noteItem = this.container.querySelector(`.piano-note-item[data-note="${noteName}"]`);
-                    if (noteItem) {
-                        noteItem.classList.add('clicked');
-                    }
-
                     setTimeout(() => {
                         // Only remove if it's not part of current chord
                         const currentNotes = getChordNotes(this.chords[this.currentChordIndex]);
@@ -269,11 +262,6 @@ class AnimatedPiano {
                         if (!isInCurrentChord) {
                             key.classList.remove('active');
                         }
-
-                        // Remove clicked highlight from note item
-                        if (noteItem) {
-                            noteItem.classList.remove('clicked');
-                        }
                     }, 300);
                 }
             });
@@ -283,15 +271,6 @@ class AnimatedPiano {
     playNote(note) {
         if (!this.synth) return;
         this.synth.triggerAttackRelease(note, '0.3');
-    }
-
-    updateOctaveDisplay() {
-        const leftOctave = 3 + this.octaveOffset;
-        const endOctave = 5 + this.octaveOffset;
-        const label = document.getElementById(`piano-octave-label-${this.container.id}`);
-        if (label) {
-            label.textContent = `C${leftOctave}-C${endOctave}`;
-        }
     }
 
     updateButtonStates() {
@@ -332,23 +311,10 @@ class AnimatedPiano {
         // Update current chord display
         document.getElementById(`piano-current-chord-${this.container.id}`).textContent = chordName;
 
-        // Update notes list with individual spans for each note
-        const notesList = document.getElementById(`piano-notes-${this.container.id}`);
-        notesList.innerHTML = notes.map((note, index) => {
-            const normalizedNote = note.replace(/[0-9]/g, '');
-            return `<span class="piano-note-item" data-note="${normalizedNote}">${note}</span>`;
-        }).join('<span class="piano-note-separator"> + </span>');
-
         // Clear all active keys
         const allKeys = this.container.querySelectorAll('.piano-key');
         allKeys.forEach(key => {
             key.classList.remove('active');
-        });
-
-        // Clear all active note items
-        const allNoteItems = this.container.querySelectorAll('.piano-note-item');
-        allNoteItems.forEach(item => {
-            item.classList.remove('active');
         });
 
         // Highlight chord breakdown items (in the "Notes to Play" section)
@@ -371,12 +337,6 @@ class AnimatedPiano {
             const key = this.container.querySelector(`.piano-key[data-note="${normalizedNote}${rightOctave}"]`);
             if (key) {
                 key.classList.add('active');
-            }
-
-            // Highlight the note item
-            const noteItem = this.container.querySelector(`.piano-note-item[data-note="${normalizedNote}"]`);
-            if (noteItem) {
-                noteItem.classList.add('active');
             }
         });
 
