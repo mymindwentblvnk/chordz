@@ -149,6 +149,20 @@ class AnimatedPiano {
                     release: 1
                 }
             }).toDestination();
+
+            // Start audio context if not muted
+            if (!this.isMuted) {
+                Tone.start().catch(() => {
+                    // If autoplay is blocked, mute by default and update UI
+                    this.isMuted = true;
+                    localStorage.setItem('piano-muted', 'true');
+                    const muteBtn = document.getElementById(`piano-mute-${this.container.id}`);
+                    if (muteBtn) {
+                        muteBtn.textContent = '🔇 Muted';
+                        muteBtn.classList.add('paused');
+                    }
+                });
+            }
         }
 
         // Play/Pause button
