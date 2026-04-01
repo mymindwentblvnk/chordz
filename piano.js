@@ -67,6 +67,7 @@ class AnimatedPiano {
 
     renderOctaves() {
         // Render 3 octaves (octave 0, 1, 2) - highlight only in octave 1
+        // Plus an extra C at the end (C from octave 3)
         const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
         const sharps = ['C#', 'D#', 'F#', 'G#', 'A#'];
 
@@ -80,6 +81,11 @@ class AnimatedPiano {
                 </div>`;
             }
         }
+
+        // Add the final C from octave 3
+        html += `<div class="piano-key white octave-end" data-note="C3">
+            <span class="piano-key-label">C</span>
+        </div>`;
 
         // Render black keys for 3 octaves
         for (let octave = 0; octave < 3; octave++) {

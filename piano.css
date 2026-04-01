@@ -277,6 +277,11 @@
         display: none;
     }
 
+    /* But keep the final C (from octave 3) visible */
+    .piano-key.octave-end {
+        display: block !important;
+    }
+
     /* Reposition octave 1 black keys when side octaves are hidden */
     .piano-key.black[data-note="C#1"],
     .piano-key.black[data-note="Db1"] {
@@ -302,6 +307,11 @@
     .piano-key.black[data-note="Bb1"] {
         left: 226px !important;
     }
+
+    /* Position the final C correctly when only octave 1 is shown */
+    .piano-octave {
+        min-width: 320px; /* 8 white keys * 40px */
+    }
 }
 
 @media (max-width: 768px) {
@@ -311,7 +321,7 @@
     }
 
     .piano-octave {
-        min-width: 280px;
+        min-width: 280px; /* 8 white keys * 35px = 280px */
     }
 
     .piano-key.white {
@@ -361,6 +371,10 @@
 }
 
 @media (max-width: 480px) {
+    .piano-octave {
+        min-width: 240px; /* 8 white keys * 30px = 240px */
+    }
+
     .piano-key.white {
         width: 30px;
         height: 120px;
