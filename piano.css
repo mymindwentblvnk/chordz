@@ -272,9 +272,11 @@
 /* Responsive Design */
 @media (max-width: 1100px) {
     /* Hide octave 2 and 4 on medium screens, show only middle octave (octave 3) */
-    .piano-key[data-note$="2"],
-    .piano-key[data-note$="4"] {
-        display: none;
+    .piano-key.white[data-note$="2"],
+    .piano-key.white[data-note$="4"],
+    .piano-key.black[data-note$="2"],
+    .piano-key.black[data-note$="4"] {
+        display: none !important;
     }
 
     /* But keep the final C (from octave 5) visible */
@@ -282,29 +284,29 @@
         display: block !important;
     }
 
-    /* Reposition octave 3 black keys when side octaves are hidden */
-    .piano-key.black[data-note="C#3"],
-    .piano-key.black[data-note="Db3"] {
+    /* Reposition ALL octave 3 black keys when side octaves are hidden */
+    .piano-octave .piano-key.black[data-note="C#3"],
+    .piano-octave .piano-key.black[data-note="Db3"] {
         left: 26px !important;
     }
 
-    .piano-key.black[data-note="D#3"],
-    .piano-key.black[data-note="Eb3"] {
+    .piano-octave .piano-key.black[data-note="D#3"],
+    .piano-octave .piano-key.black[data-note="Eb3"] {
         left: 66px !important;
     }
 
-    .piano-key.black[data-note="F#3"],
-    .piano-key.black[data-note="Gb3"] {
+    .piano-octave .piano-key.black[data-note="F#3"],
+    .piano-octave .piano-key.black[data-note="Gb3"] {
         left: 146px !important;
     }
 
-    .piano-key.black[data-note="G#3"],
-    .piano-key.black[data-note="Ab3"] {
+    .piano-octave .piano-key.black[data-note="G#3"],
+    .piano-octave .piano-key.black[data-note="Ab3"] {
         left: 186px !important;
     }
 
-    .piano-key.black[data-note="A#3"],
-    .piano-key.black[data-note="Bb3"] {
+    .piano-octave .piano-key.black[data-note="A#3"],
+    .piano-octave .piano-key.black[data-note="Bb3"] {
         left: 226px !important;
     }
 
@@ -335,28 +337,28 @@
     }
 
     /* Mobile - 35px per white key - Octave 3 only (octave 2 and 4 hidden) */
-    .piano-key.black[data-note="C#3"],
-    .piano-key.black[data-note="Db3"] {
+    .piano-octave .piano-key.black[data-note="C#3"],
+    .piano-octave .piano-key.black[data-note="Db3"] {
         left: 23px !important;
     }
 
-    .piano-key.black[data-note="D#3"],
-    .piano-key.black[data-note="Eb3"] {
+    .piano-octave .piano-key.black[data-note="D#3"],
+    .piano-octave .piano-key.black[data-note="Eb3"] {
         left: 58px !important;
     }
 
-    .piano-key.black[data-note="F#3"],
-    .piano-key.black[data-note="Gb3"] {
+    .piano-octave .piano-key.black[data-note="F#3"],
+    .piano-octave .piano-key.black[data-note="Gb3"] {
         left: 128px !important;
     }
 
-    .piano-key.black[data-note="G#3"],
-    .piano-key.black[data-note="Ab3"] {
+    .piano-octave .piano-key.black[data-note="G#3"],
+    .piano-octave .piano-key.black[data-note="Ab3"] {
         left: 163px !important;
     }
 
-    .piano-key.black[data-note="A#3"],
-    .piano-key.black[data-note="Bb3"] {
+    .piano-octave .piano-key.black[data-note="A#3"],
+    .piano-octave .piano-key.black[data-note="Bb3"] {
         left: 198px !important;
     }
 
@@ -447,28 +449,28 @@
 }
 
     /* Small mobile - 30px per white key - Octave 3 only (octave 2 and 4 hidden) */
-    .piano-key.black[data-note="C#3"],
-    .piano-key.black[data-note="Db3"] {
+    .piano-octave .piano-key.black[data-note="C#3"],
+    .piano-octave .piano-key.black[data-note="Db3"] {
         left: 20px !important;
     }
 
-    .piano-key.black[data-note="D#3"],
-    .piano-key.black[data-note="Eb3"] {
+    .piano-octave .piano-key.black[data-note="D#3"],
+    .piano-octave .piano-key.black[data-note="Eb3"] {
         left: 50px !important;
     }
 
-    .piano-key.black[data-note="F#3"],
-    .piano-key.black[data-note="Gb3"] {
+    .piano-octave .piano-key.black[data-note="F#3"],
+    .piano-octave .piano-key.black[data-note="Gb3"] {
         left: 110px !important;
     }
 
-    .piano-key.black[data-note="G#3"],
-    .piano-key.black[data-note="Ab3"] {
+    .piano-octave .piano-key.black[data-note="G#3"],
+    .piano-octave .piano-key.black[data-note="Ab3"] {
         left: 140px !important;
     }
 
-    .piano-key.black[data-note="A#3"],
-    .piano-key.black[data-note="Bb3"] {
+    .piano-octave .piano-key.black[data-note="A#3"],
+    .piano-octave .piano-key.black[data-note="Bb3"] {
         left: 170px !important;
     }
 }
