@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Chordz">
+    <title>The Master Pattern - Chordz Wiki</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="guide-styles.css">
+</head>
+<body>
+    <nav class="main-nav">
+        <a href="index.html" class="nav-link">🎤 Find Note</a>
+        <a href="search-chords.html" class="nav-link">🎵 Search Chords</a>
+        <a href="calculate-chords.html" class="nav-link">🎹 Calculate Chords</a>
+        <a href="guide.html" class="nav-link">📖 Guide</a>
+        <a href="wiki.html" class="nav-link active">📚 Wiki</a>
+    </nav>
+
+    <div class="guide-container">
+        <div class="back-nav">
+            <a href="wiki.html" class="back-link">← Back to Wiki</a>
+        </div>
+
+        <header style="text-align: center; margin-bottom: 40px;">
+            <div class="header-icon">🎹</div>
+            <h1 style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">The Master Pattern</h1>
+            <p class="subtitle">W-W-H-W-W-W-H: The Foundation of Major Scales</p>
+        </header>
+
+        <!-- Main Content -->
+        <div class="guide-section">
+            <h2 style="font-size: 2.2rem; text-align: center; color: var(--primary-color);">🎹 THE MASTER PATTERN</h2>
+            <p style="text-align: center; font-size: 1.2rem; color: var(--text-primary); margin-bottom: 30px;">This is all you need to memorize to play in ANY key:</p>
+
+            <div style="background: var(--background); padding: 30px; border-radius: 12px; margin: 20px 0; text-align: center;">
+                <div style="font-size: 2rem; font-weight: 900; color: var(--accent-happy); font-family: 'Courier New', monospace; letter-spacing: 4px; margin-bottom: 15px;">
+                    W - W - H - W - W - W - H
+                </div>
+                <div style="font-size: 1.3rem; color: var(--text-secondary);">
+                    Whole - Whole - Half - Whole - Whole - Whole - Half
+                </div>
+            </div>
+
+            <div class="tip-box" style="font-size: 1.1rem;">
+                <strong>💡 This pattern builds a major scale from ANY starting note!</strong><br>
+                Once you know this pattern, you can play in any key. Everything else in music theory builds on this foundation.
+            </div>
+
+            <h3>What Do Whole and Half Mean?</h3>
+
+            <div style="margin-top: 25px; padding: 20px; background: var(--surface-light); border-radius: 8px;">
+                <strong style="color: var(--text-primary); font-size: 1.1rem;">Quick Definition:</strong><br>
+                <span style="color: var(--text-secondary);">
+                    • <strong>Whole step (W)</strong> = Skip one key on the keyboard (e.g., C → D skips C#)<br>
+                    • <strong>Half step (H)</strong> = Move to the very next key (e.g., E → F, no key between)
+                </span>
+            </div>
+
+            <h3>Why This Pattern Matters</h3>
+            <p>This pattern is the secret to understanding ALL major scales:</p>
+
+            <ul class="step-list">
+                <li><strong>Universal:</strong> Works for any starting note - C, G, F#, anything!</li>
+                <li><strong>Predictable:</strong> Once you know it, you can figure out any major scale without memorizing all 12 keys</li>
+                <li><strong>Foundation:</strong> All chord progressions come from scales built with this pattern</li>
+                <li><strong>Transferable:</strong> Learn it once, use it forever across all instruments</li>
+            </ul>
+
+            <h3>Example: Building the C Major Scale</h3>
+
+            <div class="example-box">
+                <strong>Starting from C:</strong><br><br>
+
+                <ol class="step-list">
+                    <li><strong>Start:</strong> C</li>
+                    <li><strong>W (Whole):</strong> C → D (skip C#)</li>
+                    <li><strong>W (Whole):</strong> D → E (skip D#)</li>
+                    <li><strong>H (Half):</strong> E → F (no key to skip)</li>
+                    <li><strong>W (Whole):</strong> F → G (skip F#)</li>
+                    <li><strong>W (Whole):</strong> G → A (skip G#)</li>
+                    <li><strong>W (Whole):</strong> A → B (skip A#)</li>
+                    <li><strong>H (Half):</strong> B → C (no key to skip)</li>
+                </ol>
+
+                <strong>Result: C - D - E - F - G - A - B - C</strong><br>
+                ✓ All white keys! That's why C major is perfect for beginners.
+            </div>
+
+            <h3>Example: Building the G Major Scale</h3>
+
+            <div class="example-box">
+                <strong>Starting from G:</strong><br><br>
+
+                <ol class="step-list">
+                    <li><strong>Start:</strong> G</li>
+                    <li><strong>W:</strong> G → A</li>
+                    <li><strong>W:</strong> A → B</li>
+                    <li><strong>H:</strong> B → C</li>
+                    <li><strong>W:</strong> C → D</li>
+                    <li><strong>W:</strong> D → E</li>
+                    <li><strong>W:</strong> E → F# (now we need a black key!)</li>
+                    <li><strong>H:</strong> F# → G</li>
+                </ol>
+
+                <strong>Result: G - A - B - C - D - E - F# - G</strong><br>
+                Notice: Same pattern, different notes!
+            </div>
+
+            <div class="tip-box">
+                <strong>🎹 Practice Tip:</strong> Try building scales from different starting notes using this pattern. Start with C (all white keys), then try G (one black key), then D (two black keys). The pattern never changes!
+            </div>
+
+            <h3>Visual Pattern on Keyboard</h3>
+            <p>On a piano keyboard, the pattern looks like this:</p>
+
+            <div class="keyboard-diagram">
+                <span class="key-white">C</span>
+                <span class="key-black">C#</span>
+                <span class="key-white">D</span>
+                <span class="key-black">D#</span>
+                <span class="key-white">E</span>
+                <span class="key-white">F</span>
+                <span class="key-black">F#</span>
+                <span class="key-white">G</span>
+                <span class="key-black">G#</span>
+                <span class="key-white">A</span>
+                <span class="key-black">A#</span>
+                <span class="key-white">B</span>
+            </div>
+
+            <p>Notice that between E and F, and between B and C, there are no black keys. These are the natural half steps!</p>
+
+            <div class="tip-box">
+                <strong>💡 Try It Yourself:</strong> Use the <a href="calculate-chords.html" style="color: var(--accent-happy); font-weight: bold;">Calculate Chords</a> tool to see this pattern in action with any root note!
+            </div>
+        </div>
+
+        <!-- Related Topics -->
+        <div class="guide-section">
+            <h3 style="text-align: center; color: var(--primary-color);">Related Topics</h3>
+            <div class="wiki-nav-links" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                <a href="wiki-chromatic-scale.html" class="wiki-nav-link">Chromatic Scale →</a>
+                <a href="wiki-building-scales.html" class="wiki-nav-link">Building Scales →</a>
+                <a href="wiki-roman-numerals.html" class="wiki-nav-link">Roman Numerals →</a>
+                <a href="wiki.html" class="wiki-nav-link">📚 Back to Wiki</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
