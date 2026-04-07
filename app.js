@@ -270,8 +270,8 @@ function createProgressionCard(progression, index) {
 
     // Create chord builder link - always show, but only pass note if specific key is selected
     const builderUrl = isSpecificKey
-        ? `play-chords.html?note=${encodeURIComponent(currentNote)}&progression=${encodeURIComponent(progression.progression.join('-'))}`
-        : `play-chords.html?progression=${encodeURIComponent(progression.progression.join('-'))}`;
+        ? `calculate-chords.html?note=${encodeURIComponent(currentNote)}&progression=${encodeURIComponent(progression.progression.join('-'))}`
+        : `calculate-chords.html?progression=${encodeURIComponent(progression.progression.join('-'))}`;
 
     const progressionValue = progression.progression.join('-');
 
