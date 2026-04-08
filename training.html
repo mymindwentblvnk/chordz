@@ -51,6 +51,51 @@
         .training-content.active {
             display: block;
         }
+
+        /* Note badge animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+        }
+
+        /* Responsive note badges - smaller on mobile */
+        .note-badge {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .note-badge {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .note-badge {
+                padding: 4px 10px;
+                font-size: 0.85rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -235,6 +280,7 @@
                 this.lastFrequency = null;
                 this.stableCount = 0;
                 this.wakeLock = null;
+                this.displayedWrongNotes = new Set(); // Track displayed wrong notes
 
                 this.init();
             }
@@ -316,6 +362,7 @@
 
                     // Clear previous notes
                     document.getElementById('notes-list').innerHTML = '';
+                    this.displayedWrongNotes.clear();
                 } catch (error) {
                     alert('Error accessing microphone: ' + error.message);
                 }
@@ -478,6 +525,8 @@
                         if (this.currentSequenceIndex >= this.sequences.length) {
                             this.showSuccess();
                         } else {
+                            // Clear wrong notes when moving to next sequence
+                            this.displayedWrongNotes.clear();
                             this.updateUI();
                         }
                     } else {
@@ -490,8 +539,11 @@
                         this.lastDetectedNote = null;
                     }, 500);
                 } else {
-                    // Wrong note - show briefly
-                    this.addNoteToList(note, false);
+                    // Wrong note - show only if not already displayed
+                    if (!this.displayedWrongNotes.has(note)) {
+                        this.displayedWrongNotes.add(note);
+                        this.addNoteToList(note, false);
+                    }
                 }
             }
 
@@ -499,20 +551,21 @@
                 const notesList = document.getElementById('notes-list');
                 const noteEl = document.createElement('div');
                 noteEl.textContent = note;
-                noteEl.style.cssText = `
-                    padding: 8px 16px;
-                    border-radius: 8px;
-                    font-weight: bold;
-                    font-size: 1.1rem;
-                    background: ${correct ? 'var(--accent-happy)' : '#ef4444'};
-                    color: white;
-                    animation: fadeIn 0.3s ease;
-                `;
+                noteEl.className = 'note-badge';
+                noteEl.style.background = correct ? 'var(--accent-happy)' : '#ef4444';
+                noteEl.style.color = 'white';
+                noteEl.style.animation = 'fadeIn 0.3s ease';
                 notesList.appendChild(noteEl);
 
-                // Remove wrong notes after a delay
+                // Fade out and remove wrong notes after delay
                 if (!correct) {
-                    setTimeout(() => noteEl.remove(), 1000);
+                    setTimeout(() => {
+                        noteEl.style.animation = 'fadeOut 0.5s ease';
+                        setTimeout(() => {
+                            noteEl.remove();
+                            this.displayedWrongNotes.delete(note);
+                        }, 500);
+                    }, 4000); // Show for 4 seconds before fading out
                 }
             }
 
