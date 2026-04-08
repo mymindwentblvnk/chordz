@@ -235,7 +235,6 @@
                 this.lastFrequency = null;
                 this.stableCount = 0;
                 this.wakeLock = null;
-                this.noSleepVideo = null;
 
                 this.init();
             }
@@ -413,67 +412,32 @@
             }
 
             async requestWakeLock() {
+                if (!('wakeLock' in navigator)) {
+                    console.warn('Screen Wake Lock API not supported');
+                    return;
+                }
+
                 try {
-                    // Try modern Wake Lock API first (works on Android Chrome, desktop browsers)
-                    if ('wakeLock' in navigator) {
-                        this.wakeLock = await navigator.wakeLock.request('screen');
-                        console.log('Wake Lock activated (API)');
+                    this.wakeLock = await navigator.wakeLock.request('screen');
+                    console.log('Wake Lock activated');
 
-                        // Re-acquire wake lock if page becomes visible again
-                        this.wakeLock.addEventListener('release', () => {
-                            console.log('Wake Lock released');
-                        });
-                    } else {
-                        // Fallback for iOS Safari: use hidden video trick
-                        this.enableNoSleepVideo();
-                    }
+                    this.wakeLock.addEventListener('release', () => {
+                        console.log('Wake Lock released');
+                    });
                 } catch (err) {
-                    console.error('Wake Lock error:', err);
-                    // Try video fallback if API fails
-                    this.enableNoSleepVideo();
+                    console.error('Wake Lock request failed:', err);
                 }
             }
 
-            enableNoSleepVideo() {
-                // Create a tiny transparent video that loops to prevent screen sleep on iOS
-                if (!this.noSleepVideo) {
-                    this.noSleepVideo = document.createElement('video');
-                    this.noSleepVideo.setAttribute('playsinline', '');
-                    this.noSleepVideo.setAttribute('muted', '');
-                    this.noSleepVideo.style.position = 'fixed';
-                    this.noSleepVideo.style.opacity = '0';
-                    this.noSleepVideo.style.pointerEvents = 'none';
-                    this.noSleepVideo.style.width = '1px';
-                    this.noSleepVideo.style.height = '1px';
-
-                    // Use a data URL for a minimal MP4 video
-                    this.noSleepVideo.src = 'data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQAAAu1tZGF0AAACrQYF//+p3EXpvebZSLeWLNgg2SPu73gyNjQgLSBjb3JlIDE1NSByMjkwMSA3ZDBmZjIyIC0gSC4yNjQvTVBFRy00IEFWQyBjb2RlYyAtIENvcHlsZWZ0IDIwMDMtMjAxOCAtIGh0dHA6Ly93d3cudmlkZW9sYW4ub3JnL3gyNjQuaHRtbCAtIG9wdGlvbnM6IGNhYmFjPTEgcmVmPTMgZGVibG9jaz0xOjA6MCBhbmFseXNlPTB4MzoweDExMyBtZT1oZXggc3VibWU9NyBwc3k9MSBwc3lfcmQ9MS4wMDowLjAwIG1peGVkX3JlZj0xIG1lX3JhbmdlPTE2IGNocm9tYV9tZT0xIHRyZWxsaXM9MSA4eDhkY3Q9MSBjcW09MCBkZWFkem9uZT0yMSwxMSBmYXN0X3Bza2lwPTEgY2hyb21hX3FwX29mZnNldD0tMiB0aHJlYWRzPTMgbG9va2FoZWFkX3RocmVhZHM9MSBzbGljZWRfdGhyZWFkcz0wIG5yPTAgZGVjaW1hdGU9MSBpbnRlcmxhY2VkPTAgYmx1cmF5X2NvbXBhdD0wIGNvbnN0cmFpbmVkX2ludHJhPTAgYmZyYW1lcz0zIGJfcHlyYW1pZD0yIGJfYWRhcHQ9MSBiX2JpYXM9MCBkaXJlY3Q9MSB3ZWlnaHRiPTEgb3Blbl9nb3A9MCB3ZWlnaHRwPTIga2V5aW50PTI1MCBrZXlpbnRfbWluPTI1IHNjZW5lY3V0PTQwIGludHJhX3JlZnJlc2g9MCByY19sb29rYWhlYWQ9NDAgcmM9Y3JmIG1idHJlZT0xIGNyZj0yMy4wIHFjb21wPTAuNjAgcXBtaW49MCBxcG1heD02OSBxcHN0ZXA9NCBpcF9yYXRpbz0xLjQwIGFxPTE6MS4wMACAAAABW2WIhAA3//728P4FNjuY0JcRzeidMx+/Fbi6NDe9zgAAAwAAAwAAAwAAAwAAHEAAAAMBAAADAHnlAAYBiH3AAAMAAAMAAAMAAAMAAAMAAAQAAwADAAAAAwAAAA4uIQADAAMAAAMAZG1vb3YAAAAcbXZoZAAAAAAAAAAAAAAAAAAAA+gAAABkAAEAAAEAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAB8dHJhawAAAFx0a2hkAAAAAwAAAAAAAAAAAAAAAQAAAAAAAABkAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAABAAAAAgAAAAAAACR0ZHRhAAAAHGVsc3QAAAAAAAAAAQAAAGQAAAAAAAEAAAAABG1kaWEAAAAgbWRoZAAAAAAAAAAAAAAAAAAAeAAAAAQAVcQAAAAAAC1oZGxyAAAAAAAAAAB2aWRlAAAAAAAAAAAAAAAAVmlkZW9IYW5kbGVyAAAAA61taW5mAAAAFHZtaGQAAAABAAAAAAAAAAAAAAAkZGluZgAAABxkcmVmAAAAAAAAAAEAAAAMdXJsIAAAAAEAAANtc3RibAAAAJdzdHNkAAAAAAAAAAEAAACHYXZjMQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAEAAQBIAAAASAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGP//AAAAMWF2Y0MBZAAf/+EAGWdkAB+s2UCYM+XhAAADAAEAAAMAPB4sWlgBAAZo6+PLIsD9+PgAAAAAFGJ0cnQAAAAAAAPqAAAD6gAAAAAYc3R0cwAAAAAAAAABAAAAAgAAAgAAAAAcc3RzYwAAAAAAAAABAAAAAQAAAAIAAAABAAAAHHN0c3oAAAAAAAAAAAAAAAIAAAAGAAAABgAAABRzdGNvAAAAAAAAAAEAAAAwAAAAYnVkdGEAAABabWV0YQAAAAAAAAAhaGRscgAAAAAAAAAAbWRpcmFwcGwAAAAAAAAAAAAAAAAtaWxzdAAAACWpdG9vAAAAHWRhdGEAAAABAAAAAExhdmY1OC40NS4xMDA=';
-
-                    document.body.appendChild(this.noSleepVideo);
-                }
-
-                this.noSleepVideo.loop = true;
-                this.noSleepVideo.play().then(() => {
-                    console.log('Wake Lock activated (video fallback)');
-                }).catch(err => {
-                    console.error('Video fallback error:', err);
-                });
-            }
-
-            releaseWakeLock() {
-                // Release Wake Lock API
-                if (this.wakeLock) {
-                    this.wakeLock.release();
-                    this.wakeLock = null;
-                    console.log('Wake Lock released (API)');
-                }
-
-                // Stop video fallback
-                if (this.noSleepVideo) {
-                    this.noSleepVideo.pause();
-                    this.noSleepVideo.remove();
-                    this.noSleepVideo = null;
-                    console.log('Wake Lock released (video)');
+            async releaseWakeLock() {
+                if (this.wakeLock !== null) {
+                    try {
+                        await this.wakeLock.release();
+                        this.wakeLock = null;
+                        console.log('Wake Lock manually released');
+                    } catch (err) {
+                        console.error('Wake Lock release failed:', err);
+                    }
                 }
             }
 
