@@ -508,11 +508,6 @@
                     // Add note to played list
                     this.addNoteToList(note, true);
 
-                    // Play positive feedback sound
-                    if (this.synth) {
-                        this.synth.triggerAttackRelease(note + '4', '0.2');
-                    }
-
                     // Move to next note
                     this.currentNoteIndex++;
 
