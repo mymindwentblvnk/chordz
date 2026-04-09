@@ -389,6 +389,9 @@
 
             async start() {
                 try {
+                    // Reset UI from previous training
+                    document.getElementById('success-message').style.display = 'none';
+
                     // Reset progress
                     this.currentSequenceIndex = 0;
                     this.currentNoteIndex = 0;
@@ -435,7 +438,6 @@
                     document.getElementById('start-training').style.display = 'none';
                     document.getElementById('stop-training').style.display = 'block';
                     document.getElementById('current-stats').style.display = 'block';
-                    document.getElementById('success-message').style.display = 'none';
                 } catch (error) {
                     alert('Error accessing microphone: ' + error.message);
                 }
@@ -479,13 +481,11 @@
                     this.audioContext = null;
                 }
 
-                // Reset sequence boxes to initial state
-                this.updateSequenceBoxes();
-
+                // Update UI but keep results visible
                 document.getElementById('start-training').style.display = 'block';
                 document.getElementById('stop-training').style.display = 'none';
                 document.getElementById('current-stats').style.display = 'none';
-                document.getElementById('success-message').style.display = 'none';
+                // Don't hide success message - keep it visible
             }
 
             detect() {
@@ -721,8 +721,8 @@
                     setTimeout(() => this.synth.triggerAttackRelease(notes.map(n => n + '5'), '1'), 700);
                 }
 
-                // Auto-stop after delay
-                setTimeout(() => this.stop(), 8000);
+                // Disconnect audio resources and stop detection
+                this.stop();
             }
         }
 
@@ -803,6 +803,9 @@
 
             async start() {
                 try {
+                    // Reset UI from previous training
+                    document.getElementById('speed-success').style.display = 'none';
+
                     // Start Tone.js context
                     if (this.synth) {
                         await Tone.start();
@@ -1006,17 +1009,31 @@
                     this.timerInterval = null;
                 }
 
-                this.cleanup();
+                // Disconnect audio resources but keep UI visible
+                this.releaseWakeLock();
+
+                if (this.microphone) {
+                    this.microphone.disconnect();
+                    this.microphone = null;
+                }
+
+                if (this.mediaStream) {
+                    this.mediaStream.getTracks().forEach(track => track.stop());
+                    this.mediaStream = null;
+                }
+
+                if (this.audioContext) {
+                    this.audioContext.close();
+                    this.audioContext = null;
+                }
+
+                // Update UI but keep results visible
+                document.getElementById('speed-stop-btn').style.display = 'none';
+                document.getElementById('speed-start-btn').style.display = 'block';
+                // Don't hide success message or stats - keep them visible
             }
 
             endTraining() {
-                this.isRunning = false;
-
-                if (this.timerInterval) {
-                    clearInterval(this.timerInterval);
-                    this.timerInterval = null;
-                }
-
                 // Save record
                 this.saveRecord(this.score, this.mistakes);
 
@@ -1041,8 +1058,8 @@
                 `;
                 successEl.style.display = 'block';
 
-                // Auto cleanup after delay
-                setTimeout(() => this.cleanup(), 8000);
+                // Disconnect audio resources and stop detection
+                this.stop();
             }
 
             cleanup() {
