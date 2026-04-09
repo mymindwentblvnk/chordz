@@ -566,16 +566,16 @@
             }
 
             handleDetectedNote(note) {
-                // Cooldown to prevent multiple detections of same note
-                if (this.detectionCooldown || note === this.lastDetectedNote) {
-                    return;
-                }
-
                 const currentSequence = this.sequences[this.currentSequenceIndex];
                 const expectedNote = currentSequence[this.currentNoteIndex];
 
                 // Check if it's the correct note
                 if (note === expectedNote) {
+                    // Cooldown to prevent multiple detections of same correct note
+                    if (this.detectionCooldown || note === this.lastDetectedNote) {
+                        return;
+                    }
+
                     this.lastDetectedNote = note;
                     this.detectionCooldown = true;
 
@@ -610,18 +610,8 @@
                         this.lastDetectedNote = null;
                     }, 500);
                 } else {
-                    // Wrong note - set cooldown to prevent counting same wrong note multiple times
-                    this.lastDetectedNote = note;
-                    this.detectionCooldown = true;
-
-                    // Show wrong note
+                    // Wrong note - just show it (no cooldown)
                     this.showWrongNote(note);
-
-                    // Reset cooldown after delay
-                    setTimeout(() => {
-                        this.detectionCooldown = false;
-                        this.lastDetectedNote = null;
-                    }, 300);
                 }
             }
 
