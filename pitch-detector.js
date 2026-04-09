@@ -252,13 +252,7 @@ class PitchDetector {
         const roundedSemitones = Math.round(semitones);
         const noteIndex = (A4_INDEX + roundedSemitones) % 12;
         const positiveIndex = noteIndex < 0 ? noteIndex + 12 : noteIndex;
-        const note = noteNames[positiveIndex];
-
-        // Apply notation preference if settings exist
-        if (typeof settings !== 'undefined') {
-            return settings.formatNote(note);
-        }
-        return note;
+        return noteNames[positiveIndex];
     }
 
     getOctave(frequency) {
@@ -360,12 +354,6 @@ class PitchDetector {
         const roundedSemitones = Math.round(semitones);
         const noteIndex = (A4_INDEX + roundedSemitones) % 12;
         const positiveIndex = noteIndex < 0 ? noteIndex + 12 : noteIndex;
-        const note = noteNames[positiveIndex];
-
-        // Apply notation preference if settings exist
-        if (typeof settings !== 'undefined') {
-            return settings.formatNote(note);
-        }
-        return note;
+        return noteNames[positiveIndex];
     }
 }

@@ -203,7 +203,15 @@
                     <strong>📖 How it works:</strong><br>
                     1. Select a chord to practice<br>
                     2. Click "Start Training" and allow microphone access<br>
-                    3. Play the inversions in order: CEG → EGC → GCE → ECG → CGE → GEC<br>
+                    3. Play the inversions in order:<br>
+                    <div id="inversion-example" style="font-family: 'Courier New', monospace; font-weight: bold; margin: 10px 0 10px 20px; line-height: 1.6;">
+                        CEG<br>
+                        EGC<br>
+                        GCE<br>
+                        ECG<br>
+                        CGE<br>
+                        GEC
+                    </div>
                     4. The app will detect each note and track your progress<br>
                     5. Complete all 6 sequences to win! 🏆
                 </div>
@@ -227,7 +235,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js"></script>
-    <script src="settings.js"></script>
     <script src="pitch-detector.js"></script>
     <script>
         // Tab switching
@@ -247,7 +254,8 @@
         });
 
         // Chord definitions (root, third, fifth)
-        const CHORDS_BASE = {
+        // Using sharp notation to match pitch detector output
+        const CHORDS = {
             'C': ['C', 'E', 'G'],
             'D': ['D', 'F#', 'A'],
             'E': ['E', 'G#', 'B'],
@@ -257,19 +265,12 @@
             'B': ['B', 'D#', 'F#'],
             'Am': ['A', 'C', 'E'],
             'Bm': ['B', 'D', 'F#'],
-            'Cm': ['C', 'Eb', 'G'],
+            'Cm': ['C', 'D#', 'G'],
             'Dm': ['D', 'F', 'A'],
             'Em': ['E', 'G', 'B'],
-            'Fm': ['F', 'Ab', 'C'],
-            'Gm': ['G', 'Bb', 'D']
+            'Fm': ['F', 'G#', 'C'],
+            'Gm': ['G', 'A#', 'D']
         };
-
-        // Get chord notes with current notation applied
-        function getChordNotes(chordName) {
-            const notes = CHORDS_BASE[chordName];
-            if (!notes) return null;
-            return notes.map(note => settings.formatNote(note));
-        }
 
         class InversionTrainer {
             constructor() {
@@ -302,16 +303,36 @@
                 stopBtn.addEventListener('click', () => this.stop());
                 chordSelect.addEventListener('change', (e) => {
                     this.currentChord = e.target.value;
+                    this.updateExample();
                 });
 
                 // Initialize Tone.js synth for success sound
                 if (typeof Tone !== 'undefined') {
                     this.synth = new Tone.PolySynth(Tone.Synth).toDestination();
                 }
+
+                // Update example on page load
+                this.updateExample();
+            }
+
+            updateExample() {
+                const notes = CHORDS[this.currentChord];
+                if (!notes) return;
+
+                const [root, third, fifth] = notes;
+                const sequences = [
+                    `${root}${third}${fifth}`,
+                    `${third}${fifth}${root}`,
+                    `${fifth}${root}${third}`,
+                    `${third}${root}${fifth}`,
+                    `${root}${fifth}${third}`,
+                    `${fifth}${third}${root}`
+                ];
+                document.getElementById('inversion-example').innerHTML = sequences.join('<br>');
             }
 
             generateSequences() {
-                const notes = getChordNotes(this.currentChord);
+                const notes = CHORDS[this.currentChord];
                 if (!notes) return [];
 
                 const [root, third, fifth] = notes;
@@ -594,7 +615,7 @@
 
                 // Play success chord
                 if (this.synth) {
-                    const notes = getChordNotes(this.currentChord);
+                    const notes = CHORDS[this.currentChord];
                     await this.synth.triggerAttackRelease(notes.map(n => n + '4'), '1.5');
 
                     // Play ascending arpeggio

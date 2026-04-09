@@ -24,37 +24,7 @@
             <div class="header-icon">🎤</div>
             <h1>Find Note</h1>
             <p class="subtitle">Find your root note, then explore chord progressions</p>
-            <button id="settings-button" style="position: absolute; top: 20px; right: 20px; background: var(--surface); border: 2px solid var(--primary-color); color: var(--text-primary); padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 1rem; transition: all 0.3s ease;">
-                ⚙️ Settings
-            </button>
         </header>
-
-        <!-- Settings Modal -->
-        <div id="settings-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center;">
-            <div style="background: var(--surface); padding: 30px; border-radius: 12px; max-width: 400px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
-                <h2 style="margin-top: 0; color: var(--primary-color);">⚙️ Settings</h2>
-
-                <div style="margin: 20px 0;">
-                    <label style="display: block; margin-bottom: 10px; font-weight: 600; color: var(--text-primary);">
-                        Note Notation:
-                    </label>
-                    <select id="notation-select" style="width: 100%; padding: 12px; font-size: 1rem; background: var(--background); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 8px; cursor: pointer;">
-                        <option value="english">English (B)</option>
-                        <option value="german">German (H)</option>
-                    </select>
-                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 8px;">
-                        English: A, A#, B, C<br>
-                        German: A, B, H, C
-                    </p>
-                </div>
-
-                <div style="text-align: right; margin-top: 30px;">
-                    <button id="close-settings" style="padding: 12px 24px; background: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600;">
-                        Close
-                    </button>
-                </div>
-            </div>
-        </div>
 
         <div style="text-align: center; margin-bottom: 40px;">
             <button id="pitch-button" class="pitch-button">
@@ -104,7 +74,6 @@
     </div>
 
     <script src="music-theory.js"></script>
-    <script src="settings.js"></script>
     <script src="pitch-detector.js"></script>
     <script>
         // Find Note UI Implementation
@@ -152,36 +121,6 @@
                     sortMode = e.target.value;
                     updateNoteHistory();
                 });
-            });
-
-            // Settings button handlers
-            const settingsButton = document.getElementById('settings-button');
-            const settingsModal = document.getElementById('settings-modal');
-            const closeSettings = document.getElementById('close-settings');
-            const notationSelect = document.getElementById('notation-select');
-
-            // Load current notation setting
-            notationSelect.value = settings.getNotation();
-
-            settingsButton.addEventListener('click', () => {
-                settingsModal.style.display = 'flex';
-            });
-
-            closeSettings.addEventListener('click', () => {
-                settingsModal.style.display = 'none';
-            });
-
-            // Close modal on background click
-            settingsModal.addEventListener('click', (e) => {
-                if (e.target === settingsModal) {
-                    settingsModal.style.display = 'none';
-                }
-            });
-
-            // Save notation preference
-            notationSelect.addEventListener('change', (e) => {
-                settings.setNotation(e.target.value);
-                console.log('Notation changed to:', e.target.value);
             });
 
             // Check browser support
