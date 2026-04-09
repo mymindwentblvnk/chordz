@@ -946,11 +946,12 @@
             handleDetectedNote(note) {
                 if (this.detectionCooldown || note === this.lastDetectedNote) return;
 
+                this.lastDetectedNote = note;
+                this.detectionCooldown = true;
+
                 if (note === this.targetNote) {
                     // Correct note!
                     this.score++;
-                    this.lastDetectedNote = note;
-                    this.detectionCooldown = true;
 
                     // Play success sound
                     if (this.synth) {
@@ -968,6 +969,12 @@
                     // Wrong note
                     this.mistakes++;
                     this.updateStats();
+
+                    // Reset cooldown after delay
+                    setTimeout(() => {
+                        this.detectionCooldown = false;
+                        this.lastDetectedNote = null;
+                    }, 300);
                 }
             }
 
