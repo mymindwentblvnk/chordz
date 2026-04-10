@@ -598,10 +598,16 @@
             }
 
             showWrongNote(note) {
-                // Highlight expected note with red border
+                // Briefly flash expected note with red border
                 const expectedNoteBadge = document.getElementById(`note-${this.currentSequenceIndex}-${this.currentNoteIndex}`);
                 if (expectedNoteBadge) {
+                    // Show red border
                     expectedNoteBadge.style.border = '3px solid #ef4444';
+
+                    // Fade out after brief delay
+                    setTimeout(() => {
+                        expectedNoteBadge.style.border = '3px solid transparent';
+                    }, 300);
                 }
             }
 
