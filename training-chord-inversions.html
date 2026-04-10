@@ -32,11 +32,19 @@
                 <p class="subtitle" style="font-size: 0.85rem; margin: 0;">Master all inversions by playing sequences as fast as you can</p>
             </header>
 
-            <!-- Best Time Display -->
-            <div id="best-time-display" style="padding: 8px 12px; background: rgba(99, 102, 241, 0.1); border-left: 4px solid var(--primary-color); border-radius: 6px; margin-bottom: 12px; font-size: 0.85rem;">
-                <span style="color: var(--text-secondary);">🏆 Best:</span>
-                <strong id="best-time-value" style="color: var(--primary-color); margin-left: 8px;">-</strong>
-                <span style="color: var(--text-secondary); margin-left: 8px; font-size: 0.8rem;" id="best-time-date">No records yet</span>
+            <!-- Best Time Display & Notation Toggle -->
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: rgba(99, 102, 241, 0.1); border-left: 4px solid var(--primary-color); border-radius: 6px; margin-bottom: 12px; font-size: 0.85rem; gap: 15px;">
+                <div>
+                    <span style="color: var(--text-secondary);">🏆 Best:</span>
+                    <strong id="best-time-value" style="color: var(--primary-color); margin-left: 8px;">-</strong>
+                    <span style="color: var(--text-secondary); margin-left: 8px; font-size: 0.8rem;" id="best-time-date">No records yet</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; white-space: nowrap;">
+                    <span style="color: var(--text-secondary);">Notation:</span>
+                    <button id="notation-toggle" style="padding: 5px 10px; font-size: 0.8rem; font-weight: 600; background: var(--primary-color); color: white; border: none; border-radius: 5px; cursor: pointer; min-width: 70px;">
+                        English
+                    </button>
+                </div>
             </div>
 
             <select id="training-chord" style="width: 100%; padding: 12px; font-size: 1rem; background: var(--background); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 10px; cursor: pointer; margin-bottom: 12px;">
@@ -95,6 +103,60 @@
     <script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js"></script>
     <script src="pitch-detector.js"></script>
     <script>
+        // Notation conversion
+        const NOTATION_STORAGE_KEY = 'chordz-notation-preference';
+
+        const NOTATION_MAP = {
+            'english': {
+                'C': 'C',
+                'C#': 'C#',
+                'D': 'D',
+                'D#': 'D#',
+                'E': 'E',
+                'F': 'F',
+                'F#': 'F#',
+                'G': 'G',
+                'G#': 'G#',
+                'A': 'A',
+                'A#': 'A#',
+                'B': 'B'
+            },
+            'german': {
+                'C': 'C',
+                'C#': 'Cis',
+                'D': 'D',
+                'D#': 'Dis',
+                'E': 'E',
+                'F': 'F',
+                'F#': 'Fis',
+                'G': 'G',
+                'G#': 'Gis',
+                'A': 'A',
+                'A#': 'Ais',
+                'B': 'H'
+            }
+        };
+
+        function loadNotationPreference() {
+            try {
+                return localStorage.getItem(NOTATION_STORAGE_KEY) || 'english';
+            } catch (e) {
+                return 'english';
+            }
+        }
+
+        function saveNotationPreference(notation) {
+            try {
+                localStorage.setItem(NOTATION_STORAGE_KEY, notation);
+            } catch (e) {
+                console.error('Failed to save notation preference:', e);
+            }
+        }
+
+        function convertNote(note, notation) {
+            return NOTATION_MAP[notation][note] || note;
+        }
+
         // Chord definitions (root, third, fifth)
         // Using sharp notation to match pitch detector output
         const CHORDS = {
@@ -230,6 +292,7 @@
                 this.synth = null;
                 this.startTime = null;
                 this.timerInterval = null;
+                this.notation = loadNotationPreference();
 
                 this.init();
             }
@@ -238,6 +301,7 @@
                 const startBtn = document.getElementById('start-training');
                 const stopBtn = document.getElementById('stop-training');
                 const chordSelect = document.getElementById('training-chord');
+                const notationToggle = document.getElementById('notation-toggle');
 
                 startBtn.addEventListener('click', () => this.start());
                 stopBtn.addEventListener('click', () => this.stop());
@@ -246,17 +310,34 @@
                     this.updateSequenceBoxes();
                     this.displayBestTime();
                 });
+                notationToggle.addEventListener('click', () => this.toggleNotation());
 
                 // Initialize Tone.js synth for success sound
                 if (typeof Tone !== 'undefined') {
                     this.synth = new Tone.PolySynth(Tone.Synth).toDestination();
                 }
 
+                // Update notation toggle display
+                this.updateNotationToggle();
+
                 // Show sequence boxes on page load
                 this.updateSequenceBoxes();
 
                 // Display best time
                 this.displayBestTime();
+            }
+
+            toggleNotation() {
+                this.notation = this.notation === 'english' ? 'german' : 'english';
+                saveNotationPreference(this.notation);
+                this.updateNotationToggle();
+                // Refresh sequence boxes with new notation
+                this.createSequenceBoxes();
+            }
+
+            updateNotationToggle() {
+                const toggleBtn = document.getElementById('notation-toggle');
+                toggleBtn.textContent = this.notation === 'english' ? 'English' : 'German';
             }
 
             displayBestTime() {
@@ -353,7 +434,7 @@
                     sequence.forEach((note, noteIndex) => {
                         const noteBadge = document.createElement('div');
                         noteBadge.id = `note-${index}-${noteIndex}`;
-                        noteBadge.textContent = note;
+                        noteBadge.textContent = convertNote(note, this.notation);
                         noteBadge.style.cssText = `
                             padding: 10px 18px;
                             background: var(--background);

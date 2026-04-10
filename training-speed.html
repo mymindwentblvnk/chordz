@@ -32,11 +32,19 @@
                 <p class="subtitle" style="font-size: 0.85rem; margin: 0;">Find and play keys as fast as possible in 60 seconds</p>
             </header>
 
-            <!-- Best Score Display -->
-            <div id="best-score-display" style="padding: 8px 12px; background: rgba(99, 102, 241, 0.1); border-left: 4px solid var(--primary-color); border-radius: 6px; margin-bottom: 12px; font-size: 0.85rem;">
-                <span style="color: var(--text-secondary);">🏆 Best:</span>
-                <strong id="best-score-value" style="color: var(--primary-color); margin-left: 8px;">-</strong>
-                <span style="color: var(--text-secondary); margin-left: 8px; font-size: 0.8rem;" id="best-score-date">No records yet</span>
+            <!-- Best Score Display & Notation Toggle -->
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: rgba(99, 102, 241, 0.1); border-left: 4px solid var(--primary-color); border-radius: 6px; margin-bottom: 12px; font-size: 0.85rem; gap: 15px;">
+                <div>
+                    <span style="color: var(--text-secondary);">🏆 Best:</span>
+                    <strong id="best-score-value" style="color: var(--primary-color); margin-left: 8px;">-</strong>
+                    <span style="color: var(--text-secondary); margin-left: 8px; font-size: 0.8rem;" id="best-score-date">No records yet</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; white-space: nowrap;">
+                    <span style="color: var(--text-secondary);">Notation:</span>
+                    <button id="notation-toggle" style="padding: 5px 10px; font-size: 0.8rem; font-weight: 600; background: var(--primary-color); color: white; border: none; border-radius: 5px; cursor: pointer; min-width: 70px;">
+                        English
+                    </button>
+                </div>
             </div>
 
             <button id="speed-start-btn" style="width: 100%; padding: 15px; font-size: 1.1rem; font-weight: 600; background: var(--primary-color); color: white; border: none; border-radius: 10px; cursor: pointer; margin-bottom: 15px;">
@@ -86,6 +94,60 @@
     <script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js"></script>
     <script src="pitch-detector.js"></script>
     <script>
+        // Notation conversion
+        const NOTATION_STORAGE_KEY = 'chordz-notation-preference';
+
+        const NOTATION_MAP = {
+            'english': {
+                'C': 'C',
+                'C#': 'C#',
+                'D': 'D',
+                'D#': 'D#',
+                'E': 'E',
+                'F': 'F',
+                'F#': 'F#',
+                'G': 'G',
+                'G#': 'G#',
+                'A': 'A',
+                'A#': 'A#',
+                'B': 'B'
+            },
+            'german': {
+                'C': 'C',
+                'C#': 'Cis',
+                'D': 'D',
+                'D#': 'Dis',
+                'E': 'E',
+                'F': 'F',
+                'F#': 'Fis',
+                'G': 'G',
+                'G#': 'Gis',
+                'A': 'A',
+                'A#': 'Ais',
+                'B': 'H'
+            }
+        };
+
+        function loadNotationPreference() {
+            try {
+                return localStorage.getItem(NOTATION_STORAGE_KEY) || 'english';
+            } catch (e) {
+                return 'english';
+            }
+        }
+
+        function saveNotationPreference(notation) {
+            try {
+                localStorage.setItem(NOTATION_STORAGE_KEY, notation);
+            } catch (e) {
+                console.error('Failed to save notation preference:', e);
+            }
+        }
+
+        function convertNote(note, notation) {
+            return NOTATION_MAP[notation][note] || note;
+        }
+
         // Base class for shared pitch detection logic
         class BaseTrainer {
             constructor() {
@@ -202,6 +264,7 @@
                 this.timeLeft = 60;
                 this.timerInterval = null;
                 this.allNotes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+                this.notation = loadNotationPreference();
 
                 this.init();
             }
@@ -209,17 +272,40 @@
             init() {
                 const startBtn = document.getElementById('speed-start-btn');
                 const stopBtn = document.getElementById('speed-stop-btn');
+                const notationToggle = document.getElementById('notation-toggle');
 
                 startBtn.addEventListener('click', () => this.start());
                 stopBtn.addEventListener('click', () => this.stop());
+                notationToggle.addEventListener('click', () => this.toggleNotation());
 
                 // Initialize Tone.js synth
                 if (typeof Tone !== 'undefined') {
                     this.synth = new Tone.Synth().toDestination();
                 }
 
-                // Display best score
+                // Display best score and notation
+                this.updateNotationToggle();
                 this.displayBestScore();
+            }
+
+            toggleNotation() {
+                this.notation = this.notation === 'english' ? 'german' : 'english';
+                saveNotationPreference(this.notation);
+                this.updateNotationToggle();
+                // Update displayed note if training is active
+                if (this.targetNote) {
+                    this.updateTargetNoteDisplay();
+                }
+            }
+
+            updateNotationToggle() {
+                const toggleBtn = document.getElementById('notation-toggle');
+                toggleBtn.textContent = this.notation === 'english' ? 'English' : 'German';
+            }
+
+            updateTargetNoteDisplay() {
+                const displayNote = convertNote(this.targetNote, this.notation);
+                document.getElementById('target-note').textContent = displayNote;
             }
 
             displayBestScore() {
@@ -348,7 +434,7 @@
             nextNote() {
                 const randomIndex = Math.floor(Math.random() * this.allNotes.length);
                 this.targetNote = this.allNotes[randomIndex];
-                document.getElementById('target-note').textContent = this.targetNote;
+                this.updateTargetNoteDisplay();
             }
 
             startTimer() {
@@ -369,6 +455,8 @@
             }
 
             handleDetectedNote(note) {
+                console.log('Detected:', note, 'Target:', this.targetNote, 'Match:', note === this.targetNote);
+
                 if (note === this.targetNote) {
                     // Cooldown to prevent multiple detections of same correct note
                     if (this.detectionCooldown || note === this.lastDetectedNote) {
