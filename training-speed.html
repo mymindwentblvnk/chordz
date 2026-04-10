@@ -291,8 +291,8 @@
                 this.score = 0;
                 this.timeLeft = 60;
                 this.timerInterval = null;
-                // Include all 12 chromatic notes (using both sharps and flats for variety)
-                this.allNotes = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+                // All 12 chromatic notes using sharp notation (matches pitch detector output)
+                this.allNotes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
                 this.notation = loadNotationPreference();
 
                 this.init();
