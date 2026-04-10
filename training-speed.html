@@ -487,9 +487,14 @@
                 const isMatch = areEnharmonic(note, this.targetNote);
                 console.log('Detected:', note, 'Target:', this.targetNote, 'Match:', isMatch);
 
+                // Ignore all notes during cooldown
+                if (this.detectionCooldown) {
+                    return;
+                }
+
                 if (isMatch) {
                     // Cooldown to prevent multiple detections of same correct note
-                    if (this.detectionCooldown || note === this.lastDetectedNote) {
+                    if (note === this.lastDetectedNote) {
                         return;
                     }
 
@@ -509,7 +514,7 @@
                         this.lastDetectedNote = null;
                     }, 300);
                 } else {
-                    // Wrong note - flash red
+                    // Wrong note - flash red (but not during cooldown)
                     this.flashWrong();
                 }
             }
