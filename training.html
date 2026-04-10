@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Chordz">
-    <title>Training Mode - Chordz</title>
+    <title>Training - Chordz</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="guide-styles.css">
@@ -20,1111 +20,133 @@
         <a href="wiki.html" class="nav-link">📚 Wiki</a>
     </nav>
 
-    <div class="guide-container">
-        <div class="guide-section" style="max-width: 600px; margin: 0 auto; padding: 20px;">
-            <!-- Training Mode Selector -->
-            <div style="display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap;">
-                <button id="mode-inversions" class="training-mode-btn" style="flex: 1; min-width: 150px; padding: 15px; font-size: 1rem; font-weight: 600; background: var(--primary-color); color: white; border: none; border-radius: 10px; cursor: pointer;">
-                    🔄 Chord Inversions
-                </button>
-                <button id="mode-speed" class="training-mode-btn" style="flex: 1; min-width: 150px; padding: 15px; font-size: 1rem; font-weight: 600; background: var(--surface); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 10px; cursor: pointer;">
-                    ⚡ Speed Training
-                </button>
-                <button id="mode-leaderboard" class="training-mode-btn" style="flex: 1; min-width: 150px; padding: 15px; font-size: 1rem; font-weight: 600; background: var(--surface); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 10px; cursor: pointer;">
-                    🏆 Leaderboard
-                </button>
-            </div>
+    <div class="guide-container" style="padding: 20px;">
+        <header style="text-align: center; margin-bottom: 20px;">
+            <div class="header-icon" style="font-size: 2.5rem; margin-bottom: 5px;">🎮</div>
+            <h1 style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin: 0 0 5px 0; font-size: 1.8rem;">Training Mode</h1>
+            <p class="subtitle" style="margin: 0; font-size: 0.95rem;">Practice and improve your musical skills</p>
+        </header>
 
-            <!-- Chord Inversion Training -->
-            <div id="inversions-training" style="display: block;">
+        <div class="guide-section" style="padding: 0 0 20px 0;">
+            <h2 style="text-align: center; color: var(--primary-color); margin-bottom: 15px; font-size: 1.3rem;">Choose Your Training</h2>
 
-                <select id="training-chord" style="width: 100%; padding: 15px; font-size: 1.1rem; background: var(--background); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 10px; cursor: pointer; margin-bottom: 20px;">
-                    <option value="C">C Major</option>
-                    <option value="D">D Major</option>
-                    <option value="E">E Major</option>
-                    <option value="F">F Major</option>
-                    <option value="G">G Major</option>
-                    <option value="A">A Major</option>
-                    <option value="B">B Major</option>
-                    <option value="Am">A Minor</option>
-                    <option value="Bm">B Minor</option>
-                    <option value="Cm">C Minor</option>
-                    <option value="Dm">D Minor</option>
-                    <option value="Em">E Minor</option>
-                    <option value="Fm">F Minor</option>
-                    <option value="Gm">G Minor</option>
-                </select>
-
-                <button id="start-training" style="width: 100%; padding: 18px; font-size: 1.2rem; font-weight: 600; background: var(--primary-color); color: white; border: none; border-radius: 10px; cursor: pointer; margin-bottom: 30px;">
-                    🎤 Start Training
-                </button>
-
-                <button id="stop-training" style="width: 100%; padding: 18px; font-size: 1.2rem; font-weight: 600; background: #ef4444; color: white; border: none; border-radius: 10px; cursor: pointer; margin-bottom: 30px; display: none;">
-                    ⏹ Stop Training
-                </button>
-
-                <!-- Stats Display -->
-                <div id="current-stats" style="display: none; margin-bottom: 20px; padding: 15px; background: var(--surface); border-radius: 10px; text-align: center;">
-                    <div style="display: flex; justify-content: center;">
+            <div class="training-list">
+                <a href="training-speed.html" class="training-card">
+                    <div class="training-number">1</div>
+                    <div class="training-content">
+                        <div class="training-icon">⚡</div>
                         <div>
-                            <div style="font-size: 0.9rem; color: var(--text-secondary);">Time</div>
-                            <div id="timer-display" style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color); font-family: 'Courier New', monospace;">0:00</div>
+                            <h3 class="training-title">Speed Training</h3>
+                            <p class="training-description">Find and play as many keys on your keyboard as fast as possible in 60 seconds!</p>
                         </div>
                     </div>
-                </div>
+                    <div class="training-arrow">→</div>
+                </a>
 
-                <!-- Sequence Boxes -->
-                <div id="sequence-boxes" style="display: flex; flex-direction: column; gap: 15px;">
-                    <!-- Boxes will be generated dynamically -->
-                </div>
-
-                <div id="success-message" style="display: none; text-align: center; padding: 30px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2)); border-radius: 15px; border: 3px solid var(--accent-happy); margin-top: 30px;">
-                    <div style="font-size: 4rem; margin-bottom: 15px;">🎉</div>
-                    <h2 style="color: var(--accent-happy); margin: 0 0 10px 0;">Perfect!</h2>
-                    <p style="font-size: 1.2rem; color: var(--text-primary); margin: 0;">You've mastered all inversions!</p>
-                </div>
-            </div>
-
-            <!-- Speed Training -->
-            <div id="speed-training" style="display: none;">
-                <button id="speed-start-btn" style="width: 100%; padding: 18px; font-size: 1.2rem; font-weight: 600; background: var(--primary-color); color: white; border: none; border-radius: 10px; cursor: pointer; margin-bottom: 30px;">
-                    🎤 Start Speed Training
-                </button>
-
-                <button id="speed-stop-btn" style="width: 100%; padding: 18px; font-size: 1.2rem; font-weight: 600; background: #ef4444; color: white; border: none; border-radius: 10px; cursor: pointer; margin-bottom: 30px; display: none;">
-                    ⏹ Stop Training
-                </button>
-
-                <!-- Countdown Display -->
-                <div id="countdown-display" style="display: none; text-align: center; font-size: 8rem; font-weight: bold; color: var(--primary-color); margin: 50px 0; font-family: 'Courier New', monospace;">
-                    3
-                </div>
-
-                <!-- Speed Training Stats -->
-                <div id="speed-stats" style="display: none; margin-bottom: 20px; padding: 15px; background: var(--surface); border-radius: 10px; text-align: center;">
-                    <div style="display: flex; justify-content: space-around; gap: 20px;">
+                <a href="training-chord-inversions.html" class="training-card">
+                    <div class="training-number">2</div>
+                    <div class="training-content">
+                        <div class="training-icon">🔄</div>
                         <div>
-                            <div style="font-size: 0.9rem; color: var(--text-secondary);">Time Left</div>
-                            <div id="speed-timer" style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color); font-family: 'Courier New', monospace;">60</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 0.9rem; color: var(--text-secondary);">Score</div>
-                            <div id="speed-score" style="font-size: 1.5rem; font-weight: bold; color: var(--accent-happy); font-family: 'Courier New', monospace;">0</div>
+                            <h3 class="training-title">Chord Inversions</h3>
+                            <p class="training-description">Master chord inversions by playing all sequences for any chord as fast as you can!</p>
                         </div>
                     </div>
-                </div>
-
-                <!-- Target Note Display -->
-                <div id="target-note-display" style="display: none; text-align: center; margin: 40px 0;">
-                    <div style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 10px;">Play this note:</div>
-                    <div id="target-note" style="font-size: 6rem; font-weight: bold; color: var(--primary-color); padding: 40px; background: var(--surface); border-radius: 20px; border: 4px solid var(--primary-color); font-family: 'Courier New', monospace;">
-                        C
-                    </div>
-                </div>
-
-                <!-- Speed Success Message -->
-                <div id="speed-success" style="display: none; text-align: center; padding: 30px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2)); border-radius: 15px; border: 3px solid var(--accent-happy); margin-top: 30px;">
-                    <div style="font-size: 4rem; margin-bottom: 15px;">⚡</div>
-                    <h2 style="color: var(--accent-happy); margin: 0 0 10px 0;">Time's Up!</h2>
-                    <div id="speed-final-stats"></div>
-                </div>
-            </div>
-
-            <!-- Leaderboard View -->
-            <div id="leaderboard-view" style="display: none;">
-                <h2 style="text-align: center; color: var(--primary-color); margin-bottom: 30px;">🏆 Leaderboard</h2>
-
-                <!-- Training Type Selector -->
-                <div style="margin-bottom: 30px;">
-                    <label style="display: block; margin-bottom: 10px; font-weight: 600; color: var(--text-primary);">
-                        Select Training:
-                    </label>
-                    <select id="leaderboard-training-selector" style="width: 100%; padding: 15px; font-size: 1.1rem; background: var(--background); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 10px; cursor: pointer;">
-                        <option value="chord-inversions">🔄 Chord Inversions</option>
-                        <option value="speed-training">⚡ Speed Training</option>
-                    </select>
-                </div>
-
-                <!-- Chord Inversions Records -->
-                <div id="lb-chord-inversions" style="display: block;">
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; margin-bottom: 10px; font-weight: 600; color: var(--text-primary);">
-                            Select Chord:
-                        </label>
-                        <select id="lb-chord-selector" style="width: 100%; padding: 15px; font-size: 1.1rem; background: var(--background); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 10px; cursor: pointer;">
-                            <option value="C">C Major</option>
-                            <option value="D">D Major</option>
-                            <option value="E">E Major</option>
-                            <option value="F">F Major</option>
-                            <option value="G">G Major</option>
-                            <option value="A">A Major</option>
-                            <option value="B">B Major</option>
-                            <option value="Am">A Minor</option>
-                            <option value="Bm">B Minor</option>
-                            <option value="Cm">C Minor</option>
-                            <option value="Dm">D Minor</option>
-                            <option value="Em">E Minor</option>
-                            <option value="Fm">F Minor</option>
-                            <option value="Gm">G Minor</option>
-                        </select>
-                    </div>
-
-                    <div id="lb-chord-content" style="padding: 20px; background: var(--surface); border-radius: 10px; border: 2px solid var(--primary-color);">
-                        <p style="text-align: center; color: var(--text-secondary);">No records yet for C Major.</p>
-                    </div>
-                </div>
-
-                <!-- Speed Training Records -->
-                <div id="lb-speed-training" style="display: none;">
-                    <div id="lb-speed-content" style="padding: 20px; background: var(--surface); border-radius: 10px; border: 2px solid var(--primary-color);">
-                        <p style="text-align: center; color: var(--text-secondary);">No records yet.</p>
-                    </div>
-                </div>
+                    <div class="training-arrow">→</div>
+                </a>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js"></script>
-    <script src="pitch-detector.js"></script>
-    <script>
-        // Chord definitions (root, third, fifth)
-        // Using sharp notation to match pitch detector output
-        const CHORDS = {
-            'C': ['C', 'E', 'G'],
-            'D': ['D', 'F#', 'A'],
-            'E': ['E', 'G#', 'B'],
-            'F': ['F', 'A', 'C'],
-            'G': ['G', 'B', 'D'],
-            'A': ['A', 'C#', 'E'],
-            'B': ['B', 'D#', 'F#'],
-            'Am': ['A', 'C', 'E'],
-            'Bm': ['B', 'D', 'F#'],
-            'Cm': ['C', 'D#', 'G'],
-            'Dm': ['D', 'F', 'A'],
-            'Em': ['E', 'G', 'B'],
-            'Fm': ['F', 'G#', 'C'],
-            'Gm': ['G', 'A#', 'D']
-        };
-
-        // Base class for shared pitch detection logic
-        class BaseTrainer {
-            constructor() {
-                this.audioContext = null;
-                this.analyser = null;
-                this.microphone = null;
-                this.mediaStream = null;
-                this.isRunning = false;
-                this.lastDetectedNote = null;
-                this.detectionCooldown = false;
-                this.lastFrequency = null;
-                this.stableCount = 0;
-                this.wakeLock = null;
-            }
-
-            detect() {
-                if (!this.isRunning) return;
-
-                const buffer = new Float32Array(this.analyser.fftSize);
-                this.analyser.getFloatTimeDomainData(buffer);
-
-                const result = this.detectPitch(buffer);
-
-                if (result && result.frequency && result.confidence > 0.9) {
-                    const note = this.frequencyToNote(result.frequency);
-                    if (note) {
-                        this.handleDetectedNote(note);
-                    }
-                }
-
-                requestAnimationFrame(() => this.detect());
-            }
-
-            detectPitch(buffer) {
-                const rms = PitchDetector.calculateRMS(buffer);
-                if (rms < 0.01) return null;
-
-                const autocorrelation = PitchDetector.autoCorrelate(buffer, this.audioContext.sampleRate);
-                if (!autocorrelation) return null;
-
-                let { frequency, confidence } = autocorrelation;
-
-                if (frequency < 80 || frequency > 1200 || confidence < 0.90) return null;
-
-                // Temporal smoothing - only accept stable frequencies
-                if (this.lastFrequency) {
-                    const freqDiff = Math.abs(frequency - this.lastFrequency);
-                    const tolerance = this.lastFrequency * 0.02;
-
-                    if (freqDiff < tolerance) {
-                        this.stableCount++;
-                        frequency = (frequency + this.lastFrequency) / 2;
-                    } else {
-                        this.stableCount = 0;
-                    }
-                }
-
-                this.lastFrequency = frequency;
-
-                if (this.stableCount < 2) return null;
-
-                return { frequency, confidence };
-            }
-
-            frequencyToNote(frequency) {
-                return PitchDetector.frequencyToNote(frequency);
-            }
-
-            async requestWakeLock() {
-                if (!('wakeLock' in navigator)) {
-                    console.warn('Screen Wake Lock API not supported');
-                    return;
-                }
-
-                try {
-                    this.wakeLock = await navigator.wakeLock.request('screen');
-                    console.log('Wake Lock activated');
-
-                    this.wakeLock.addEventListener('release', () => {
-                        console.log('Wake Lock released');
-                    });
-                } catch (err) {
-                    console.error('Wake Lock request failed:', err);
-                }
-            }
-
-            async releaseWakeLock() {
-                if (this.wakeLock !== null) {
-                    try {
-                        await this.wakeLock.release();
-                        this.wakeLock = null;
-                        console.log('Wake Lock manually released');
-                    } catch (err) {
-                        console.error('Wake Lock release failed:', err);
-                    }
-                }
-            }
-
-            // To be implemented by child classes
-            handleDetectedNote(note) {
-                throw new Error('handleDetectedNote must be implemented by child class');
-            }
+    <style>
+        .training-list {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        class InversionTrainer extends BaseTrainer {
-            constructor() {
-                super();
-
-                // InversionTrainer-specific properties
-                this.currentChord = 'C';
-                this.currentSequenceIndex = 0;
-                this.currentNoteIndex = 0;
-                this.sequences = [];
-                this.synth = null;
-                this.startTime = null;
-                this.timerInterval = null;
-
-                this.init();
-            }
-
-            init() {
-                const startBtn = document.getElementById('start-training');
-                const stopBtn = document.getElementById('stop-training');
-                const chordSelect = document.getElementById('training-chord');
-
-                startBtn.addEventListener('click', () => this.start());
-                stopBtn.addEventListener('click', () => this.stop());
-                chordSelect.addEventListener('change', (e) => {
-                    this.currentChord = e.target.value;
-                    this.updateSequenceBoxes();
-                });
-
-                // Initialize Tone.js synth for success sound
-                if (typeof Tone !== 'undefined') {
-                    this.synth = new Tone.PolySynth(Tone.Synth).toDestination();
-                }
-
-                // Show sequence boxes on page load
-                this.updateSequenceBoxes();
-            }
-
-            loadRecords() {
-                try {
-                    const stored = localStorage.getItem('chordz-training-records');
-                    return stored ? JSON.parse(stored) : {};
-                } catch (e) {
-                    console.error('Failed to load records:', e);
-                    return {};
-                }
-            }
-
-            saveRecord(chord, time) {
-                const records = this.loadRecords();
-                if (!records[chord]) {
-                    records[chord] = [];
-                }
-
-                records[chord].push({
-                    time: time,
-                    date: new Date().toISOString()
-                });
-
-                // Keep only the best 10 records per chord (sorted by fastest time)
-                records[chord].sort((a, b) => a.time - b.time);
-                records[chord] = records[chord].slice(0, 10);
-
-                try {
-                    localStorage.setItem('chordz-training-records', JSON.stringify(records));
-                } catch (e) {
-                    console.error('Failed to save records:', e);
-                }
-            }
-
-            updateSequenceBoxes() {
-                this.sequences = this.generateSequences();
-                this.currentSequenceIndex = 0;
-                this.currentNoteIndex = 0;
-                this.createSequenceBoxes();
-            }
-
-            createSequenceBoxes() {
-                const container = document.getElementById('sequence-boxes');
-                container.innerHTML = '';
-
-                this.sequences.forEach((sequence, index) => {
-                    const box = document.createElement('div');
-                    box.id = `sequence-box-${index}`;
-                    box.style.cssText = `
-                        padding: 20px;
-                        background: var(--surface);
-                        border: 3px solid var(--surface-light);
-                        border-radius: 10px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        gap: 15px;
-                        position: relative;
-                        min-height: 80px;
-                        transition: all 0.3s ease;
-                    `;
-
-                    // Create note badges
-                    sequence.forEach((note, noteIndex) => {
-                        const noteBadge = document.createElement('div');
-                        noteBadge.id = `note-${index}-${noteIndex}`;
-                        noteBadge.textContent = note;
-                        noteBadge.style.cssText = `
-                            padding: 12px 20px;
-                            background: var(--background);
-                            color: var(--text-primary);
-                            border-radius: 8px;
-                            font-weight: bold;
-                            font-size: 1.3rem;
-                            font-family: 'Courier New', monospace;
-                            border: 3px solid transparent;
-                            transition: all 0.3s ease;
-                        `;
-                        box.appendChild(noteBadge);
-                    });
-
-                    container.appendChild(box);
-                });
-            }
-
-            generateSequences() {
-                const notes = CHORDS[this.currentChord];
-                if (!notes) return [];
-
-                const [root, third, fifth] = notes;
-
-                // All 6 sequences: up and down for each inversion
-                return [
-                    [root, third, fifth],  // Root position up: CEG
-                    [third, fifth, root],  // 1st inversion up: EGC
-                    [fifth, root, third],  // 2nd inversion up: GCE
-                    [third, root, fifth],  // Root position down: ECG
-                    [root, fifth, third],  // 1st inversion down: CGE
-                    [fifth, third, root]   // 2nd inversion down: GEC
-                ];
-            }
-
-            async start() {
-                try {
-                    // Reset UI from previous training
-                    document.getElementById('success-message').style.display = 'none';
-
-                    // Reset progress
-                    this.currentSequenceIndex = 0;
-                    this.currentNoteIndex = 0;
-                    this.updateSequenceBoxes();
-
-                    // Reset performance tracking
-                    this.startTime = Date.now();
-                    this.updateStatsDisplay();
-
-                    // Start timer
-                    this.timerInterval = setInterval(() => this.updateStatsDisplay(), 100);
-
-                    // Start Tone.js context
-                    if (this.synth) {
-                        await Tone.start();
-                    }
-
-                    // Request microphone access
-                    this.mediaStream = await navigator.mediaDevices.getUserMedia({
-                        audio: {
-                            echoCancellation: false,
-                            autoGainControl: false,
-                            noiseSuppression: false
-                        }
-                    });
-
-                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    this.analyser = this.audioContext.createAnalyser();
-                    this.analyser.fftSize = 8192;
-                    this.analyser.smoothingTimeConstant = 0.3;
-
-                    this.microphone = this.audioContext.createMediaStreamSource(this.mediaStream);
-                    this.microphone.connect(this.analyser);
-
-                    this.isRunning = true;
-                    this.updateUI();
-                    this.detect();
-
-                    // Request wake lock to keep screen awake
-                    await this.requestWakeLock();
-
-                    // Update UI
-                    document.getElementById('start-training').style.display = 'none';
-                    document.getElementById('stop-training').style.display = 'block';
-                    document.getElementById('current-stats').style.display = 'block';
-                } catch (error) {
-                    alert('Error accessing microphone: ' + error.message);
-                }
-            }
-
-            updateStatsDisplay() {
-                if (!this.startTime) return;
-
-                const elapsedSeconds = Math.floor((Date.now() - this.startTime) / 1000);
-                const mins = Math.floor(elapsedSeconds / 60);
-                const secs = elapsedSeconds % 60;
-
-                document.getElementById('timer-display').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
-            }
-
-            stop() {
-                this.isRunning = false;
-
-                // Stop timer
-                if (this.timerInterval) {
-                    clearInterval(this.timerInterval);
-                    this.timerInterval = null;
-                }
-
-                // Release wake lock to allow screen to sleep
-                this.releaseWakeLock();
-
-                if (this.microphone) {
-                    this.microphone.disconnect();
-                    this.microphone = null;
-                }
-
-                if (this.mediaStream) {
-                    this.mediaStream.getTracks().forEach(track => track.stop());
-                    this.mediaStream = null;
-                }
-
-                if (this.audioContext) {
-                    this.audioContext.close();
-                    this.audioContext = null;
-                }
-
-                // Update UI but keep results visible
-                document.getElementById('start-training').style.display = 'block';
-                document.getElementById('stop-training').style.display = 'none';
-                document.getElementById('current-stats').style.display = 'none';
-                // Don't hide success message - keep it visible
-            }
-
-            handleDetectedNote(note) {
-                // Ignore all notes during cooldown period or if it's the same note we just detected
-                if (this.detectionCooldown || note === this.lastDetectedNote) {
-                    return;
-                }
-
-                const currentSequence = this.sequences[this.currentSequenceIndex];
-                const expectedNote = currentSequence[this.currentNoteIndex];
-
-                // Check if it's the correct note
-                if (note === expectedNote) {
-                    this.lastDetectedNote = note;
-                    this.detectionCooldown = true;
-
-                    // Turn note green and remove red border if any
-                    const noteBadge = document.getElementById(`note-${this.currentSequenceIndex}-${this.currentNoteIndex}`);
-                    if (noteBadge) {
-                        noteBadge.style.background = 'var(--accent-happy)';
-                        noteBadge.style.color = 'white';
-                        noteBadge.style.border = '3px solid transparent';
-                    }
-
-                    // Move to next note
-                    this.currentNoteIndex++;
-
-                    // Check if sequence is complete
-                    if (this.currentNoteIndex >= currentSequence.length) {
-                        this.currentSequenceIndex++;
-                        this.currentNoteIndex = 0;
-
-                        // Check if all sequences are complete
-                        if (this.currentSequenceIndex >= this.sequences.length) {
-                            this.showSuccess();
-                        } else {
-                            this.updateUI();
-                        }
-                    } else {
-                        this.updateUI();
-                    }
-
-                    // Reset cooldown after delay
-                    setTimeout(() => {
-                        this.detectionCooldown = false;
-                        this.lastDetectedNote = null;
-                    }, 500);
-                } else {
-                    // Wrong note - show red flash
-                    this.showWrongNote(note);
-                }
-            }
-
-            showWrongNote(note) {
-                // Briefly flash expected note with red border
-                const expectedNoteBadge = document.getElementById(`note-${this.currentSequenceIndex}-${this.currentNoteIndex}`);
-                if (expectedNoteBadge) {
-                    // Show red border
-                    expectedNoteBadge.style.border = '3px solid #ef4444';
-
-                    // Fade out after brief delay
-                    setTimeout(() => {
-                        expectedNoteBadge.style.border = '3px solid transparent';
-                    }, 300);
-                }
-            }
-
-            updateUI() {
-                // Highlight current sequence box
-                this.sequences.forEach((_, index) => {
-                    const box = document.getElementById(`sequence-box-${index}`);
-                    if (box) {
-                        if (index === this.currentSequenceIndex) {
-                            box.style.borderColor = 'var(--primary-color)';
-                            box.style.background = 'rgba(99, 102, 241, 0.1)';
-                        } else if (index < this.currentSequenceIndex) {
-                            box.style.borderColor = 'var(--accent-happy)';
-                            box.style.background = 'rgba(16, 185, 129, 0.1)';
-                        } else {
-                            box.style.borderColor = 'var(--surface-light)';
-                            box.style.background = 'var(--surface)';
-                        }
-                    }
-                });
-            }
-
-            async showSuccess() {
-                this.isRunning = false;
-
-                // Stop timer
-                if (this.timerInterval) {
-                    clearInterval(this.timerInterval);
-                    this.timerInterval = null;
-                }
-
-                // Calculate final time
-                const finalTime = Math.floor((Date.now() - this.startTime) / 1000);
-                const mins = Math.floor(finalTime / 60);
-                const secs = finalTime % 60;
-
-                // Save record
-                this.saveRecord(this.currentChord, finalTime);
-
-                // Update success message
-                const successMsg = document.getElementById('success-message');
-                successMsg.innerHTML = `
-                    <div style="font-size: 4rem; margin-bottom: 15px;">🎉</div>
-                    <h2 style="color: var(--accent-happy); margin: 0 0 10px 0;">Perfect!</h2>
-                    <p style="font-size: 1.2rem; color: var(--text-primary); margin: 0 0 20px 0;">You've mastered all inversions!</p>
-                    <div style="display: flex; justify-content: center; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px;">
-                        <div>
-                            <div style="font-size: 0.9rem; color: var(--text-secondary);">Time</div>
-                            <div style="font-size: 1.8rem; font-weight: bold; font-family: 'Courier New', monospace;">${mins}:${secs.toString().padStart(2, '0')}</div>
-                        </div>
-                    </div>
-                `;
-                successMsg.style.display = 'block';
-
-                // Play success chord
-                if (this.synth) {
-                    const notes = CHORDS[this.currentChord];
-                    await this.synth.triggerAttackRelease(notes.map(n => n + '4'), '1.5');
-
-                    // Play ascending arpeggio
-                    setTimeout(() => this.synth.triggerAttackRelease(notes[0] + '4', '0.2'), 100);
-                    setTimeout(() => this.synth.triggerAttackRelease(notes[1] + '4', '0.2'), 300);
-                    setTimeout(() => this.synth.triggerAttackRelease(notes[2] + '4', '0.2'), 500);
-                    setTimeout(() => this.synth.triggerAttackRelease(notes.map(n => n + '5'), '1'), 700);
-                }
-
-                // Disconnect audio resources and stop detection
-                this.stop();
-            }
+        .training-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 18px;
+            background: var(--surface-light);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            position: relative;
         }
 
-        // Speed Training Class
-        class SpeedTrainer extends BaseTrainer {
-            constructor() {
-                super();
-
-                // SpeedTrainer-specific properties
-                this.synth = null;
-                this.targetNote = null;
-                this.score = 0;
-                this.timeLeft = 60;
-                this.timerInterval = null;
-                this.allNotes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-
-                this.init();
-            }
-
-            init() {
-                const startBtn = document.getElementById('speed-start-btn');
-                const stopBtn = document.getElementById('speed-stop-btn');
-
-                startBtn.addEventListener('click', () => this.start());
-                stopBtn.addEventListener('click', () => this.stop());
-
-                // Initialize Tone.js synth
-                if (typeof Tone !== 'undefined') {
-                    this.synth = new Tone.Synth().toDestination();
-                }
-            }
-
-            loadRecords() {
-                try {
-                    const stored = localStorage.getItem('chordz-speed-records');
-                    return stored ? JSON.parse(stored) : [];
-                } catch (e) {
-                    console.error('Failed to load speed records:', e);
-                    return [];
-                }
-            }
-
-            saveRecord(score) {
-                const records = this.loadRecords();
-                records.push({
-                    score: score,
-                    date: new Date().toISOString()
-                });
-
-                // Sort by highest score first
-                records.sort((a, b) => b.score - a.score);
-
-                // Keep only top 10
-                const topRecords = records.slice(0, 10);
-
-                try {
-                    localStorage.setItem('chordz-speed-records', JSON.stringify(topRecords));
-                } catch (e) {
-                    console.error('Failed to save speed records:', e);
-                }
-            }
-
-            async start() {
-                try {
-                    // Reset UI from previous training
-                    document.getElementById('speed-success').style.display = 'none';
-
-                    // Start Tone.js context
-                    if (this.synth) {
-                        await Tone.start();
-                    }
-
-                    // Request microphone access
-                    this.mediaStream = await navigator.mediaDevices.getUserMedia({
-                        audio: {
-                            echoCancellation: false,
-                            autoGainControl: false,
-                            noiseSuppression: false
-                        }
-                    });
-
-                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    this.analyser = this.audioContext.createAnalyser();
-                    this.analyser.fftSize = 8192;
-                    this.analyser.smoothingTimeConstant = 0.3;
-
-                    this.microphone = this.audioContext.createMediaStreamSource(this.mediaStream);
-                    this.microphone.connect(this.analyser);
-
-                    // Request wake lock
-                    await this.requestWakeLock();
-
-                    // Hide start button, show countdown
-                    document.getElementById('speed-start-btn').style.display = 'none';
-                    document.getElementById('countdown-display').style.display = 'block';
-
-                    // Countdown
-                    await this.countdown();
-
-                    // Start training
-                    this.isRunning = true;
-                    this.score = 0;
-                    this.timeLeft = 60;
-
-                    document.getElementById('countdown-display').style.display = 'none';
-                    document.getElementById('speed-stop-btn').style.display = 'block';
-                    document.getElementById('speed-stats').style.display = 'block';
-                    document.getElementById('target-note-display').style.display = 'block';
-
-                    this.nextNote();
-                    this.startTimer();
-                    this.detect();
-
-                } catch (error) {
-                    alert('Error accessing microphone: ' + error.message);
-                    this.cleanup();
-                }
-            }
-
-            async countdown() {
-                const countdownEl = document.getElementById('countdown-display');
-                for (let i = 3; i > 0; i--) {
-                    countdownEl.textContent = i;
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                }
-                countdownEl.textContent = 'GO!';
-                await new Promise(resolve => setTimeout(resolve, 500));
-            }
-
-            nextNote() {
-                const randomIndex = Math.floor(Math.random() * this.allNotes.length);
-                this.targetNote = this.allNotes[randomIndex];
-                document.getElementById('target-note').textContent = this.targetNote;
-            }
-
-            startTimer() {
-                this.updateStats();
-                this.timerInterval = setInterval(() => {
-                    this.timeLeft--;
-                    this.updateStats();
-
-                    if (this.timeLeft <= 0) {
-                        this.endTraining();
-                    }
-                }, 1000);
-            }
-
-            updateStats() {
-                document.getElementById('speed-timer').textContent = this.timeLeft;
-                document.getElementById('speed-score').textContent = this.score;
-            }
-
-            handleDetectedNote(note) {
-                if (note === this.targetNote) {
-                    // Cooldown to prevent multiple detections of same correct note
-                    if (this.detectionCooldown || note === this.lastDetectedNote) {
-                        return;
-                    }
-
-                    // Correct note!
-                    this.lastDetectedNote = note;
-                    this.detectionCooldown = true;
-                    this.score++;
-
-                    // Play success sound
-                    if (this.synth) {
-                        this.synth.triggerAttackRelease(note + '4', '0.1');
-                    }
-
-                    // Next note
-                    this.nextNote();
-
-                    setTimeout(() => {
-                        this.detectionCooldown = false;
-                        this.lastDetectedNote = null;
-                    }, 300);
-                }
-                // Ignore wrong notes - no penalty
-            }
-
-            stop() {
-                this.isRunning = false;
-
-                if (this.timerInterval) {
-                    clearInterval(this.timerInterval);
-                    this.timerInterval = null;
-                }
-
-                // Disconnect audio resources but keep UI visible
-                this.releaseWakeLock();
-
-                if (this.microphone) {
-                    this.microphone.disconnect();
-                    this.microphone = null;
-                }
-
-                if (this.mediaStream) {
-                    this.mediaStream.getTracks().forEach(track => track.stop());
-                    this.mediaStream = null;
-                }
-
-                if (this.audioContext) {
-                    this.audioContext.close();
-                    this.audioContext = null;
-                }
-
-                // Update UI but keep results visible
-                document.getElementById('speed-stop-btn').style.display = 'none';
-                document.getElementById('speed-start-btn').style.display = 'block';
-                // Don't hide success message or stats - keep them visible
-            }
-
-            endTraining() {
-                // Save record
-                this.saveRecord(this.score);
-
-                // Show results
-                document.getElementById('speed-stats').style.display = 'none';
-                document.getElementById('target-note-display').style.display = 'none';
-
-                const successEl = document.getElementById('speed-success');
-                const finalStats = document.getElementById('speed-final-stats');
-                finalStats.innerHTML = `
-                    <p style="font-size: 1.2rem; color: var(--text-primary); margin: 0 0 20px 0;">Great job!</p>
-                    <div style="display: flex; justify-content: center; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px;">
-                        <div>
-                            <div style="font-size: 0.9rem; color: var(--text-secondary);">Score</div>
-                            <div style="font-size: 1.8rem; font-weight: bold; font-family: 'Courier New', monospace;">${this.score}</div>
-                        </div>
-                    </div>
-                `;
-                successEl.style.display = 'block';
-
-                // Disconnect audio resources and stop detection
-                this.stop();
-            }
-
-            cleanup() {
-                this.isRunning = false;
-
-                if (this.timerInterval) {
-                    clearInterval(this.timerInterval);
-                    this.timerInterval = null;
-                }
-
-                this.releaseWakeLock();
-
-                if (this.microphone) {
-                    this.microphone.disconnect();
-                    this.microphone = null;
-                }
-
-                if (this.mediaStream) {
-                    this.mediaStream.getTracks().forEach(track => track.stop());
-                    this.mediaStream = null;
-                }
-
-                if (this.audioContext) {
-                    this.audioContext.close();
-                    this.audioContext = null;
-                }
-
-                // Reset UI
-                document.getElementById('speed-start-btn').style.display = 'block';
-                document.getElementById('speed-stop-btn').style.display = 'none';
-                document.getElementById('speed-stats').style.display = 'none';
-                document.getElementById('target-note-display').style.display = 'none';
-                document.getElementById('speed-success').style.display = 'none';
-            }
+        .training-card:hover {
+            background: var(--surface);
+            border-color: var(--primary-color);
+            transform: translateX(3px);
         }
 
-        // Initialize trainers
-        const trainer = new InversionTrainer();
-        const speedTrainer = new SpeedTrainer();
-
-        // Leaderboard functions
-        function updateLeaderboardView() {
-            const trainingType = document.getElementById('leaderboard-training-selector').value;
-
-            if (trainingType === 'chord-inversions') {
-                document.getElementById('lb-chord-inversions').style.display = 'block';
-                document.getElementById('lb-speed-training').style.display = 'none';
-                updateChordInversionsLeaderboard();
-            } else {
-                document.getElementById('lb-chord-inversions').style.display = 'none';
-                document.getElementById('lb-speed-training').style.display = 'block';
-                updateSpeedTrainingLeaderboard();
-            }
+        .training-number {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary-color);
+            min-width: 40px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
         }
 
-        function updateChordInversionsLeaderboard() {
-            const chord = document.getElementById('lb-chord-selector').value;
-            const records = trainer.loadRecords();
-            const chordRecords = records[chord] || [];
-            const content = document.getElementById('lb-chord-content');
-
-            if (chordRecords.length === 0) {
-                content.innerHTML = `<p style="text-align: center; color: var(--text-secondary);">No records yet for ${chord}. Complete a training to set your first record!</p>`;
-                return;
-            }
-
-            const formatTime = (seconds) => {
-                const mins = Math.floor(seconds / 60);
-                const secs = seconds % 60;
-                return `${mins}:${secs.toString().padStart(2, '0')}`;
-            };
-
-            let html = '<h3 style="margin-top: 0; color: var(--primary-color); text-align: center;">All Records</h3>';
-
-            chordRecords.forEach((record, index) => {
-                const isTop = index === 0;
-                const bgStyle = isTop ?
-                    'background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2)); border: 2px solid #ffa500;' :
-                    'background: var(--background);';
-
-                html += `
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; ${bgStyle} border-radius: 6px; margin-bottom: 8px;">
-                        <span style="font-weight: ${isTop ? 'bold' : 'normal'}; color: var(--text-primary); min-width: 30px;">${isTop ? '🥇' : '#' + (index + 1)}</span>
-                        <span style="font-family: 'Courier New', monospace; font-weight: ${isTop ? 'bold' : 'normal'};">${formatTime(record.time)}</span>
-                        <span style="font-size: 0.85rem; color: var(--text-secondary);">${new Date(record.date).toLocaleDateString()}</span>
-                    </div>
-                `;
-            });
-
-            content.innerHTML = html;
+        .training-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        function updateSpeedTrainingLeaderboard() {
-            const records = speedTrainer.loadRecords();
-            const content = document.getElementById('lb-speed-content');
+        .training-icon {
+            font-size: 2rem;
+        }
 
-            if (records.length === 0) {
-                content.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">No records yet. Complete a training to set your first record!</p>';
-                return;
+        .training-title {
+            color: var(--text-primary);
+            margin: 0 0 3px 0;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .training-description {
+            color: var(--text-secondary);
+            margin: 0;
+            font-size: 0.85rem;
+            line-height: 1.3;
+        }
+
+        .training-arrow {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            opacity: 0.5;
+            transition: all 0.2s ease;
+        }
+
+        .training-card:hover .training-arrow {
+            opacity: 1;
+            transform: translateX(3px);
+        }
+
+        @media (max-width: 600px) {
+            .training-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
             }
 
-            let html = '<h3 style="margin-top: 0; color: var(--primary-color); text-align: center;">All Records</h3>';
+            .training-number {
+                font-size: 1.5rem;
+            }
 
-            records.forEach((record, index) => {
-                const isTop = index === 0;
-                const bgStyle = isTop ?
-                    'background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2)); border: 2px solid #ffa500;' :
-                    'background: var(--background);';
-
-                html += `
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; ${bgStyle} border-radius: 6px; margin-bottom: 8px;">
-                        <span style="font-weight: ${isTop ? 'bold' : 'normal'}; color: var(--text-primary); min-width: 30px;">${isTop ? '🥇' : '#' + (index + 1)}</span>
-                        <span style="font-family: 'Courier New', monospace; font-weight: ${isTop ? 'bold' : 'normal'};">Score: ${record.score}</span>
-                        <span style="font-size: 0.85rem; color: var(--text-secondary);">${new Date(record.date).toLocaleDateString()}</span>
-                    </div>
-                `;
-            });
-
-            content.innerHTML = html;
-        }
-
-        // Leaderboard event listeners
-        document.getElementById('leaderboard-training-selector').addEventListener('change', updateLeaderboardView);
-        document.getElementById('lb-chord-selector').addEventListener('change', updateChordInversionsLeaderboard);
-
-        // Mode switching functions
-        function setActiveMode(mode) {
-            // Reset all buttons
-            document.getElementById('mode-inversions').style.background = 'var(--surface)';
-            document.getElementById('mode-inversions').style.color = 'var(--text-primary)';
-            document.getElementById('mode-inversions').style.border = '2px solid var(--primary-color)';
-            document.getElementById('mode-speed').style.background = 'var(--surface)';
-            document.getElementById('mode-speed').style.color = 'var(--text-primary)';
-            document.getElementById('mode-speed').style.border = '2px solid var(--primary-color)';
-            document.getElementById('mode-leaderboard').style.background = 'var(--surface)';
-            document.getElementById('mode-leaderboard').style.color = 'var(--text-primary)';
-            document.getElementById('mode-leaderboard').style.border = '2px solid var(--primary-color)';
-
-            // Set active button
-            const activeBtn = document.getElementById('mode-' + mode);
-            if (activeBtn) {
-                activeBtn.style.background = 'var(--primary-color)';
-                activeBtn.style.color = 'white';
-                activeBtn.style.border = 'none';
+            .training-arrow {
+                display: none;
             }
         }
-
-        function showInversionsTraining() {
-            setActiveMode('inversions');
-            document.getElementById('inversions-training').style.display = 'block';
-            document.getElementById('speed-training').style.display = 'none';
-            document.getElementById('leaderboard-view').style.display = 'none';
-            window.location.hash = 'chord-inversions';
-        }
-
-        function showSpeedTraining() {
-            setActiveMode('speed');
-            document.getElementById('inversions-training').style.display = 'none';
-            document.getElementById('speed-training').style.display = 'block';
-            document.getElementById('leaderboard-view').style.display = 'none';
-            window.location.hash = 'speed-training';
-        }
-
-        function showLeaderboard() {
-            setActiveMode('leaderboard');
-            document.getElementById('inversions-training').style.display = 'none';
-            document.getElementById('speed-training').style.display = 'none';
-            document.getElementById('leaderboard-view').style.display = 'block';
-            window.location.hash = 'leaderboard';
-            updateLeaderboardView();
-        }
-
-        // Mode switching event listeners
-        document.getElementById('mode-inversions').addEventListener('click', showInversionsTraining);
-        document.getElementById('mode-speed').addEventListener('click', showSpeedTraining);
-        document.getElementById('mode-leaderboard').addEventListener('click', showLeaderboard);
-
-        // Handle initial load based on URL hash
-        function initializeFromHash() {
-            const hash = window.location.hash.substring(1); // Remove the #
-            if (hash === 'speed-training') {
-                showSpeedTraining();
-            } else if (hash === 'leaderboard') {
-                showLeaderboard();
-            } else {
-                // Default to chord inversions
-                showInversionsTraining();
-            }
-        }
-
-        // Handle hash changes (back/forward browser navigation)
-        window.addEventListener('hashchange', () => {
-            const hash = window.location.hash.substring(1);
-            if (hash === 'speed-training') {
-                showSpeedTraining();
-            } else if (hash === 'leaderboard') {
-                showLeaderboard();
-            } else {
-                showInversionsTraining();
-            }
-        });
-
-        // Initialize on page load
-        initializeFromHash();
-
-        // Add CSS animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes fadeIn {
-                from { opacity: 0; transform: scale(0.8); }
-                to { opacity: 1; transform: scale(1); }
-            }
-        `;
-        document.head.appendChild(style);
-    </script>
+    </style>
 </body>
 </html>

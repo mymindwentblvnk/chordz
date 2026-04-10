@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Chordz">
+    <title>Musical Scales - Chordz Wiki</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="guide-styles.css">
+</head>
+<body>
+    <nav class="main-nav">
+        <a href="index.html" class="nav-link">🎤 Find Note</a>
+        <a href="chord-progressions.html" class="nav-link">🎵 Chord Progressions</a>
+        <a href="training.html" class="nav-link">🎮 Training</a>
+        <a href="wiki.html" class="nav-link active">📚 Wiki</a>
+    </nav>
+
+    <div class="guide-container">
+        <div class="back-nav">
+            <a href="wiki.html" class="back-link">← Back to Wiki</a>
+        </div>
+
+        <header style="text-align: center; margin-bottom: 40px;">
+            <div class="header-icon">🎼</div>
+            <h1 style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Musical Scales</h1>
+            <p class="subtitle">The foundation of melody and harmony</p>
+        </header>
+
+        <!-- Main Content -->
+        <div class="guide-section">
+            <p>A scale is a <strong>collection of notes arranged in ascending or descending order</strong> following a specific pattern of intervals. Scales are the fundamental building blocks of all music - they define which notes sound good together and create the musical "flavor" or mood of a piece.</p>
+
+            <div style="background: var(--background); padding: 25px; border-radius: 12px; margin: 25px 0; border-left: 5px solid var(--accent-happy);">
+                <div style="font-size: 1.3rem; font-weight: 700; color: var(--accent-happy); margin-bottom: 10px;">
+                    💡 The Big Idea
+                </div>
+                <p style="color: var(--text-primary); margin: 0;">Think of a scale as a "palette of colors" for music. Just as a painter chooses colors from their palette, a musician chooses notes from a scale to create melodies and harmonies!</p>
+            </div>
+
+            <h3>What Is a Scale?</h3>
+            <p>A scale is defined by its <strong>interval pattern</strong> - the specific sequence of whole steps (W) and half steps (H) between notes:</p>
+
+            <div class="example-box">
+                <strong>Understanding Intervals:</strong><br><br>
+
+                <strong>Half Step (H):</strong><br>
+                <span style="color: var(--text-secondary);">The smallest distance between two notes. On piano: from one key to the very next key (including black keys). Example: C to C# or E to F</span><br><br>
+
+                <strong>Whole Step (W):</strong><br>
+                <span style="color: var(--text-secondary);">Two half steps combined. Skips one key in between. Example: C to D or F to G</span><br><br>
+
+                <strong>Visual Example on Piano:</strong><br>
+                <span style="font-family: 'Courier New', monospace; font-size: 0.9rem;">
+                C → C# → D → D# → E → F → F# → G<br>
+                └─H─┴─H─┴─H─┴─H─┴─H─┴─H─┴─H─┘<br>
+                └────W────┘   └────W────┘
+                </span>
+            </div>
+
+            <h3>The Major Scale Pattern</h3>
+            <p>The most important scale to learn is the <strong>Major Scale</strong>, which uses this pattern:</p>
+
+            <div style="background: var(--surface-light); padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
+                <strong style="color: var(--primary-color); font-size: 1.3rem;">W - W - H - W - W - W - H</strong><br>
+                <span style="color: var(--text-secondary); font-size: 0.95rem;">This is called "The Master Pattern"</span>
+            </div>
+
+            <div class="example-box">
+                <strong>C Major Scale Example:</strong><br><br>
+
+                Starting from C, apply the pattern:<br><br>
+
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr style="background: var(--surface);">
+                        <td style="padding: 8px; font-weight: bold;">Note</td>
+                        <td>C</td>
+                        <td></td>
+                        <td>D</td>
+                        <td></td>
+                        <td>E</td>
+                        <td>F</td>
+                        <td></td>
+                        <td>G</td>
+                        <td></td>
+                        <td>A</td>
+                        <td></td>
+                        <td>B</td>
+                        <td>C</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; font-weight: bold;">Interval</td>
+                        <td></td>
+                        <td style="color: var(--primary-color);">W</td>
+                        <td></td>
+                        <td style="color: var(--primary-color);">W</td>
+                        <td></td>
+                        <td style="color: var(--accent-sad);">H</td>
+                        <td></td>
+                        <td style="color: var(--primary-color);">W</td>
+                        <td></td>
+                        <td style="color: var(--primary-color);">W</td>
+                        <td></td>
+                        <td style="color: var(--primary-color);">W</td>
+                        <td style="color: var(--accent-sad);">H</td>
+                    </tr>
+                </table>
+                <br>
+                <span style="color: var(--text-secondary);">C Major Scale: C - D - E - F - G - A - B - C</span><br>
+                <span style="color: var(--text-secondary);">No sharps or flats needed!</span>
+            </div>
+
+            <h3>Why Are Scales Important?</h3>
+            <p>Scales serve multiple crucial purposes in music:</p>
+
+            <ol class="step-list">
+                <li><strong>Define the Key:</strong> Tell you which notes belong to a song and which notes will sound "right"</li>
+                <li><strong>Build Chords:</strong> All chords are built by selecting specific notes from a scale</li>
+                <li><strong>Create Melodies:</strong> Melodies are created by choosing notes from a scale in a pleasing order</li>
+                <li><strong>Improvisation:</strong> Knowing the scale lets you improvise solos that fit the music</li>
+                <li><strong>Ear Training:</strong> Help you recognize patterns and intervals by ear</li>
+                <li><strong>Composition:</strong> Provide a framework for writing original music</li>
+            </ol>
+
+            <h3>Common Scale Types</h3>
+            <p>While there are many types of scales, these are the most commonly used:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Scale Type</th>
+                        <th>Pattern</th>
+                        <th>Sound/Mood</th>
+                        <th>Common Genres</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Major</strong></td>
+                        <td>W-W-H-W-W-W-H</td>
+                        <td>Happy, bright, uplifting</td>
+                        <td>Pop, country, classical</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Natural Minor</strong></td>
+                        <td>W-H-W-W-H-W-W</td>
+                        <td>Sad, dark, emotional</td>
+                        <td>Rock, metal, ballads</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Harmonic Minor</strong></td>
+                        <td>W-H-W-W-H-W½-H</td>
+                        <td>Exotic, dramatic, tense</td>
+                        <td>Classical, flamenco, metal</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pentatonic Major</strong></td>
+                        <td>5 notes: 1-2-3-5-6</td>
+                        <td>Simple, folksy, universal</td>
+                        <td>Blues, rock, folk, country</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pentatonic Minor</strong></td>
+                        <td>5 notes: 1-♭3-4-5-♭7</td>
+                        <td>Bluesy, soulful, raw</td>
+                        <td>Blues, rock, jazz</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Blues Scale</strong></td>
+                        <td>Pentatonic minor + ♭5</td>
+                        <td>Gritty, expressive, bluesy</td>
+                        <td>Blues, jazz, rock</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="tip-box">
+                <strong>💡 Beginner Tip:</strong> Start with the Major scale and Minor Pentatonic scale. These two will cover 80% of popular music and are easier to learn than more complex scales!
+            </div>
+
+            <h3>How Scales Build Chords</h3>
+            <p>Chords are created by <strong>stacking notes from a scale in thirds</strong> (every other note):</p>
+
+            <div class="example-box">
+                <strong>Building Chords from C Major Scale:</strong><br><br>
+
+                <strong>Scale notes:</strong> C - D - E - F - G - A - B - C<br>
+                <strong>Numbers:</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1 - 2 - 3 - 4 - 5 - 6 - 7 - 8<br><br>
+
+                <strong>C Major Chord:</strong> Take 1st, 3rd, and 5th notes<br>
+                → C + E + G = C major chord<br><br>
+
+                <strong>D Minor Chord:</strong> Take 2nd, 4th, and 6th notes<br>
+                → D + F + A = D minor chord<br><br>
+
+                <strong>E Minor Chord:</strong> Take 3rd, 5th, and 7th notes<br>
+                → E + G + B = E minor chord<br><br>
+
+                <span style="color: var(--text-secondary);">Every chord in a key comes from its scale!</span>
+            </div>
+
+            <h3>What Scales Are Used For</h3>
+            <p>Let's look at practical applications of scales in real music-making:</p>
+
+            <div style="background: var(--surface-light); padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <strong style="color: var(--text-primary);">1. Writing Melodies</strong><br><br>
+                <span style="color: var(--text-secondary);">
+                When you write a melody, you choose notes from a scale in a rhythmic pattern. The scale ensures all the notes will sound harmonious together.<br><br>
+                <strong>Example:</strong> "Twinkle Twinkle Little Star" uses only notes from the C Major scale: C-C-G-G-A-A-G
+                </span>
+            </div>
+
+            <div style="background: var(--surface-light); padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <strong style="color: var(--text-primary);">2. Soloing & Improvisation</strong><br><br>
+                <span style="color: var(--text-secondary);">
+                Guitar solos, keyboard leads, and jazz improvisation all use scales. The player picks notes from the scale spontaneously to create music on the spot.<br><br>
+                <strong>Example:</strong> Blues guitarists use the Minor Pentatonic scale to improvise solos over a 12-bar blues progression.
+                </span>
+            </div>
+
+            <div style="background: var(--surface-light); padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <strong style="color: var(--text-primary);">3. Understanding Song Structure</strong><br><br>
+                <span style="color: var(--text-secondary);">
+                When you know what scale a song is in, you can predict which chords will appear and which notes will work for harmonies.<br><br>
+                <strong>Example:</strong> If a song is in G Major, you know it will likely use chords G, Am, Bm, C, D, Em, and F#dim.
+                </span>
+            </div>
+
+            <div style="background: var(--surface-light); padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <strong style="color: var(--text-primary);">4. Creating Emotion & Mood</strong><br><br>
+                <span style="color: var(--text-secondary);">
+                Different scales create different emotional qualities. Composers choose scales to match the feeling they want to convey.<br><br>
+                <strong>Example:</strong> A happy birthday song uses Major scale (bright), while a sad ballad might use Natural Minor scale (dark and emotional).
+                </span>
+            </div>
+
+            <div style="background: var(--surface-light); padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <strong style="color: var(--text-primary);">5. Transposing Music</strong><br><br>
+                <span style="color: var(--text-secondary);">
+                Understanding scales lets you move a song to a different key (higher or lower) while keeping the same relationships between notes.<br><br>
+                <strong>Example:</strong> A song in C Major can be transposed to G Major by shifting all notes up by the same interval pattern.
+                </span>
+            </div>
+
+            <h3>Scale Degrees & Their Functions</h3>
+            <p>Each note in a scale has a specific role and "feeling":</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Degree</th>
+                        <th>Name</th>
+                        <th>Function</th>
+                        <th>Feeling</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Tonic</td>
+                        <td>Home base, root note</td>
+                        <td>Stable, resolved, "home"</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Supertonic</td>
+                        <td>Leads toward other notes</td>
+                        <td>Neutral, transitional</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Mediant</td>
+                        <td>Defines major/minor quality</td>
+                        <td>Character-defining</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Subdominant</td>
+                        <td>Moves away from tonic</td>
+                        <td>Tension, movement</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Dominant</td>
+                        <td>Strong pull back to tonic</td>
+                        <td>Tension, expectation</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Submediant</td>
+                        <td>Relative minor connection</td>
+                        <td>Smooth, flowing</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>Leading Tone</td>
+                        <td>Strongly pulls to tonic</td>
+                        <td>Unstable, wants resolution</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="tip-box">
+                <strong>🎵 Music Theory Tip:</strong> The 3rd degree (Mediant) is what makes a scale sound happy (major 3rd) or sad (minor 3rd). That single note changes the entire emotional color of the scale!
+            </div>
+
+            <h3>Practice with Scales</h3>
+            <p>Here's how to effectively practice and use scales:</p>
+
+            <div class="example-box">
+                <strong>Effective Scale Practice Routine:</strong><br><br>
+
+                <strong>1. Learn the Pattern:</strong><br>
+                <span style="color: var(--text-secondary);">Memorize the interval pattern (W-W-H-W-W-W-H for major)</span><br><br>
+
+                <strong>2. Play Ascending & Descending:</strong><br>
+                <span style="color: var(--text-secondary);">Practice going up and down the scale slowly and evenly</span><br><br>
+
+                <strong>3. Practice in Different Keys:</strong><br>
+                <span style="color: var(--text-secondary);">Start from different root notes (C, D, E, F, G, A, B) using the same pattern</span><br><br>
+
+                <strong>4. Use Different Rhythms:</strong><br>
+                <span style="color: var(--text-secondary);">Quarter notes, eighth notes, triplets - vary the rhythm</span><br><br>
+
+                <strong>5. Create Simple Melodies:</strong><br>
+                <span style="color: var(--text-secondary);">Make up short tunes using only notes from the scale</span>
+            </div>
+
+            <div class="tip-box">
+                <strong>⚠️ Common Mistake:</strong> Don't just mindlessly run up and down scales! Focus on hearing the relationship between the notes and how each degree sounds against the root note. Scales are about understanding sound, not just finger patterns!
+            </div>
+
+        </div>
+
+        <!-- Practice Section -->
+        <div class="guide-section" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1)); border: 2px solid var(--primary-color); padding: 30px;">
+            <h3 style="color: var(--primary-color); text-align: center;">Practice Exercise</h3>
+            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 25px;">Try this beginner-friendly scale exercise:</p>
+
+            <div class="example-box">
+                <strong>C Major Scale Practice - Three Steps:</strong><br><br>
+
+                <strong>Step 1 - Learn the Notes:</strong><br>
+                <span style="font-family: 'Courier New', monospace;">C - D - E - F - G - A - B - C</span><br>
+                <span style="color: var(--text-secondary);">Say each note name out loud as you play it</span><br><br>
+
+                <strong>Step 2 - Feel the Pattern:</strong><br>
+                <span style="font-family: 'Courier New', monospace;">C →(W)→ D →(W)→ E →(H)→ F →(W)→ G →(W)→ A →(W)→ B →(H)→ C</span><br>
+                <span style="color: var(--text-secondary);">Notice where the half steps (H) fall: between E-F and B-C</span><br><br>
+
+                <strong>Step 3 - Create a Simple Melody:</strong><br>
+                <span style="font-family: 'Courier New', monospace;">C-D-E-C | E-F-G~ | G-A-G-F-E-C | C-G-C~</span><br>
+                <span style="color: var(--text-secondary);">Use only these 7 notes to make your own tune!</span><br><br>
+
+                <span style="color: var(--text-secondary);">Play with a metronome at 60 BPM to build consistency!</span>
+            </div>
+        </div>
+
+        <!-- Quick Reference -->
+        <div class="guide-section">
+            <h3 style="text-align: center; color: var(--primary-color);">Quick Reference</h3>
+
+            <div class="example-box">
+                <strong>All Major Scales (with sharps):</strong><br><br>
+                <span style="font-family: 'Courier New', monospace; font-size: 0.9rem;">
+                C Major:  C - D - E - F - G - A - B<br>
+                G Major:  G - A - B - C - D - E - F#<br>
+                D Major:  D - E - F# - G - A - B - C#<br>
+                A Major:  A - B - C# - D - E - F# - G#<br>
+                E Major:  E - F# - G# - A - B - C# - D#<br>
+                </span><br>
+                <span style="color: var(--text-secondary);">Notice the pattern: each scale adds one more sharp!</span>
+            </div>
+
+            <div class="example-box">
+                <strong>All Major Scales (with flats):</strong><br><br>
+                <span style="font-family: 'Courier New', monospace; font-size: 0.9rem;">
+                C Major:  C - D - E - F - G - A - B<br>
+                F Major:  F - G - A - Bb - C - D - E<br>
+                Bb Major: Bb - C - D - Eb - F - G - A<br>
+                Eb Major: Eb - F - G - Ab - Bb - C - D<br>
+                Ab Major: Ab - Bb - C - Db - Eb - F - G<br>
+                </span><br>
+                <span style="color: var(--text-secondary);">Each scale adds one more flat!</span>
+            </div>
+        </div>
+
+        <!-- Related Topics -->
+        <div class="guide-section">
+            <h3 style="text-align: center; color: var(--primary-color);">Related Topics</h3>
+            <div class="wiki-nav-links" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                <a href="wiki-master-pattern.html" class="wiki-nav-link">🎹 Master Pattern</a>
+                <a href="wiki-building-scales.html" class="wiki-nav-link">📐 Building Scales</a>
+                <a href="wiki-chromatic-scale.html" class="wiki-nav-link">🎼 Chromatic Scale</a>
+                <a href="wiki-building-chords.html" class="wiki-nav-link">🎵 Building Chords</a>
+                <a href="wiki.html" class="wiki-nav-link">📚 Back to Wiki</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
