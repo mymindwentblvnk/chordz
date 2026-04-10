@@ -320,7 +320,6 @@
                 this.currentNoteIndex = 0;
                 this.sequences = [];
                 this.synth = null;
-                this.wrongNoteTimeout = null;
                 this.startTime = null;
                 this.timerInterval = null;
 
@@ -421,30 +420,11 @@
                             font-weight: bold;
                             font-size: 1.3rem;
                             font-family: 'Courier New', monospace;
+                            border: 3px solid transparent;
                             transition: all 0.3s ease;
                         `;
                         box.appendChild(noteBadge);
                     });
-
-                    // Create wrong note placeholder
-                    const wrongNoteContainer = document.createElement('div');
-                    wrongNoteContainer.id = `wrong-note-${index}`;
-                    wrongNoteContainer.style.cssText = `
-                        position: absolute;
-                        right: 15px;
-                        top: 50%;
-                        transform: translateY(-50%);
-                        padding: 10px 16px;
-                        background: #ef4444;
-                        color: white;
-                        border-radius: 8px;
-                        font-weight: bold;
-                        font-size: 1.1rem;
-                        font-family: 'Courier New', monospace;
-                        opacity: 0;
-                        transition: opacity 0.3s ease;
-                    `;
-                    box.appendChild(wrongNoteContainer);
 
                     container.appendChild(box);
                 });
@@ -580,11 +560,12 @@
                     this.lastDetectedNote = note;
                     this.detectionCooldown = true;
 
-                    // Turn note green
+                    // Turn note green and remove red border if any
                     const noteBadge = document.getElementById(`note-${this.currentSequenceIndex}-${this.currentNoteIndex}`);
                     if (noteBadge) {
                         noteBadge.style.background = 'var(--accent-happy)';
                         noteBadge.style.color = 'white';
+                        noteBadge.style.border = '3px solid transparent';
                     }
 
                     // Move to next note
@@ -617,20 +598,10 @@
             }
 
             showWrongNote(note) {
-                // Clear previous timeout
-                if (this.wrongNoteTimeout) {
-                    clearTimeout(this.wrongNoteTimeout);
-                }
-
-                const wrongNoteEl = document.getElementById(`wrong-note-${this.currentSequenceIndex}`);
-                if (wrongNoteEl) {
-                    wrongNoteEl.textContent = note;
-                    wrongNoteEl.style.opacity = '1';
-
-                    // Fade out after 2 seconds
-                    this.wrongNoteTimeout = setTimeout(() => {
-                        wrongNoteEl.style.opacity = '0';
-                    }, 2000);
+                // Highlight expected note with red border
+                const expectedNoteBadge = document.getElementById(`note-${this.currentSequenceIndex}-${this.currentNoteIndex}`);
+                if (expectedNoteBadge) {
+                    expectedNoteBadge.style.border = '3px solid #ef4444';
                 }
             }
 
