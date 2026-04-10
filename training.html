@@ -913,13 +913,15 @@
             }
 
             handleDetectedNote(note) {
-                if (this.detectionCooldown || note === this.lastDetectedNote) return;
-
-                this.lastDetectedNote = note;
-                this.detectionCooldown = true;
-
                 if (note === this.targetNote) {
+                    // Cooldown to prevent multiple detections of same correct note
+                    if (this.detectionCooldown || note === this.lastDetectedNote) {
+                        return;
+                    }
+
                     // Correct note!
+                    this.lastDetectedNote = note;
+                    this.detectionCooldown = true;
                     this.score++;
 
                     // Play success sound
