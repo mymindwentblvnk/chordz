@@ -2,7 +2,7 @@
   "name": "Chordz - Learn to Play Music",
   "short_name": "Chordz",
   "description": "Find your root note, search for chord progressions, and learn exactly which keys to play",
-  "start_url": "/chordz/",
+  "start_url": "/chordz/index.html",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
