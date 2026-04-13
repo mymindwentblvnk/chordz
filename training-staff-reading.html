@@ -42,6 +42,16 @@
                 </div>
             </div>
 
+            <!-- Difficulty Selector -->
+            <div style="margin-bottom: 12px;">
+                <label for="difficulty-selector" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary); font-size: 0.9rem;">Difficulty:</label>
+                <select id="difficulty-selector" style="width: 100%; padding: 12px; font-size: 1rem; background: var(--background); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 8px; cursor: pointer;">
+                    <option value="easy">🟢 Easy (E4-F5, staff only)</option>
+                    <option value="medium" selected>🟡 Medium (C4-G5, 1 ledger line)</option>
+                    <option value="hard">🔴 Hard (C4-C6, full range)</option>
+                </select>
+            </div>
+
             <button id="start-btn" style="width: 100%; padding: 15px; font-size: 1.1rem; font-weight: 600; background: var(--primary-color); color: white; border: none; border-radius: 10px; cursor: pointer; margin-bottom: 15px;">
                 🎤 Start Training
             </button>
@@ -135,8 +145,24 @@
             return name1 === name2 || ENHARMONIC_MAP[name1] === name2;
         }
 
-        const TRAINING_NOTES = Object.keys(STAFF_NOTES);
+        // Difficulty ranges
+        const DIFFICULTY_RANGES = {
+            'easy': ['E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5'], // Staff only, no ledger lines
+            'medium': ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5'], // 1 ledger below, 1 space above
+            'hard': Object.keys(STAFF_NOTES) // All notes C4-C6
+        };
+
         const TRAINING_DURATION = 60; // seconds
+        const DIFFICULTY_STORAGE_KEY = 'chordz-staff-reading-difficulty';
+
+        function getDifficultyNotes(difficulty) {
+            const range = DIFFICULTY_RANGES[difficulty] || DIFFICULTY_RANGES['medium'];
+            // Include all accidentals for notes in the range
+            return Object.keys(STAFF_NOTES).filter(note => {
+                const noteName = note.replace(/[#b]/g, ''); // Remove accidentals
+                return range.includes(noteName);
+            });
+        }
 
         // Base class for shared pitch detection logic
         class BaseTrainer {
@@ -243,6 +269,8 @@
                 this.timerInterval = null;
                 this.targetNote = null;
                 this.svg = null;
+                this.difficulty = 'medium';
+                this.availableNotes = [];
 
                 this.init();
             }
@@ -250,12 +278,40 @@
             init() {
                 const startBtn = document.getElementById('start-btn');
                 const stopBtn = document.getElementById('stop-btn');
+                const difficultySelector = document.getElementById('difficulty-selector');
 
                 startBtn.addEventListener('click', () => this.start());
                 stopBtn.addEventListener('click', () => this.stop());
 
+                // Load difficulty preference
+                try {
+                    const savedDifficulty = localStorage.getItem(DIFFICULTY_STORAGE_KEY);
+                    if (savedDifficulty && DIFFICULTY_RANGES[savedDifficulty]) {
+                        this.difficulty = savedDifficulty;
+                        difficultySelector.value = savedDifficulty;
+                    }
+                } catch (e) {
+                    console.error('Failed to load difficulty preference:', e);
+                }
+
+                // Difficulty change handler
+                difficultySelector.addEventListener('change', (e) => {
+                    this.difficulty = e.target.value;
+                    this.updateAvailableNotes();
+                    try {
+                        localStorage.setItem(DIFFICULTY_STORAGE_KEY, this.difficulty);
+                    } catch (e) {
+                        console.error('Failed to save difficulty preference:', e);
+                    }
+                });
+
                 this.svg = document.getElementById('staff-svg');
+                this.updateAvailableNotes();
                 this.displayBestScore();
+            }
+
+            updateAvailableNotes() {
+                this.availableNotes = getDifficultyNotes(this.difficulty);
             }
 
             displayBestScore() {
@@ -431,7 +487,7 @@
             }
 
             pickRandomNote() {
-                this.targetNote = TRAINING_NOTES[Math.floor(Math.random() * TRAINING_NOTES.length)];
+                this.targetNote = this.availableNotes[Math.floor(Math.random() * this.availableNotes.length)];
                 this.drawStaff();
             }
 
@@ -457,6 +513,7 @@
                     this.score = 0;
                     this.timeLeft = TRAINING_DURATION;
                     this.isRunning = true;
+                    this.updateAvailableNotes(); // Update notes based on current difficulty
 
                     // Update UI
                     document.getElementById('start-btn').style.display = 'none';
