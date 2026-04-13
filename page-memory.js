@@ -19,7 +19,11 @@
         // Check if we've already redirected this session
         const hasRedirected = sessionStorage.getItem(REDIRECTED_KEY);
 
-        if (!hasRedirected) {
+        // Check if this is a deeplink (has referrer) or fresh app launch (no referrer)
+        // If there's a referrer, user clicked a link, so don't redirect
+        const isDeeplink = document.referrer !== '';
+
+        if (!hasRedirected && !isDeeplink) {
             try {
                 const lastPage = localStorage.getItem(LAST_PAGE_KEY);
 
