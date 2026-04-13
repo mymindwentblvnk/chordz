@@ -244,5 +244,63 @@ const CHORD_PROGRESSIONS = [
         keyMode: "major",
         hasBorrowedChords: true,
         description: "The sudden shift from IV to iv (major to minor) creates harmonic whiplash. The brightness crashes into darkness abruptly."
+    },
+    {
+        name: "Natural Minor Sorrow",
+        progression: ["i", "iv", "i", "V"],
+        mood: ["sad", "melancholic"],
+        keyMode: "minor",
+        hasBorrowedChords: true,
+        description: "The pure natural minor sound with major V creates classic gothic sadness. Used in 'Mad World' by Tears for Fears and 'Hurt' by Nine Inch Nails. Hip hop: Featured in emotional boom bap beats. The alternating i-iv creates a pendulum of sorrow, while the major V provides brief resolution before returning to darkness."
+    },
+    {
+        name: "Hopeless Minor",
+        progression: ["i", "iv", "v", "i"],
+        mood: ["sad", "melancholic"],
+        keyMode: "minor",
+        description: "Using minor v instead of major V removes all brightness and hope. Common in Radiohead's darker works like 'Exit Music (For a Film)' and doom metal. Hip hop: Used in experimental hip hop by Earl Sweatshirt and MIKE. Completely avoids major chords, creating pure, unresolved melancholy with no light at the end."
+    },
+    {
+        name: "Waves of Sadness",
+        progression: ["i", "VII", "III", "VI"],
+        mood: ["sad", "melancholic"],
+        keyMode: "minor",
+        description: "A rearrangement of the epic minor progression with a different emotional arc. The rising then falling motion creates waves of sadness. Popular in post-rock bands like Explosions in the Sky and dark ambient music. Creates a journey through different shades of melancholy with cinematic sweep."
+    },
+    {
+        name: "Dark Wandering",
+        progression: ["i", "v", "VI", "VII"],
+        mood: ["sad", "melancholic"],
+        keyMode: "minor",
+        description: "Minor v creates extra darkness compared to major V, intensifying the melancholic atmosphere. Used in doom metal by bands like Electric Wizard and My Dying Bride, and in dark ambient soundscapes. Hip hop: Dark trap productions. The unresolved, wandering quality suggests endless searching without finding peace."
+    },
+    {
+        name: "Journey Through Darkness",
+        progression: ["i", "VI", "VII", "III"],
+        mood: ["sad", "melancholic"],
+        keyMode: "minor",
+        description: "A different path through minor territory, creating a narrative journey through darkness. Popular in emo and alternative rock by bands like Brand New and Taking Back Sunday. Hip hop: Used in introspective underground hip hop. The progression moves through connected minor chords, each step deepening the emotional weight."
+    },
+    {
+        name: "Reflective Minor Emphasis",
+        progression: ["I", "vi", "iii", "IV"],
+        mood: ["melancholic", "dreamy"],
+        keyMode: "major",
+        description: "In a major key but emphasizes the minor chords (vi and iii), creating bittersweet reflection. Used in indie and alternative rock for contemplative moods. Hip hop: Featured in Mac Miller's introspective productions. The gentle sadness exists within an optimistic framework, like nostalgia or wistful remembrance."
+    },
+    {
+        name: "Longing Resolution",
+        progression: ["vi", "ii", "V", "I"],
+        mood: ["melancholic", "uplifting"],
+        keyMode: "major",
+        description: "Starts on the minor vi, creating immediate longing that gradually resolves to I. Circle of fifths progression starting on the sad side. Common in jazz, R&B, and neo-soul by artists like D'Angelo and Erykah Badu. Hip hop: Used by The Roots and Questlove productions. Creates emotional depth through the journey from yearning to satisfaction."
+    },
+    {
+        name: "Creep Progression",
+        progression: ["I", "IV", "iv", "I"],
+        mood: ["melancholic", "uncomfortable"],
+        keyMode: "major",
+        hasBorrowedChords: true,
+        description: "Made famous by Radiohead's 'Creep', also used in David Bowie's 'Space Oddity' and 'True' by Spandau Ballet. The borrowed iv from parallel minor creates emotional whiplash - sudden darkness invading brightness. Hip hop: Variations in The Weeknd's production. Creates the feeling of hope being crushed, optimism turning to despair in an instant. The major-minor contrast is psychologically jarring."
     }
 ];
