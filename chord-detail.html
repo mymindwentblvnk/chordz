@@ -233,7 +233,11 @@
     </nav>
 
     <div class="detail-container">
-        <div style="text-align: right; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <button id="star-btn" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: var(--surface); color: var(--text-secondary); border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-family: inherit; transition: all 0.2s ease;">
+                <span id="star-icon" style="font-size: 1.5rem;">☆</span>
+                <span id="star-text">Add to favorites</span>
+            </button>
             <a href="chord-progressions.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: var(--surface); color: var(--text-secondary); text-decoration: none; border-radius: 8px; transition: all 0.2s ease;">
                 <span style="font-size: 1.2rem;">✕</span>
                 <span>Close</span>
@@ -305,6 +309,59 @@
         // Global piano instance
         let pianoInstance = null;
 
+        // Starred progressions management
+        const STARRED_KEY = 'chordz-starred-progressions';
+
+        function getStarredProgressions() {
+            try {
+                const starred = localStorage.getItem(STARRED_KEY);
+                return starred ? JSON.parse(starred) : [];
+            } catch (e) {
+                console.error('Failed to load starred progressions:', e);
+                return [];
+            }
+        }
+
+        function isProgressionStarred(chordParam) {
+            const starred = getStarredProgressions();
+            return starred.includes(chordParam);
+        }
+
+        function toggleStar(chordParam) {
+            const starred = getStarredProgressions();
+            const index = starred.indexOf(chordParam);
+
+            if (index > -1) {
+                // Remove star
+                starred.splice(index, 1);
+            } else {
+                // Add star
+                starred.push(chordParam);
+            }
+
+            try {
+                localStorage.setItem(STARRED_KEY, JSON.stringify(starred));
+            } catch (e) {
+                console.error('Failed to save starred progressions:', e);
+            }
+
+            return index === -1; // Return new starred state
+        }
+
+        function updateStarButton(chordParam) {
+            const isStarred = isProgressionStarred(chordParam);
+            const starIcon = document.getElementById('star-icon');
+            const starText = document.getElementById('star-text');
+
+            if (isStarred) {
+                starIcon.textContent = '⭐';
+                starText.textContent = 'Remove from favorites';
+            } else {
+                starIcon.textContent = '☆';
+                starText.textContent = 'Add to favorites';
+            }
+        }
+
         // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
 
@@ -317,7 +374,7 @@
 
         // Get progression data - support both old (id) and new (chord) formats
         let progression = null;
-        const chordParam = urlParams.get('chord');
+        let chordParam = urlParams.get('chord');
 
         if (chordParam) {
             // New format: chord parameter with roman numerals (e.g., "I-vi-IV-V")
@@ -339,6 +396,10 @@
             // Old format: id parameter
             const progressionIndex = parseInt(urlParams.get('id'));
             progression = CHORD_PROGRESSIONS[progressionIndex];
+            // Convert to chord param for star functionality
+            if (progression) {
+                chordParam = progression.progression.join('-');
+            }
         }
 
         if (!progression) {
@@ -410,9 +471,23 @@
 
             // Event listener for "Another Random" button
             document.getElementById('another-random').addEventListener('click', () => {
-                const randomIndex = Math.floor(Math.random() * CHORD_PROGRESSIONS.length);
-                window.location.href = `chord-detail.html?id=${randomIndex}&key=${selectedKey}`;
+                const randomProgression = CHORD_PROGRESSIONS[Math.floor(Math.random() * CHORD_PROGRESSIONS.length)];
+                const randomChordParam = randomProgression.progression.join('-');
+                window.location.href = `chord-detail.html?chord=${randomChordParam}&key=${selectedKey}`;
             });
+
+            // Event listener for star button
+            const starBtn = document.getElementById('star-btn');
+            if (starBtn) {
+                // Update initial state
+                updateStarButton(chordParam);
+
+                // Add click handler
+                starBtn.addEventListener('click', () => {
+                    toggleStar(chordParam);
+                    updateStarButton(chordParam);
+                });
+            }
 
             // Initial display
             updateDisplay();

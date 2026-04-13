@@ -8,8 +8,48 @@ let currentNote = 'all';
 let activeFilters = {
     scale: 'all', // all, major, minor
     moods: ['all'], // all, happy, sad, etc.
-    borrowedChords: false // true to show only borrowed chord progressions
+    borrowedChords: false, // true to show only borrowed chord progressions
+    starred: false // true to show only starred progressions
 };
+
+// Starred progressions management
+const STARRED_KEY = 'chordz-starred-progressions';
+
+function getStarredProgressions() {
+    try {
+        const starred = localStorage.getItem(STARRED_KEY);
+        return starred ? JSON.parse(starred) : [];
+    } catch (e) {
+        console.error('Failed to load starred progressions:', e);
+        return [];
+    }
+}
+
+function isProgressionStarred(chordParam) {
+    const starred = getStarredProgressions();
+    return starred.includes(chordParam);
+}
+
+function toggleStar(chordParam) {
+    const starred = getStarredProgressions();
+    const index = starred.indexOf(chordParam);
+
+    if (index > -1) {
+        // Remove star
+        starred.splice(index, 1);
+    } else {
+        // Add star
+        starred.push(chordParam);
+    }
+
+    try {
+        localStorage.setItem(STARRED_KEY, JSON.stringify(starred));
+    } catch (e) {
+        console.error('Failed to save starred progressions:', e);
+    }
+
+    return index === -1; // Return new starred state
+}
 
 // DOM Elements
 const noteSelector = document.getElementById('note-selector');
@@ -114,6 +154,30 @@ function handleFilterClick(event) {
         activeFilters.scale = 'all';
         activeFilters.moods = ['all'];
         activeFilters.borrowedChords = false;
+        activeFilters.starred = false;
+    } else if (type === 'starred') {
+        // Handle starred filter
+        const allButton = document.querySelector('[data-filter="all"]');
+        allButton.classList.remove('active');
+
+        // Toggle starred filter
+        button.classList.toggle('active');
+        activeFilters.starred = button.classList.contains('active');
+
+        // If no filters active, activate "All"
+        const anyFilterActive =
+            document.querySelector('[data-type="scale"].active') ||
+            document.querySelector('[data-type="borrowed"].active') ||
+            document.querySelector('[data-type="starred"].active') ||
+            document.querySelector('[data-type="mood"].active');
+
+        if (!anyFilterActive) {
+            allButton.classList.add('active');
+            activeFilters.scale = 'all';
+            activeFilters.moods = ['all'];
+            activeFilters.borrowedChords = false;
+            activeFilters.starred = false;
+        }
     } else if (type === 'borrowed') {
         // Handle borrowed chords filter
         const allButton = document.querySelector('[data-filter="all"]');
@@ -127,6 +191,7 @@ function handleFilterClick(event) {
         const anyFilterActive =
             document.querySelector('[data-type="scale"].active') ||
             document.querySelector('[data-type="borrowed"].active') ||
+            document.querySelector('[data-type="starred"].active') ||
             document.querySelector('[data-type="mood"].active');
 
         if (!anyFilterActive) {
@@ -134,6 +199,7 @@ function handleFilterClick(event) {
             activeFilters.scale = 'all';
             activeFilters.moods = ['all'];
             activeFilters.borrowedChords = false;
+            activeFilters.starred = false;
         }
     } else if (type === 'scale') {
         // Handle scale type filter (major/minor)
@@ -207,6 +273,15 @@ function getFilteredProgressions() {
     // Filter by borrowed chords
     if (activeFilters.borrowedChords) {
         filtered = filtered.filter(progression => progression.hasBorrowedChords === true);
+    }
+
+    // Filter by starred
+    if (activeFilters.starred) {
+        const starredProgressions = getStarredProgressions();
+        filtered = filtered.filter(progression => {
+            const chordParam = progression.progression.join('-');
+            return starredProgressions.includes(chordParam);
+        });
     }
 
     return filtered;
@@ -291,8 +366,21 @@ function createProgressionCard(progression, index) {
     const chordParam = progression.progression.join('-');
     const detailUrl = `chord-detail.html?chord=${chordParam}&key=${keyToPass !== 'all' ? keyToPass : 'C'}`;
 
+    // Star button
+    const isStarred = isProgressionStarred(chordParam);
+    const starButton = `
+        <button
+            class="star-btn ${isStarred ? 'starred' : ''}"
+            onclick="event.stopPropagation(); toggleStarAndRefresh('${chordParam}')"
+            title="${isStarred ? 'Remove from favorites' : 'Add to favorites'}"
+        >
+            ${isStarred ? '⭐' : '☆'}
+        </button>
+    `;
+
     return `
-        <div class="progression-card" style="cursor: pointer;" onclick="window.location.href='${detailUrl}'">
+        <div class="progression-card" style="cursor: pointer; position: relative;" onclick="window.location.href='${detailUrl}'">
+            ${starButton}
             <h3 class="progression-name">${progression.name}</h3>
             <div class="mood-tags">${allTags}</div>
             <div class="chords">${chordsDisplay}</div>
@@ -302,6 +390,14 @@ function createProgressionCard(progression, index) {
             ${builderLink}
         </div>
     `;
+}
+
+/**
+ * Toggle star and refresh the view
+ */
+function toggleStarAndRefresh(chordParam) {
+    toggleStar(chordParam);
+    renderProgressions();
 }
 
 /**

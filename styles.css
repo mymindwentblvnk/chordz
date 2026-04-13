@@ -235,6 +235,30 @@ h1 {
     border-color: var(--primary-color);
 }
 
+.star-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+    opacity: 0.6;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.star-btn:hover {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+.star-btn.starred {
+    opacity: 1;
+}
+
 .progression-name {
     font-size: 1.4rem;
     font-weight: 600;
