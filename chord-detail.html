@@ -86,6 +86,68 @@
             margin-bottom: 10px;
         }
 
+        .roman-chord-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0 8px;
+            position: relative;
+        }
+
+        .experiment-btn {
+            background: var(--surface-light);
+            border: 2px solid var(--primary-color);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            opacity: 0.7;
+        }
+
+        .experiment-btn:hover {
+            opacity: 1;
+            background: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--surface);
+            color: var(--text-primary);
+            padding: 15px 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease-out;
+            z-index: 1000;
+            max-width: 300px;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
         .chord-breakdown-section {
             margin: 30px 0;
         }
@@ -215,11 +277,29 @@
             }
 
             .progression-display .roman {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
             }
 
             .progression-display .chords {
-                font-size: 1.3rem;
+                font-size: 1.1rem;
+            }
+
+            .roman-chord-item {
+                margin: 0 4px;
+                gap: 4px;
+            }
+
+            .experiment-btn {
+                font-size: 0.85rem;
+                padding: 3px 6px;
+            }
+
+            .toast {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -369,12 +449,110 @@
             // Set initial key
             document.getElementById('key-selector').value = selectedKey;
 
+            // Function to get chord variations
+            function getChordVariations(romanNumeral) {
+                // Remove degree symbol if present
+                const clean = romanNumeral.replace('°', '');
+                const isUpperCase = clean === clean.toUpperCase();
+                const isDiminished = romanNumeral.includes('°');
+
+                // Get the base numeral (I, II, III, etc.)
+                const baseNumeral = clean.toUpperCase();
+
+                // Define common variations
+                const variations = [];
+
+                if (isDiminished) {
+                    // vii° can become VII (major)
+                    variations.push(baseNumeral);
+                    variations.push(romanNumeral); // back to diminished
+                } else if (isUpperCase) {
+                    // Major can become minor
+                    variations.push(clean.toLowerCase());
+                    variations.push(romanNumeral); // back to major
+                } else {
+                    // Minor can become major
+                    variations.push(clean.toUpperCase());
+                    variations.push(romanNumeral); // back to minor
+                }
+
+                return variations;
+            }
+
+            // Function to show toast notification
+            function showToast(message) {
+                // Remove existing toast if any
+                const existingToast = document.querySelector('.toast');
+                if (existingToast) {
+                    existingToast.remove();
+                }
+
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.textContent = message;
+                document.body.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.style.animation = 'slideOut 0.3s ease-out';
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+
+            // Function to get chord quality description
+            function getChordQuality(romanNumeral) {
+                const clean = romanNumeral.replace('°', '');
+                const isUpperCase = clean === clean.toUpperCase();
+                const isDiminished = romanNumeral.includes('°');
+
+                if (isDiminished) return 'diminished';
+                if (isUpperCase) return 'major';
+                return 'minor';
+            }
+
             // Update display function
             function updateDisplay() {
                 selectedKey = document.getElementById('key-selector').value;
 
-                // Display Roman numerals
-                document.getElementById('roman-numerals').textContent = progression.progression.join(' - ');
+                // Display Roman numerals with experiment buttons
+                const romanHTML = progression.progression.map((numeral, index) => {
+                    return `
+                        <span class="roman-chord-item">
+                            <span>${numeral}</span>
+                            <button class="experiment-btn" data-chord-index="${index}" title="Experiment with variations">🎲</button>
+                        </span>
+                    `;
+                }).join(' - ');
+                document.getElementById('roman-numerals').innerHTML = romanHTML;
+
+                // Attach experiment button listeners
+                document.querySelectorAll('.experiment-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const index = parseInt(btn.dataset.chordIndex);
+                        const currentNumeral = progression.progression[index];
+                        const variations = getChordVariations(currentNumeral);
+
+                        // Find current variation index
+                        const currentIndex = variations.indexOf(currentNumeral);
+                        const nextIndex = (currentIndex + 1) % variations.length;
+                        const nextNumeral = variations[nextIndex];
+
+                        // Get quality descriptions
+                        const fromQuality = getChordQuality(currentNumeral);
+                        const toQuality = getChordQuality(nextNumeral);
+
+                        // Show toast
+                        showToast(`Changed ${currentNumeral} (${fromQuality}) → ${nextNumeral} (${toQuality})`);
+
+                        // Update progression
+                        const newProgression = [...progression.progression];
+                        newProgression[index] = nextNumeral;
+
+                        // Navigate to new URL
+                        const newChordParam = newProgression.join('-');
+                        window.location.href = `chord-detail.html?chord=${newChordParam}&key=${selectedKey}`;
+                    });
+                });
 
                 // Transpose and display chords
                 const chords = transposeProgression(progression.progression, selectedKey, progression.keyMode);
