@@ -73,6 +73,18 @@ function init() {
         randomBtn.addEventListener('click', handleRandomChord);
     }
 
+    // Star button event delegation
+    resultsContainer.addEventListener('click', (e) => {
+        const starBtn = e.target.closest('.star-btn');
+        if (starBtn) {
+            e.stopPropagation(); // Prevent card click
+            const chordParam = starBtn.dataset.chordParam;
+            if (chordParam) {
+                toggleStarAndRefresh(chordParam);
+            }
+        }
+    });
+
     // Check for URL parameter to pre-select note (takes priority over localStorage)
     const urlParams = new URLSearchParams(window.location.search);
     const noteParam = urlParams.get('note');
@@ -371,7 +383,7 @@ function createProgressionCard(progression, index) {
     const starButton = `
         <button
             class="star-btn ${isStarred ? 'starred' : ''}"
-            onclick="event.stopPropagation(); toggleStarAndRefresh('${chordParam}')"
+            data-chord-param="${chordParam.replace(/"/g, '&quot;')}"
             title="${isStarred ? 'Remove from favorites' : 'Add to favorites'}"
         >
             ${isStarred ? '⭐' : '☆'}
