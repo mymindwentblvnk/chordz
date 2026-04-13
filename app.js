@@ -73,14 +73,31 @@ function init() {
         randomBtn.addEventListener('click', handleRandomChord);
     }
 
-    // Star button event delegation
+    // Event delegation for progression cards
     resultsContainer.addEventListener('click', (e) => {
+        // Check if star button was clicked
         const starBtn = e.target.closest('.star-btn');
         if (starBtn) {
-            e.stopPropagation(); // Prevent card click
+            e.stopPropagation();
+            e.preventDefault();
             const chordParam = starBtn.dataset.chordParam;
             if (chordParam) {
                 toggleStarAndRefresh(chordParam);
+            }
+            return;
+        }
+
+        // Check if a link was clicked (don't trigger card navigation)
+        if (e.target.closest('a')) {
+            return;
+        }
+
+        // Check if progression card was clicked
+        const card = e.target.closest('.progression-card');
+        if (card) {
+            const detailUrl = card.dataset.detailUrl;
+            if (detailUrl) {
+                window.location.href = detailUrl;
             }
         }
     });
@@ -391,7 +408,7 @@ function createProgressionCard(progression, index) {
     `;
 
     return `
-        <div class="progression-card" style="cursor: pointer; position: relative;" onclick="window.location.href='${detailUrl}'">
+        <div class="progression-card" style="cursor: pointer; position: relative;" data-detail-url="${detailUrl}">
             ${starButton}
             <h3 class="progression-name">${progression.name}</h3>
             <div class="mood-tags">${allTags}</div>
