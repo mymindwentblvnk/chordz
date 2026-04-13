@@ -90,11 +90,11 @@ function handleRandomChord() {
 
     // Pick a random progression from filtered list
     const randomProgression = filteredProgressions[Math.floor(Math.random() * filteredProgressions.length)];
-    const randomIndex = CHORD_PROGRESSIONS.indexOf(randomProgression);
 
     const keyToPass = currentNote !== 'all' ? currentNote : (localStorage.getItem('rootNote') || 'C');
     const key = keyToPass !== 'all' ? keyToPass : 'C';
-    window.location.href = `chord-detail.html?id=${randomIndex}&key=${key}`;
+    const chordParam = randomProgression.progression.join('-');
+    window.location.href = `chord-detail.html?chord=${chordParam}&key=${key}`;
 }
 
 /**
@@ -288,7 +288,8 @@ function createProgressionCard(progression, index) {
 
     // Create detail view link - pass current note or saved note from localStorage
     const keyToPass = isSpecificKey ? currentNote : (localStorage.getItem('rootNote') || 'C');
-    const detailUrl = `chord-detail.html?id=${index}&key=${keyToPass !== 'all' ? keyToPass : 'C'}`;
+    const chordParam = progression.progression.join('-');
+    const detailUrl = `chord-detail.html?chord=${chordParam}&key=${keyToPass !== 'all' ? keyToPass : 'C'}`;
 
     return `
         <div class="progression-card" style="cursor: pointer;" onclick="window.location.href='${detailUrl}'">

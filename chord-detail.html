@@ -307,7 +307,6 @@
 
         // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
-        const progressionIndex = parseInt(urlParams.get('id'));
 
         // Get key from URL, then localStorage, then default to 'C'
         let selectedKey = urlParams.get('key');
@@ -316,8 +315,31 @@
             selectedKey = (savedNote && savedNote !== 'all') ? savedNote : 'C';
         }
 
-        // Get the progression data
-        const progression = CHORD_PROGRESSIONS[progressionIndex];
+        // Get progression data - support both old (id) and new (chord) formats
+        let progression = null;
+        const chordParam = urlParams.get('chord');
+
+        if (chordParam) {
+            // New format: chord parameter with roman numerals (e.g., "I-vi-IV-V")
+            const romanNumerals = chordParam.split('-');
+
+            // Determine key mode from first roman numeral (uppercase = major, lowercase = minor)
+            const firstNumeral = romanNumerals[0];
+            const keyMode = firstNumeral === firstNumeral.toLowerCase() ? 'minor' : 'major';
+
+            // Create progression object from URL parameters
+            progression = {
+                name: 'Custom Progression',
+                progression: romanNumerals,
+                keyMode: keyMode,
+                mood: [],
+                description: `A custom chord progression: ${romanNumerals.join(' - ')}`
+            };
+        } else {
+            // Old format: id parameter
+            const progressionIndex = parseInt(urlParams.get('id'));
+            progression = CHORD_PROGRESSIONS[progressionIndex];
+        }
 
         if (!progression) {
             document.querySelector('.detail-container').innerHTML = `
@@ -336,10 +358,12 @@
             const scaleTypeBadge = `<span class="scale-type-badge ${progression.keyMode}">${scaleTypeName} Key</span>`;
             document.getElementById('scale-type-badge').innerHTML = scaleTypeBadge;
 
-            // Display mood tags
-            const moodTags = progression.mood.map(mood =>
-                `<span class="mood-tag mood-${mood}">${mood}</span>`
-            ).join('');
+            // Display mood tags (if any)
+            const moodTags = progression.mood && progression.mood.length > 0
+                ? progression.mood.map(mood =>
+                    `<span class="mood-tag mood-${mood}">${mood}</span>`
+                ).join('')
+                : '';
             document.getElementById('mood-tags').innerHTML = moodTags;
 
             // Set initial key
