@@ -357,7 +357,6 @@
                 this.updateNotationToggle();
 
                 // Show sequence boxes on page load (or placeholder if random)
-                const chordSelect = document.getElementById('training-chord');
                 if (chordSelect.value === 'random') {
                     document.getElementById('sequence-boxes').innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-secondary); font-size: 1.1rem;">🎲 A random chord will be selected when you start</div>';
                     document.getElementById('best-time-display').style.display = 'none';
