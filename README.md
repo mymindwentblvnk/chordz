@@ -1,12 +1,17 @@
 # 🎵 Chordz - Learn to Play Music
 
-A complete web application for discovering and learning chord progressions. Find your root note, search for progressions by mood, and learn exactly which keys to play!
+A complete web application for learning piano through interactive training, discovering chord progressions, and mastering music theory. Train your pitch detection skills, search progressions by mood, and learn exactly which keys to play!
 
-## 🚀 [Try it Live](https://mymindwentblvnk.github.io/chordz/)
-
-**[→ Open the App](https://mymindwentblvnk.github.io/chordz/)**
+**[→ Try it Live](https://mymindwentblvnk.github.io/chordz/)**
 
 ## Features
+
+### 🎮 Training Modes
+- **Speed Training**: Race against the clock! Play as many random notes as you can in 60 seconds using real-time pitch detection
+- **Chord Inversions**: Master chord inversions by playing complete sequences (root position, 1st inversion, 2nd inversion) for any chord
+- **Real-Time Feedback**: Instant visual feedback with green flash for correct notes, red for wrong notes
+- **Score Tracking**: Best scores saved locally with timestamps
+- **100% Local**: All pitch detection happens in your browser using the Web Audio API
 
 ### 🎤 Find Note
 - **Real-Time Note Detection**: Detect notes from your instrument or voice using your microphone
@@ -16,13 +21,17 @@ A complete web application for discovering and learning chord progressions. Find
 - **Privacy First**: Your microphone audio never leaves your device
 - **Compact Metadata**: Frequency, confidence, and octave displayed in a clean status line
 
-### 🎵 Search Chords
-- **Extensive Library**: Browse chord progressions without selecting a key (displayed in Roman numerals)
+### 🎵 Chord Progressions
+- **Extensive Library**: 40+ chord progressions from pop, jazz, classical, and experimental music
 - **Transpose to Any Key**: Select any of the 12 chromatic notes to see exact chords in that key
 - **Individual Note Breakdown**: See exactly which notes to press for each chord (e.g., Am = A + C + E)
-- **Mood Filtering**: Filter by Happy, Uplifting, Sad, Melancholic, Dreamy, Unsettling, and Uncomfortable
+- **Mood Filtering**: Filter by Happy, Uplifting, Sad, Melancholic, Dreamy, Unsettling, Uncomfortable, and more
+- **Starred Progressions**: Favorite your preferred progressions and filter to show only starred items
+- **Scale Type Filters**: Filter by Major or Minor progressions
+- **Borrowed Chords Filter**: Find progressions that use borrowed chords from parallel keys
 - **Learn to Play**: Each progression has a "Learn to Play This" button that opens the interactive chord builder
 - **Educational**: Includes Roman numeral notation and detailed descriptions
+- **Random Chord**: Get a random progression based on your current filters
 
 ### 🎹 Calculate Chords
 - **Interactive Breakdown**: See the complete step-by-step breakdown from scale to keyboard keys
@@ -34,20 +43,31 @@ A complete web application for discovering and learning chord progressions. Find
 
 ### 📚 Wiki
 - **Complete Theory**: Organized knowledge base covering all music theory concepts
-- **Master Pattern**: Learn the W-W-H-W-W-W-H pattern for building major scales
-- **Roman Numerals**: Understand what I, IV, V, vi, etc. actually mean
-- **Chord Building**: Master the skip-pick-skip-pick method for natural chords
-- **Chord Inversions**: Learn root position, first and second inversions (Umkehrungen)
-- **Borrowed Chords**: Learn about ♭VII, ♭VI, iv, and other color chords
-- **Minor Keys**: Understand how to work with progressions in minor keys
+- **Fundamentals**:
+  - Musical Scales and their uses
+  - The Master Pattern (W-W-H-W-W-W-H)
+  - Roman Numeral Notation (I, IV, V, vi, etc.)
+  - The Chromatic Scale (all 12 notes)
+  - Building Major Scales
+  - Relative Pitch (the trainable alternative to perfect pitch)
+- **Chords**:
+  - Building Natural Chords (skip-pick-skip-pick method)
+  - Chord Inversions (root position, 1st, 2nd inversions)
+  - Understanding Natural Chords
+  - Borrowed Chords (♭VII, ♭VI, iv, and other color chords)
+- **Advanced Topics**:
+  - Minor Scales and Keys
+  - Ghost Notes (rhythm technique for groove)
+  - Pro Tips and Practice strategies
 - **Individual Topic Pages**: Each concept has its own dedicated page for easy reference
 
 ### ✨ Design & UX
-- **Seamless Workflow**: Find Note → Search Chords → Calculate Chords → Practice!
+- **Seamless Workflow**: Training → Chord Progressions → Calculate Chords → Wiki
 - **Responsive Design**: Optimized for desktop, tablet, and mobile devices
-- **Dark Theme**: Beautiful dark interface with animated floating emoji icons
-- **State Persistence**: App remembers your selected root note across pages
-- **Consistent Navigation**: Unified navigation bar across all pages
+- **Dark Theme**: Beautiful dark interface with gradient accents
+- **State Persistence**: App remembers your selected root note, difficulty levels, and best scores
+- **Consistent Navigation**: Unified navigation bar across all pages (Training, Chord Progressions, Find Note, Wiki)
+- **Smart Routing**: Index page redirects to your last visited page or Training by default
 
 ## Usage
 
@@ -55,18 +75,19 @@ A complete web application for discovering and learning chord progressions. Find
 
 The app is designed for a seamless learning experience:
 
-1. **🎤 Find Note** (Home Page)
-   - Click "Start Listening" and allow microphone access
-   - Play a note on your instrument or sing
-   - See the detected note with real-time confidence and frequency
-   - Review your note history sorted by score or play order
-   - Click "Find Chords →" on any note to continue
+1. **🎮 Training** (Main Page)
+   - **Speed Training**: Race against time to play random notes detected by microphone
+   - **Chord Inversions**: Practice playing root position, 1st inversion, and 2nd inversion sequences
+   - Real-time pitch detection with instant visual feedback
+   - Best scores tracked locally with timestamps
 
-2. **🎵 Search Chords**
-   - Browse chord progressions by mood (Happy, Sad, Dreamy, etc.)
-   - Your root note is automatically selected from the previous step
-   - See exact chord names and notes to play for your key
-   - Click "📖 Learn to Play This" on any progression to continue
+2. **🎵 Chord Progressions**
+   - Browse 40+ progressions organized by mood
+   - Filter by scale type (Major/Minor), moods, borrowed chords, or starred favorites
+   - Select a root note to see exact chord names and individual notes to play
+   - Click "📖 Learn to Play This" on any progression for detailed breakdown
+   - Click "Random Chord" to discover new progressions
+   - Star your favorites for quick access
 
 3. **🎹 Calculate Chords**
    - See the complete breakdown from scale to keyboard keys
@@ -74,20 +95,29 @@ The app is designed for a seamless learning experience:
    - Understand which scale positions create which chords
    - View exactly which keys to press for each chord
    - Learn about borrowed chords if your progression uses them
+   - Enter custom progressions in Roman numerals
 
-4. **📚 Wiki**
+4. **🎤 Find Note**
+   - Click "Start Listening" and allow microphone access
+   - Play a note on your instrument or sing
+   - See the detected note with real-time confidence and frequency
+   - Review your note history sorted by score or play order
+   - Click "Find Chords →" on any note to search progressions in that key
+
+5. **📚 Wiki**
    - Organized knowledge base with individual topic pages
-   - Deep dive into music theory concepts
-   - Learn the master W-W-H-W-W-W-H pattern
-   - Understand Roman numeral notation and chord inversions
-   - Master the skip-pick method for building chords
-   - Explore borrowed chords and minor keys
+   - Fundamentals: Scales, master pattern, chromatic scale, relative pitch
+   - Chords: Building chords, inversions, natural and borrowed chords
+   - Advanced: Minor keys, ghost notes, pro practice tips
+   - Each topic has its own dedicated page for easy reference
 
 ### Quick Access
 
 You can also:
-- Jump directly to Search Chords and browse without a key selected
+- Jump directly to Training modes to practice pitch detection skills
+- Browse Chord Progressions without selecting a key (shows Roman numerals)
 - Use Calculate Chords with any custom progression in Roman numerals
+- Use Find Note to identify your vocal range or instrument tuning
 - Start with the Wiki to learn theory first (individual topic pages for easy navigation)
 
 ## Examples
@@ -110,9 +140,9 @@ You can also:
   - F#m = F# + A + C#
   - D = D + F# + A
 
-## How Find Note Works
+## How Pitch Detection Works
 
-Find Note uses advanced audio processing **entirely within your browser** - no external services or APIs are involved.
+The Training modes and Find Note feature use advanced audio processing **entirely within your browser** - no external services or APIs are involved.
 
 ### Privacy & Security
 - ✅ **100% Local Processing**: All audio analysis happens on your device
@@ -146,17 +176,27 @@ Find Note uses advanced audio processing **entirely within your browser** - no e
 
 ## Local Development
 
-Simply open `index.html` in your browser. No build process or dependencies required!
+Simply open `index.html` in your browser, or use a local server. No build process or dependencies required!
 
-**Pages:**
-- `index.html` - Find Note (pitch detector, home page)
-- `search-chords.html` - Search Chords
+**Main Pages:**
+- `index.html` - Router (redirects to training.html or last visited page)
+- `training.html` - Training hub
+- `training-speed.html` - Speed Training
+- `training-chord-inversions.html` - Chord Inversions Training
+- `chord-progressions.html` - Chord Progressions browser
 - `chord-detail.html` - Chord Detail View
 - `calculate-chords.html` - Calculate Chords (interactive builder)
+- `find-note.html` - Find Note (pitch detector)
 - `wiki.html` - Wiki index (music theory knowledge base)
-- `wiki-*.html` - Individual wiki topic pages
+- `wiki-*.html` - 12 individual wiki topic pages
 
-**Note:** For microphone access, you may need to serve the files over HTTPS or use `localhost`.
+**Quick start with Python:**
+```bash
+python3 -m http.server 8888
+# Open http://localhost:8888
+```
+
+**Note:** For microphone access, you need to serve over HTTPS or use `localhost`.
 
 ## Deployment
 
@@ -187,19 +227,25 @@ Progressions are transposed to any key using chromatic scale intervals and major
 ## Project Structure
 
 ```
-chords/
-├── index.html              # Find Note (pitch detector, home)
-├── search-chords.html      # Search Chords
-├── chord-detail.html       # Chord Detail View
-├── calculate-chords.html        # Calculate Chords (interactive builder)
-├── wiki.html               # Wiki index (music theory)
-├── wiki-*.html             # Individual wiki pages
-├── guide.html              # Legacy guide (kept for reference)
-├── styles.css             # Main styles
-├── pitch-detector-styles.css  # Find Note specific styles
-├── app.js                 # Search Chords logic
-├── music-theory.js        # Core music theory functions
-├── chord-data.js          # Chord progression library
+chordz/
+├── index.html                  # Router (redirects to last page or training.html)
+├── training.html               # Training hub page
+├── training-speed.html         # Speed Training mode
+├── training-chord-inversions.html  # Chord Inversions training
+├── chord-progressions.html     # Chord Progressions browser
+├── chord-detail.html           # Chord Detail View
+├── calculate-chords.html       # Calculate Chords (interactive builder)
+├── find-note.html              # Find Note (pitch detector)
+├── wiki.html                   # Wiki index (music theory)
+├── wiki-*.html                 # Individual wiki pages (12 topics)
+├── styles.css                  # Main styles
+├── guide-styles.css            # Wiki and guide styles
+├── pitch-detector-styles.css   # Find Note specific styles
+├── app.js                      # Chord Progressions logic
+├── music-theory.js             # Core music theory functions
+├── chord-data.js               # Chord progression library (40+ progressions)
+├── pitch-detector.js           # Pitch detection algorithm
+├── page-memory.js              # Page navigation tracking
 └── README.md
 ```
 
