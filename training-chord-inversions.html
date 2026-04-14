@@ -229,7 +229,7 @@
 
                 const result = this.detectPitch(buffer);
 
-                if (result && result.frequency && result.confidence > 0.9) {
+                if (result && result.frequency) {
                     const note = this.frequencyToNote(result.frequency);
                     if (note) {
                         this.handleDetectedNote(note);
@@ -241,19 +241,19 @@
 
             detectPitch(buffer) {
                 const rms = PitchDetector.calculateRMS(buffer);
-                if (rms < 0.01) return null;
+                if (rms < 0.005) return null; // Reduced from 0.01 for higher sensitivity
 
                 const autocorrelation = PitchDetector.autoCorrelate(buffer, this.audioContext.sampleRate);
                 if (!autocorrelation) return null;
 
                 let { frequency, confidence } = autocorrelation;
 
-                if (frequency < 80 || frequency > 1200 || confidence < 0.90) return null;
+                if (frequency < 80 || frequency > 1200 || confidence < 0.80) return null; // Reduced from 0.90
 
-                // Temporal smoothing - only accept stable frequencies
+                // Temporal smoothing - reduced stability requirement
                 if (this.lastFrequency) {
                     const freqDiff = Math.abs(frequency - this.lastFrequency);
-                    const tolerance = this.lastFrequency * 0.02;
+                    const tolerance = this.lastFrequency * 0.03; // Increased tolerance slightly
 
                     if (freqDiff < tolerance) {
                         this.stableCount++;
@@ -265,7 +265,7 @@
 
                 this.lastFrequency = frequency;
 
-                if (this.stableCount < 2) return null;
+                if (this.stableCount < 1) return null; // Reduced from 2 for faster response
 
                 return { frequency, confidence };
             }
