@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Chordz">
+    <title>Find Scale - Chordz</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="guide-styles.css">
+    <script src="page-memory.js"></script>
+</head>
+<body>
+    <nav class="main-nav">
+        <a href="training.html" class="nav-link">🎮 Training</a>
+        <a href="chord-progressions.html" class="nav-link">🎵 Chord Progressions</a>
+        <a href="find-note.html" class="nav-link">🎤 Find Note</a>
+        <a href="find-scale.html" class="nav-link active">🎼 Find Scale</a>
+        <a href="wiki.html" class="nav-link">📚 Wiki</a>
+    </nav>
+
+    <div class="guide-container">
+        <header style="text-align: center; margin-bottom: 30px;">
+            <div class="header-icon" style="font-size: 2.5rem; margin-bottom: 5px;">🎼</div>
+            <h1 style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin: 0 0 5px 0; font-size: 1.8rem;">Find Scale</h1>
+            <p class="subtitle" style="margin: 0; font-size: 0.95rem;">Identify scales from selected notes</p>
+        </header>
+
+        <!-- Note Selection Section -->
+        <div class="guide-section" style="max-width: 600px; margin: 0 auto 30px auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h2 style="font-size: 1.3rem; margin: 0;">Select Notes</h2>
+                <button id="clear-btn" style="padding: 8px 16px; font-size: 0.9rem; font-weight: 600; background: var(--surface); color: var(--text-secondary); border: 2px solid var(--surface); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                    🗑 Clear All
+                </button>
+            </div>
+
+            <p style="text-align: center; color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 15px;">Click notes to select them manually, or use the microphone below</p>
+
+            <div id="note-buttons" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 20px;">
+                <!-- Will be filled by JavaScript -->
+            </div>
+
+            <div id="selected-count" style="text-align: center; color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px;">
+                No notes selected
+            </div>
+        </div>
+
+        <!-- Find Note Section -->
+        <div class="guide-section" style="max-width: 600px; margin: 0 auto 30px auto;">
+            <h2 style="font-size: 1.3rem; margin-bottom: 15px; text-align: center;">🎤 Detect Notes</h2>
+            <p style="text-align: center; color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 15px;">Use your microphone to detect and auto-select notes</p>
+
+            <button id="start-listening-btn" style="width: 100%; padding: 15px; font-size: 1.1rem; font-weight: 600; background: var(--primary-color); color: white; border: none; border-radius: 10px; cursor: pointer; margin-bottom: 10px;">
+                🎤 Start Listening
+            </button>
+
+            <button id="stop-listening-btn" style="width: 100%; padding: 15px; font-size: 1.1rem; font-weight: 600; background: #ef4444; color: white; border: none; border-radius: 10px; cursor: pointer; margin-bottom: 15px; display: none;">
+                ⏹ Stop Listening
+            </button>
+
+            <div id="detected-note-display" style="display: none; padding: 20px; background: var(--surface); border-radius: 10px; text-align: center; margin-bottom: 15px; border: 3px solid var(--primary-color);">
+                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 5px;">Detected Note:</div>
+                <div id="detected-note-value" style="font-size: 3rem; font-weight: bold; color: var(--primary-color); font-family: 'Georgia', serif;">-</div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="guide-section" style="max-width: 600px; margin: 0 auto;">
+            <h2 style="font-size: 1.3rem; margin-bottom: 15px; text-align: center;">Matching Scales</h2>
+            <div id="scales-result" style="min-height: 100px;">
+                <p style="text-align: center; color: var(--text-secondary); padding: 40px 20px;">
+                    Select notes above to find matching scales
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .note-btn {
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            background: var(--surface);
+            color: var(--text-primary);
+            border: 2px solid var(--surface);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .note-btn:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .note-btn.selected {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .scale-card {
+            padding: 15px 20px;
+            background: var(--surface-light);
+            border-left: 4px solid var(--primary-color);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .scale-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .scale-notes {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-family: 'Courier New', monospace;
+        }
+
+        #clear-btn:hover {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+
+        @media (max-width: 600px) {
+            #note-buttons {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 8px;
+            }
+
+            .note-btn {
+                padding: 12px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js"></script>
+    <script src="pitch-detector.js"></script>
+    <script src="music-theory.js"></script>
+    <script>
+        // CHROMATIC_SCALE is defined in music-theory.js
+        const STORAGE_KEY = 'chordz-find-scale-selected-notes';
+
+        let selectedNotes = new Set();
+        let allScales = [];
+
+        // Pitch detection
+        let audioContext = null;
+        let analyser = null;
+        let microphone = null;
+        let mediaStream = null;
+        let isListening = false;
+        let lastFrequency = null;
+        let stableCount = 0;
+
+        // Initialize
+        function init() {
+            generateAllScales();
+            loadSelectedNotes();
+            renderNoteButtons();
+            updateDisplay();
+
+            document.getElementById('start-listening-btn').addEventListener('click', startListening);
+            document.getElementById('stop-listening-btn').addEventListener('click', stopListening);
+            document.getElementById('clear-btn').addEventListener('click', clearAll);
+        }
+
+        // Generate all possible scales
+        function generateAllScales() {
+            allScales = [];
+
+            const majorPattern = [2, 2, 1, 2, 2, 2, 1];
+            const minorPattern = [2, 1, 2, 2, 1, 2, 2];
+
+            CHROMATIC_SCALE.forEach(root => {
+                // Major scale
+                const majorScale = buildScaleFromPattern(root, majorPattern);
+                allScales.push({
+                    name: `${root} Major`,
+                    root: root,
+                    type: 'Major',
+                    notes: majorScale
+                });
+
+                // Natural Minor scale
+                const minorScale = buildScaleFromPattern(root, minorPattern);
+                allScales.push({
+                    name: `${root} Minor`,
+                    root: root,
+                    type: 'Minor',
+                    notes: minorScale
+                });
+            });
+        }
+
+        function buildScaleFromPattern(root, pattern) {
+            const scale = [root];
+            let currentIndex = CHROMATIC_SCALE.indexOf(root);
+
+            for (let i = 0; i < pattern.length - 1; i++) {
+                currentIndex = (currentIndex + pattern[i]) % 12;
+                scale.push(CHROMATIC_SCALE[currentIndex]);
+            }
+
+            return scale;
+        }
+
+        // Render note buttons
+        function renderNoteButtons() {
+            const container = document.getElementById('note-buttons');
+            container.innerHTML = '';
+
+            CHROMATIC_SCALE.forEach(note => {
+                const btn = document.createElement('button');
+                btn.className = 'note-btn';
+                btn.textContent = note;
+                btn.dataset.note = note;
+
+                if (selectedNotes.has(note)) {
+                    btn.classList.add('selected');
+                }
+
+                btn.addEventListener('click', () => toggleNote(note));
+                container.appendChild(btn);
+            });
+        }
+
+        // Toggle note selection
+        function toggleNote(note) {
+            if (selectedNotes.has(note)) {
+                selectedNotes.delete(note);
+            } else {
+                selectedNotes.add(note);
+            }
+            saveSelectedNotes();
+            renderNoteButtons();
+            updateDisplay();
+        }
+
+        // Update display
+        function updateDisplay() {
+            updateSelectedCount();
+            updateScalesResult();
+        }
+
+        function updateSelectedCount() {
+            const count = selectedNotes.size;
+            const countEl = document.getElementById('selected-count');
+
+            if (count === 0) {
+                countEl.textContent = 'No notes selected';
+            } else if (count === 1) {
+                countEl.textContent = '1 note selected';
+            } else {
+                countEl.textContent = `${count} notes selected`;
+            }
+        }
+
+        function updateScalesResult() {
+            const container = document.getElementById('scales-result');
+
+            if (selectedNotes.size === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 40px 20px;">Select notes above to find matching scales</p>';
+                return;
+            }
+
+            // Find scales that contain all selected notes
+            const matchingScales = allScales.filter(scale => {
+                return Array.from(selectedNotes).every(note => scale.notes.includes(note));
+            });
+
+            if (matchingScales.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 40px 20px;">No scales match all selected notes</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            matchingScales.forEach(scale => {
+                const card = document.createElement('div');
+                card.className = 'scale-card';
+                card.innerHTML = `
+                    <div class="scale-name">${scale.name}</div>
+                    <div class="scale-notes">${scale.notes.join(' - ')}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Clear all
+        function clearAll() {
+            selectedNotes.clear();
+            saveSelectedNotes();
+            renderNoteButtons();
+            updateDisplay();
+        }
+
+        // LocalStorage
+        function saveSelectedNotes() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(selectedNotes)));
+            } catch (e) {
+                console.error('Failed to save selected notes:', e);
+            }
+        }
+
+        function loadSelectedNotes() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    selectedNotes = new Set(JSON.parse(stored));
+                }
+            } catch (e) {
+                console.error('Failed to load selected notes:', e);
+                selectedNotes = new Set();
+            }
+        }
+
+        // Pitch Detection
+        async function startListening() {
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 2048;
+                microphone = audioContext.createMediaStreamSource(mediaStream);
+                microphone.connect(analyser);
+
+                if (typeof Tone !== 'undefined') {
+                    await Tone.start();
+                }
+
+                isListening = true;
+
+                document.getElementById('start-listening-btn').style.display = 'none';
+                document.getElementById('stop-listening-btn').style.display = 'block';
+                document.getElementById('detected-note-display').style.display = 'block';
+
+                detectPitch();
+
+            } catch (error) {
+                alert('Error accessing microphone: ' + error.message);
+            }
+        }
+
+        async function stopListening() {
+            isListening = false;
+
+            if (microphone) {
+                microphone.disconnect();
+                microphone = null;
+            }
+
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+            }
+
+            if (audioContext && audioContext.state !== 'closed') {
+                await audioContext.close();
+                audioContext = null;
+            }
+
+            if (analyser) {
+                analyser = null;
+            }
+
+            lastFrequency = null;
+            stableCount = 0;
+
+            document.getElementById('start-listening-btn').style.display = 'block';
+            document.getElementById('stop-listening-btn').style.display = 'none';
+            document.getElementById('detected-note-display').style.display = 'none';
+            document.getElementById('detected-note-value').textContent = '-';
+        }
+
+        function detectPitch() {
+            if (!isListening) return;
+
+            const buffer = new Float32Array(analyser.fftSize);
+            analyser.getFloatTimeDomainData(buffer);
+
+            const rms = PitchDetector.calculateRMS(buffer);
+            if (rms >= 0.005) {
+                const autocorrelation = PitchDetector.autoCorrelate(buffer, audioContext.sampleRate);
+
+                if (autocorrelation) {
+                    let { frequency, confidence } = autocorrelation;
+
+                    if (frequency >= 80 && frequency <= 1200 && confidence >= 0.80) {
+                        // Temporal smoothing
+                        if (lastFrequency) {
+                            const freqDiff = Math.abs(frequency - lastFrequency);
+                            const tolerance = lastFrequency * 0.03;
+
+                            if (freqDiff < tolerance) {
+                                stableCount++;
+                                frequency = (frequency + lastFrequency) / 2;
+                            } else {
+                                stableCount = 0;
+                            }
+                        }
+
+                        lastFrequency = frequency;
+
+                        if (stableCount >= 2) {
+                            const note = PitchDetector.frequencyToNote(frequency);
+                            if (note) {
+                                const noteBase = note.replace(/[0-9]/g, '');
+                                document.getElementById('detected-note-value').textContent = noteBase;
+
+                                // Auto-select the note
+                                if (!selectedNotes.has(noteBase)) {
+                                    selectedNotes.add(noteBase);
+                                    saveSelectedNotes();
+                                    renderNoteButtons();
+                                    updateDisplay();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            requestAnimationFrame(detectPitch);
+        }
+
+        init();
+    </script>
+</body>
+</html>
