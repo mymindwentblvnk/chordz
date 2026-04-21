@@ -86,8 +86,13 @@
 
             <!-- Keyboard Reference -->
             <div id="keyboard-container" style="display: none; margin-bottom: 25px;">
-                <div style="text-align: center; margin-bottom: 10px; font-size: 0.9rem; color: var(--text-secondary);">Reference Keyboard</div>
-                <div style="background: var(--background); padding: 30px; border-radius: 12px; overflow-x: auto;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Reference Keyboard</div>
+                    <button id="keyboard-toggle" style="padding: 5px 12px; background: var(--surface); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">
+                        <span id="keyboard-toggle-icon">▼</span> <span id="keyboard-toggle-text">Hide</span>
+                    </button>
+                </div>
+                <div id="keyboard-content" style="background: var(--background); padding: 30px; border-radius: 12px; overflow-x: auto;">
                     <div style="display: flex; justify-content: center;">
                         <div id="keyboard" style="position: relative; display: flex; height: 200px;"></div>
                     </div>
@@ -150,10 +155,13 @@
             romans: ['i', 'ii°', 'III', 'iv', 'v', 'VI', 'VII']
         };
 
+        const KEYBOARD_COLLAPSED_KEY = 'chordz-find-chords-keyboard-collapsed';
+
         let currentKey = null;
         let currentMode = null;
         let currentScale = null;
         let correctAnswers = null;
+        let keyboardCollapsed = false;
 
         // Draw keyboard (simplified version from piano.js)
         function drawKeyboard() {
@@ -263,6 +271,9 @@
             document.getElementById('answer-table').style.display = 'block';
             document.getElementById('button-container').style.display = 'flex';
             document.getElementById('results').style.display = 'none';
+
+            // Load keyboard collapsed state
+            loadKeyboardState();
 
             // Clear all previous inputs and answers
             document.querySelectorAll('.answer-input').forEach(input => {
@@ -410,10 +421,55 @@
             document.getElementById('feedback').textContent = 'Compare your answers with the correct ones above and try a new challenge!';
         }
 
+        // Toggle keyboard visibility
+        function toggleKeyboard() {
+            keyboardCollapsed = !keyboardCollapsed;
+            const content = document.getElementById('keyboard-content');
+            const icon = document.getElementById('keyboard-toggle-icon');
+            const text = document.getElementById('keyboard-toggle-text');
+
+            if (keyboardCollapsed) {
+                content.style.display = 'none';
+                icon.textContent = '▶';
+                text.textContent = 'Show';
+            } else {
+                content.style.display = 'block';
+                icon.textContent = '▼';
+                text.textContent = 'Hide';
+            }
+
+            // Save state to localStorage
+            try {
+                localStorage.setItem(KEYBOARD_COLLAPSED_KEY, keyboardCollapsed.toString());
+            } catch (e) {
+                console.error('Failed to save keyboard state:', e);
+            }
+        }
+
+        // Load keyboard state
+        function loadKeyboardState() {
+            try {
+                const saved = localStorage.getItem(KEYBOARD_COLLAPSED_KEY);
+                if (saved === 'true') {
+                    keyboardCollapsed = true;
+                    const content = document.getElementById('keyboard-content');
+                    const icon = document.getElementById('keyboard-toggle-icon');
+                    const text = document.getElementById('keyboard-toggle-text');
+
+                    content.style.display = 'none';
+                    icon.textContent = '▶';
+                    text.textContent = 'Show';
+                }
+            } catch (e) {
+                console.error('Failed to load keyboard state:', e);
+            }
+        }
+
         // Event listeners
         document.getElementById('start-btn').addEventListener('click', () => startChallenge());
         document.getElementById('check-btn').addEventListener('click', checkAnswers);
         document.getElementById('show-answers-btn').addEventListener('click', showAnswers);
+        document.getElementById('keyboard-toggle').addEventListener('click', toggleKeyboard);
 
         // Check for URL parameters and auto-start if present
         (function checkUrlParams() {
