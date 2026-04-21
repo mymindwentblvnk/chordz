@@ -214,12 +214,16 @@
         }
 
         // Start new challenge
-        function startChallenge() {
-            // Random root note
-            currentKey = CHROMATIC_SCALE[Math.floor(Math.random() * CHROMATIC_SCALE.length)];
+        function startChallenge(specifiedRoot = null, specifiedMode = null) {
+            // Use specified values or random
+            currentKey = specifiedRoot || CHROMATIC_SCALE[Math.floor(Math.random() * CHROMATIC_SCALE.length)];
+            currentMode = specifiedMode || (Math.random() > 0.5 ? 'Major' : 'Minor');
 
-            // Random mode
-            currentMode = Math.random() > 0.5 ? 'Major' : 'Minor';
+            // Update URL with current challenge
+            const url = new URL(window.location);
+            url.searchParams.set('root', currentKey);
+            url.searchParams.set('mode', currentMode);
+            window.history.pushState({}, '', url);
 
             // Build scale
             currentScale = buildScale(currentKey, currentMode);
@@ -251,6 +255,11 @@
             document.getElementById('button-container').style.display = 'flex';
             document.getElementById('results').style.display = 'none';
 
+            // Hide any previously shown correct answers
+            document.querySelectorAll('.correct-answer').forEach(div => {
+                div.style.display = 'none';
+            });
+
             // Draw keyboard
             drawKeyboard();
 
@@ -275,6 +284,7 @@
                                data-row="${i}"
                                placeholder="e.g., C or Dm"
                                style="width: 100%; padding: 8px; background: var(--background); color: var(--text-primary); border: 2px solid var(--surface); border-radius: 6px;">
+                        <div class="correct-answer" data-row="${i}" data-field="chord" style="display: none; margin-top: 5px; padding: 5px 8px; background: rgba(99, 102, 241, 0.1); border-radius: 4px; font-size: 0.85rem; color: var(--primary-color);"></div>
                     </td>
                     <td style="padding: 10px; border: 1px solid var(--surface);">
                         <input type="text"
@@ -282,6 +292,7 @@
                                data-row="${i}"
                                placeholder="e.g., ${pattern.romans[i]}"
                                style="width: 100%; padding: 8px; background: var(--background); color: var(--text-primary); border: 2px solid var(--surface); border-radius: 6px; font-family: monospace;">
+                        <div class="correct-answer" data-row="${i}" data-field="roman" style="display: none; margin-top: 5px; padding: 5px 8px; background: rgba(99, 102, 241, 0.1); border-radius: 4px; font-size: 0.85rem; color: var(--primary-color);"></div>
                     </td>
                     <td style="padding: 10px; border: 1px solid var(--surface);">
                         <input type="text"
@@ -289,6 +300,7 @@
                                data-row="${i}"
                                placeholder="e.g., C - E - G"
                                style="width: 100%; padding: 8px; background: var(--background); color: var(--text-primary); border: 2px solid var(--surface); border-radius: 6px;">
+                        <div class="correct-answer" data-row="${i}" data-field="notes" style="display: none; margin-top: 5px; padding: 5px 8px; background: rgba(99, 102, 241, 0.1); border-radius: 4px; font-size: 0.85rem; color: var(--primary-color);"></div>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -304,6 +316,11 @@
         function checkAnswers() {
             let correct = 0;
             let total = 7 * 3; // 7 rows, 3 fields each (Chord, Roman, Notes)
+
+            // Hide correct answers if they were shown
+            document.querySelectorAll('.correct-answer').forEach(div => {
+                div.style.display = 'none';
+            });
 
             document.querySelectorAll('.answer-input').forEach(input => {
                 const row = parseInt(input.dataset.row);
@@ -355,31 +372,49 @@
 
         // Show answers
         function showAnswers() {
-            document.querySelectorAll('.answer-input').forEach(input => {
-                const row = parseInt(input.dataset.row);
+            // Show all correct answer divs
+            document.querySelectorAll('.correct-answer').forEach(answerDiv => {
+                const row = parseInt(answerDiv.dataset.row);
+                const field = answerDiv.dataset.field;
                 const correctAnswer = correctAnswers[row];
 
-                if (input.classList.contains('roman-input')) {
-                    input.value = correctAnswer.roman;
-                } else if (input.classList.contains('chord-input')) {
-                    input.value = correctAnswer.chord;
-                } else if (input.classList.contains('notes-input')) {
-                    input.value = correctAnswer.notes;
+                if (field === 'chord') {
+                    answerDiv.textContent = `✓ ${correctAnswer.chord}`;
+                } else if (field === 'roman') {
+                    answerDiv.textContent = `✓ ${correctAnswer.roman}`;
+                } else if (field === 'notes') {
+                    answerDiv.textContent = `✓ ${correctAnswer.notes}`;
                 }
 
-                input.style.borderColor = 'var(--primary-color)';
-                input.style.background = 'rgba(99, 102, 241, 0.1)';
+                answerDiv.style.display = 'block';
             });
 
             document.getElementById('results').style.display = 'block';
             document.getElementById('score-display').textContent = 'Answers Shown';
-            document.getElementById('feedback').textContent = 'Study these answers and try a new challenge!';
+            document.getElementById('feedback').textContent = 'Compare your answers with the correct ones above and try a new challenge!';
         }
 
         // Event listeners
-        document.getElementById('start-btn').addEventListener('click', startChallenge);
+        document.getElementById('start-btn').addEventListener('click', () => startChallenge());
         document.getElementById('check-btn').addEventListener('click', checkAnswers);
         document.getElementById('show-answers-btn').addEventListener('click', showAnswers);
+
+        // Check for URL parameters and auto-start if present
+        (function checkUrlParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const rootParam = urlParams.get('root');
+            const modeParam = urlParams.get('mode');
+
+            if (rootParam && modeParam) {
+                // Validate parameters
+                const validRoot = CHROMATIC_SCALE.includes(rootParam);
+                const validMode = modeParam === 'Major' || modeParam === 'Minor';
+
+                if (validRoot && validMode) {
+                    startChallenge(rootParam, modeParam);
+                }
+            }
+        })();
     </script>
 </body>
 </html>
