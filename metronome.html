@@ -24,67 +24,70 @@
     </nav>
 
     <div class="guide-container">
-        <header style="text-align: center; margin-bottom: 30px;">
-            <div class="header-icon" style="font-size: 2.5rem; margin-bottom: 5px;">⏱️</div>
-            <h1 style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin: 0 0 5px 0; font-size: 1.8rem;">Metronome</h1>
-            <p class="subtitle" style="margin: 0; font-size: 0.95rem;">Keep your rhythm steady</p>
+        <header style="text-align: center; margin-bottom: 20px;">
+            <div class="header-icon" style="font-size: 2rem; margin-bottom: 3px;">⏱️</div>
+            <h1 style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin: 0 0 3px 0; font-size: 1.5rem;">Metronome</h1>
+            <p class="subtitle" style="margin: 0; font-size: 0.85rem;">Keep your rhythm steady</p>
         </header>
 
-        <div class="guide-section" style="max-width: 500px; margin: 0 auto;">
+        <div class="guide-section" style="max-width: 450px; margin: 0 auto;">
             <!-- Visual Indicator -->
-            <div id="beat-indicator" style="margin-bottom: 30px; text-align: center;">
-                <div id="beat-circle" style="width: 120px; height: 120px; border-radius: 50%; background: var(--surface); border: 4px solid var(--surface); margin: 0 auto; display: flex; align-items: center; justify-content: center; transition: all 0.1s ease;">
-                    <div id="beat-number" style="font-size: 3rem; font-weight: bold; color: var(--text-secondary); font-family: 'Courier New', monospace;">-</div>
+            <div id="beat-indicator" style="margin-bottom: 20px; text-align: center;">
+                <div id="beat-circle" style="width: 80px; height: 80px; border-radius: 50%; background: var(--surface); border: 3px solid var(--surface); margin: 0 auto; display: flex; align-items: center; justify-content: center; transition: all 0.1s ease;">
+                    <div id="beat-number" style="font-size: 2rem; font-weight: bold; color: var(--text-secondary); font-family: 'Courier New', monospace;">-</div>
                 </div>
             </div>
 
             <!-- BPM Control -->
-            <div style="margin-bottom: 30px;">
-                <label style="display: block; margin-bottom: 10px; font-weight: 600; color: var(--text-primary); text-align: center;">
-                    Tempo: <span id="bpm-display" style="color: var(--primary-color); font-size: 1.3rem;">120</span> BPM
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 6px; font-weight: 600; color: var(--text-primary); text-align: center; font-size: 0.9rem;">
+                    Tempo: <span id="bpm-display" style="color: var(--primary-color); font-size: 1.2rem;">120</span> BPM
                 </label>
-                <input type="range" id="bpm-slider" min="40" max="240" value="120" step="1" style="width: 100%; height: 8px; border-radius: 5px; outline: none; -webkit-appearance: none; background: var(--surface);">
-                <div style="display: flex; justify-content: space-between; margin-top: 5px; color: var(--text-secondary); font-size: 0.85rem;">
+                <input type="range" id="bpm-slider" min="40" max="240" value="120" step="1" style="width: 100%; height: 6px; border-radius: 5px; outline: none; -webkit-appearance: none; background: var(--surface);">
+                <div style="display: flex; justify-content: space-between; margin-top: 3px; color: var(--text-secondary); font-size: 0.75rem;">
                     <span>40</span>
                     <span>240</span>
                 </div>
             </div>
 
-            <!-- Time Signature -->
-            <div style="margin-bottom: 30px;">
-                <label style="display: block; margin-bottom: 10px; font-weight: 600; color: var(--text-primary); text-align: center;">
-                    Beats per Measure
-                </label>
-                <select id="beats-per-measure" style="width: 100%; padding: 12px; font-size: 1rem; background: var(--background); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 8px; cursor: pointer;">
-                    <option value="2">2/4</option>
-                    <option value="3">3/4</option>
-                    <option value="4" selected>4/4</option>
-                    <option value="5">5/4</option>
-                    <option value="6">6/8</option>
-                    <option value="7">7/8</option>
-                </select>
-            </div>
+            <!-- Time Signature and Sound in Grid -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                <!-- Time Signature -->
+                <div>
+                    <label style="display: block; margin-bottom: 6px; font-weight: 600; color: var(--text-primary); font-size: 0.85rem;">
+                        Time Signature
+                    </label>
+                    <select id="beats-per-measure" style="width: 100%; padding: 8px; font-size: 0.9rem; background: var(--background); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 8px; cursor: pointer;">
+                        <option value="2">2/4</option>
+                        <option value="3">3/4</option>
+                        <option value="4" selected>4/4</option>
+                        <option value="5">5/4</option>
+                        <option value="6">6/8</option>
+                        <option value="7">7/8</option>
+                    </select>
+                </div>
 
-            <!-- Sound Selection -->
-            <div style="margin-bottom: 30px;">
-                <label style="display: block; margin-bottom: 10px; font-weight: 600; color: var(--text-primary); text-align: center;">
-                    Sound
-                </label>
-                <select id="sound-select" style="width: 100%; padding: 12px; font-size: 1rem; background: var(--background); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 8px; cursor: pointer;">
-                    <option value="click">Click</option>
-                    <option value="woodblock">Woodblock</option>
-                    <option value="beep">Beep</option>
-                    <option value="cowbell">Cowbell</option>
-                </select>
+                <!-- Sound Selection -->
+                <div>
+                    <label style="display: block; margin-bottom: 6px; font-weight: 600; color: var(--text-primary); font-size: 0.85rem;">
+                        Sound
+                    </label>
+                    <select id="sound-select" style="width: 100%; padding: 8px; font-size: 0.9rem; background: var(--background); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 8px; cursor: pointer;">
+                        <option value="click">Click</option>
+                        <option value="woodblock">Woodblock</option>
+                        <option value="beep">Beep</option>
+                        <option value="cowbell">Cowbell</option>
+                    </select>
+                </div>
             </div>
 
             <!-- Start/Stop Button -->
-            <button id="start-stop-btn" style="width: 100%; padding: 20px; font-size: 1.3rem; font-weight: 600; background: var(--primary-color); color: white; border: none; border-radius: 10px; cursor: pointer; margin-bottom: 20px;">
+            <button id="start-stop-btn" style="width: 100%; padding: 14px; font-size: 1.1rem; font-weight: 600; background: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer; margin-bottom: 10px;">
                 ▶️ Start
             </button>
 
             <!-- Tap Tempo -->
-            <button id="tap-tempo-btn" style="width: 100%; padding: 15px; font-size: 1.1rem; font-weight: 600; background: var(--surface); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 10px; cursor: pointer;">
+            <button id="tap-tempo-btn" style="width: 100%; padding: 12px; font-size: 1rem; font-weight: 600; background: var(--surface); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 8px; cursor: pointer;">
                 👆 Tap Tempo
             </button>
         </div>
@@ -94,16 +97,16 @@
         #bpm-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             background: var(--primary-color);
             cursor: pointer;
         }
 
         #bpm-slider::-moz-range-thumb {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             background: var(--primary-color);
             cursor: pointer;
