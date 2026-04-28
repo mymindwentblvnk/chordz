@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Chordz">
+    <title>Circle of Fifths - Chordz Wiki</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="guide-styles.css">
+</head>
+<body>
+    <nav class="main-nav">
+        <a href="training.html" class="nav-link">🎮 Training</a>
+        <a href="chord-progressions.html" class="nav-link">📖 Chord Progressions</a>
+        <a href="metronome.html" class="nav-link">⏱️ Metronome</a>
+        <a href="find-note.html" class="nav-link">🎤 Find Note</a>
+        <a href="find-scale.html" class="nav-link">🎼 Find Scale</a>
+        <a href="wiki.html" class="nav-link active">📚 Wiki</a>
+    </nav>
+
+    <div class="guide-container">
+        <div class="back-nav">
+            <a href="wiki.html" class="back-link">← Back to Wiki</a>
+        </div>
+
+        <header style="text-align: center; margin-bottom: 40px;">
+            <div class="header-icon">🔄</div>
+            <h1 style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Circle of Fifths</h1>
+            <p class="subtitle">The Ultimate Music Theory Map</p>
+        </header>
+
+        <!-- Main Content -->
+        <div class="guide-section">
+            <h2>What Is the Circle of Fifths?</h2>
+            <p>The Circle of Fifths is a visual diagram that shows the relationship between all 12 keys in music. It's one of the most powerful tools in music theory because it reveals patterns that help with:</p>
+
+            <ul class="step-list">
+                <li><strong>Key signatures:</strong> How many sharps or flats each key has</li>
+                <li><strong>Chord progressions:</strong> Which chords sound good together</li>
+                <li><strong>Modulation:</strong> Changing keys smoothly</li>
+                <li><strong>Relative keys:</strong> Finding the minor key of a major key (and vice versa)</li>
+                <li><strong>Composition:</strong> Building interesting harmonic progressions</li>
+            </ul>
+
+            <h3>How It's Organized</h3>
+            <p>The circle arranges all 12 major keys in a clockwise pattern, with each key being a <strong>perfect fifth</strong> (7 semitones) higher than the previous one:</p>
+
+            <div style="background: var(--background); padding: 30px; border-radius: 12px; margin: 20px 0; text-align: center;">
+                <div style="font-size: 1.5rem; color: var(--text-primary); margin-bottom: 20px; font-weight: bold;">
+                    The Circle (Clockwise)
+                </div>
+                <div style="font-size: 1.2rem; color: var(--primary-color); font-family: 'Courier New', monospace; line-height: 2;">
+                    C → G → D → A → E → B → F#/Gb → Db → Ab → Eb → Bb → F → C
+                </div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 15px;">
+                    Each step moves up by a perfect fifth (7 semitones)
+                </div>
+            </div>
+
+            <h3>Visual Layout</h3>
+            <p>Imagine a clock face where each hour represents a key:</p>
+
+            <div style="background: var(--surface); padding: 30px; border-radius: 12px; margin: 20px 0;">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 400px; margin: 0 auto; text-align: center;">
+                    <div></div>
+                    <div style="padding: 15px; background: var(--primary-color); color: white; border-radius: 8px; font-weight: bold;">C (12)</div>
+                    <div></div>
+
+                    <div style="padding: 15px; background: var(--surface-light); color: var(--text-primary); border-radius: 8px;">F (11)</div>
+                    <div></div>
+                    <div style="padding: 15px; background: var(--surface-light); color: var(--text-primary); border-radius: 8px;">G (1)</div>
+
+                    <div style="padding: 15px; background: var(--surface-light); color: var(--text-primary); border-radius: 8px;">Bb (10)</div>
+                    <div style="color: var(--text-secondary); padding: 15px;">🔄</div>
+                    <div style="padding: 15px; background: var(--surface-light); color: var(--text-primary); border-radius: 8px;">D (2)</div>
+
+                    <div style="padding: 15px; background: var(--surface-light); color: var(--text-primary); border-radius: 8px;">Eb (9)</div>
+                    <div></div>
+                    <div style="padding: 15px; background: var(--surface-light); color: var(--text-primary); border-radius: 8px;">A (3)</div>
+
+                    <div style="padding: 15px; background: var(--surface-light); color: var(--text-primary); border-radius: 8px;">Ab (8)</div>
+                    <div></div>
+                    <div style="padding: 15px; background: var(--surface-light); color: var(--text-primary); border-radius: 8px;">E (4)</div>
+
+                    <div style="padding: 15px; background: var(--surface-light); color: var(--text-primary); border-radius: 8px;">Db (7)</div>
+                    <div></div>
+                    <div style="padding: 15px; background: var(--surface-light); color: var(--text-primary); border-radius: 8px;">B (5)</div>
+
+                    <div></div>
+                    <div style="padding: 15px; background: var(--surface-light); color: var(--text-primary); border-radius: 8px;">F#/Gb (6)</div>
+                    <div></div>
+                </div>
+                <div style="text-align: center; margin-top: 15px; color: var(--text-secondary); font-size: 0.85rem;">
+                    Numbers show "clock position" - C is at the top (12 o'clock)
+                </div>
+            </div>
+
+            <h3>Sharps and Flats Pattern</h3>
+            <p>One of the most useful features: the circle shows how many sharps or flats each key has!</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Direction</th>
+                        <th>Pattern</th>
+                        <th>Keys</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Clockwise (Right)</td>
+                        <td>Add 1 sharp each step</td>
+                        <td>C → G (1#) → D (2#) → A (3#) → E (4#) → B (5#)</td>
+                    </tr>
+                    <tr>
+                        <td>Counter-clockwise (Left)</td>
+                        <td>Add 1 flat each step</td>
+                        <td>C → F (1♭) → Bb (2♭) → Eb (3♭) → Ab (4♭) → Db (5♭)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="tip-box">
+                <strong>💡 Easy to Remember:</strong><br>
+                <strong>Sharps go clockwise</strong> (right) - think "sharp turn right"<br>
+                <strong>Flats go counter-clockwise</strong> (left)
+            </div>
+
+            <h3>Order of Sharps and Flats</h3>
+            <p>The circle also reveals the ORDER in which sharps and flats appear in key signatures:</p>
+
+            <div class="example-box">
+                <strong>Order of Sharps (clockwise):</strong> F# - C# - G# - D# - A# - E# - B#<br>
+                <strong>Mnemonic:</strong> <em>Father Charles Goes Down And Ends Battle</em>
+            </div>
+
+            <div class="example-box">
+                <strong>Order of Flats (counter-clockwise):</strong> Bb - Eb - Ab - Db - Gb - Cb - Fb<br>
+                <strong>Mnemonic:</strong> <em>Battle Ends And Down Goes Charles' Father</em><br>
+                (Notice it's the reverse of the sharps!)
+            </div>
+
+            <h3>Relative Minor Keys</h3>
+            <p>Every major key has a relative minor that shares the same key signature. On the circle, the relative minor is found by moving <strong>3 steps counter-clockwise</strong> (or looking at the inner ring if the circle shows both):</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Major Key</th>
+                        <th>Relative Minor</th>
+                        <th>Key Signature</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>C Major</td>
+                        <td>A Minor</td>
+                        <td>No sharps or flats</td>
+                    </tr>
+                    <tr>
+                        <td>G Major</td>
+                        <td>E Minor</td>
+                        <td>1 sharp (F#)</td>
+                    </tr>
+                    <tr>
+                        <td>D Major</td>
+                        <td>B Minor</td>
+                        <td>2 sharps (F#, C#)</td>
+                    </tr>
+                    <tr>
+                        <td>F Major</td>
+                        <td>D Minor</td>
+                        <td>1 flat (Bb)</td>
+                    </tr>
+                    <tr>
+                        <td>Bb Major</td>
+                        <td>G Minor</td>
+                        <td>2 flats (Bb, Eb)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="tip-box">
+                <strong>🎵 Quick Trick:</strong> To find the relative minor, count down 3 semitones (or up 9 semitones) from the major key:<br>
+                C → B → Bb → <strong>A</strong> (A minor is relative to C major)
+            </div>
+
+            <h3>Using the Circle for Chord Progressions</h3>
+            <p>Keys that are close together on the circle sound good when played together. This is why the circle is so useful for composing:</p>
+
+            <div class="example-box">
+                <strong>Neighboring Keys (1 step apart):</strong><br>
+                Keys next to each other share many common notes and transition smoothly.<br><br>
+                <strong>Example in C:</strong><br>
+                • C → G (neighbors) sounds natural<br>
+                • C → F (neighbors) sounds natural<br>
+                • C → F# (opposite side) sounds jarring
+            </div>
+
+            <div class="example-box">
+                <strong>Common Progressions Using the Circle:</strong><br><br>
+                <strong>I - IV - V progression:</strong><br>
+                In C major: C - F - G<br>
+                Notice: F is 1 step left, G is 1 step right on the circle<br><br>
+                <strong>I - vi - IV - V progression:</strong><br>
+                In C major: C - Am - F - G<br>
+                All keys are close neighbors on the circle
+            </div>
+
+            <h3>Modulation (Changing Keys)</h3>
+            <p>When you want to change keys in a song, moving to a nearby key on the circle creates a smooth transition:</p>
+
+            <ul class="step-list">
+                <li><strong>1 step away:</strong> Very smooth, closely related (e.g., C to G or C to F)</li>
+                <li><strong>2 steps away:</strong> Smooth but more noticeable</li>
+                <li><strong>3 steps away:</strong> Clear key change, still musical (e.g., C to A minor - relative minor!)</li>
+                <li><strong>6 steps away (opposite side):</strong> Dramatic, distant key change</li>
+            </ul>
+
+            <h3>Practical Applications</h3>
+
+            <div class="example-box">
+                <strong>1. Finding Key Signatures</strong><br>
+                "What key has 3 sharps?"<br>
+                Start at C, move clockwise 3 steps: C → G → D → <strong>A major</strong><br>
+                The sharps are: F#, C#, G# (first 3 in the order of sharps)
+            </div>
+
+            <div class="example-box">
+                <strong>2. Transposing Songs</strong><br>
+                "This song is in D but I want it in E"<br>
+                Look at the circle: D → A → <strong>E</strong> (2 steps clockwise)<br>
+                Every chord in the song moves 2 steps clockwise too!
+            </div>
+
+            <div class="example-box">
+                <strong>3. Building Chord Progressions</strong><br>
+                "I'm in G major, what chords work well?"<br>
+                Look at neighbors on circle: C (left), D (right), and E minor (relative minor)<br>
+                Common progression: G - C - D - G (I - IV - V - I)
+            </div>
+
+            <div class="example-box">
+                <strong>4. Understanding Borrowed Chords</strong><br>
+                "Why does a C major song sometimes use an Am chord?"<br>
+                Am is the relative minor (3 steps counter-clockwise)<br>
+                They share the same notes, so Am fits naturally in C major
+            </div>
+
+            <h3>How to Memorize the Circle</h3>
+
+            <div class="tip-box">
+                <strong>🎯 Memory Tips:</strong><br><br>
+                <strong>1. Start with C at the top</strong> (12 o'clock)<br>
+                <strong>2. Move clockwise by fifths:</strong> C-G-D-A-E-B-F#<br>
+                <strong>3. Remember:</strong> Each clockwise step adds one sharp<br>
+                <strong>4. Or go backward:</strong> Counter-clockwise adds flats<br>
+                <strong>5. Bottom (6 o'clock):</strong> The "turnaround point" where sharps meet flats (F#/Gb)
+            </div>
+
+            <div class="tip-box">
+                <strong>💡 Another Trick:</strong><br>
+                The circle is just the notes going up by 7 semitones repeatedly!<br>
+                C (0) → G (7) → D (14=2) → A (21=9) → E (28=4) → B (35=11) → F#/Gb (42=6)<br>
+                Keep adding 7 and wrap around at 12
+            </div>
+
+            <h3>Why It's Called "Fifths"</h3>
+            <p>Each step around the circle is an <strong>interval of a perfect fifth</strong> (7 semitones or 5 scale degrees):</p>
+
+            <div class="example-box">
+                <strong>C to G = Perfect Fifth</strong><br>
+                C major scale: C - D - E - F - G<br>
+                1st to 5th note = 5 scale degrees<br>
+                Semitones: C to G = 7 semitones
+            </div>
+
+            <p>This interval is special because it sounds very consonant and stable - it's the foundation of Western harmony!</p>
+
+            <div class="tip-box">
+                <strong>🎼 Fun Fact:</strong> Going counter-clockwise is intervals of <strong>perfect fourths</strong> (5 semitones). The circle works both ways!
+            </div>
+        </div>
+
+        <!-- Related Topics -->
+        <div class="guide-section">
+            <h3 style="text-align: center; color: var(--primary-color);">Related Topics</h3>
+            <div class="wiki-nav-links" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                <a href="wiki-building-scales.html" class="wiki-nav-link">← Building Scales</a>
+                <a href="wiki-natural-chords.html" class="wiki-nav-link">Natural Chords →</a>
+                <a href="wiki-minor-scales.html" class="wiki-nav-link">Minor Scales →</a>
+                <a href="wiki.html" class="wiki-nav-link">📚 Back to Wiki</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
