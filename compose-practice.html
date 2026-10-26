@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Chordz">
+    <title>Compose Practice - Chordz</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="guide-styles.css">
+    <script src="page-memory.js"></script>
+</head>
+<body>
+    <nav class="main-nav">
+        <a href="training.html" class="nav-link">🎮 Training</a>
+        <a href="chord-progressions.html" class="nav-link">📖 Chord Progressions</a>
+        <a href="compose.html" class="nav-link active">🧭 Compose</a>
+        <a href="metronome.html" class="nav-link">⏱️ Metronome</a>
+        <a href="find-note.html" class="nav-link">🎤 Find Note</a>
+        <a href="find-scale.html" class="nav-link">🎼 Find Scale</a>
+        <a href="wiki.html" class="nav-link">📚 Wiki</a>
+    </nav>
+
+    <div class="guide-container">
+        <div class="back-nav">
+            <a href="compose.html" class="back-link">← Back to Compose</a>
+        </div>
+
+        <header style="text-align: center; margin-bottom: 20px;">
+            <div class="header-icon" style="font-size: 2.5rem; margin-bottom: 5px;">🏋️</div>
+            <h1 style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin: 0 0 5px 0; font-size: 1.8rem;">Compose Practice</h1>
+            <p class="subtitle" style="margin: 0; font-size: 0.95rem;">See Roman numerals, work out the keys</p>
+        </header>
+
+        <div class="guide-section practice-section" id="practice-root">
+            <noscript>This page needs JavaScript.</noscript>
+        </div>
+
+        <div class="guide-section practice-section recipe-help">
+            <h3>The three things to know</h3>
+            <ol class="explain-list">
+                <li><strong>The scale.</strong> Major: W-W-H-W-W-W-H. Natural minor: W-H-W-W-H-W-W.</li>
+                <li><strong>The chord types.</strong> Major: I ii iii IV V vi vii°. Minor: i ii° III iv v VI VII. (Uppercase = major, lowercase = minor, ° = diminished.)</li>
+                <li><strong>Skip - pick - skip - pick.</strong> From the chord's scale note, skip one note, pick the next, skip one, pick the next.</li>
+            </ol>
+        </div>
+    </div>
+
+    <style>
+        .practice-section { max-width: 760px; margin: 0 auto 24px auto; }
+        .practice-section h3 { font-size: 1.1rem; margin: 20px 0 8px 0; }
+        .note-line { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; margin: 8px 0; }
+        .alias { color: var(--text-secondary); font-weight: normal; font-size: 0.85em; }
+
+        .stats-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 14px; }
+        .stat { padding: 6px 12px; font-size: 0.85rem; background: var(--surface); border: 1px solid var(--surface-light); border-radius: 999px; color: var(--text-secondary); }
+        .stat strong { color: var(--text-primary); }
+
+        .settings { background: var(--surface); border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; }
+        .settings summary { cursor: pointer; font-size: 0.9rem; color: var(--text-secondary); min-height: 32px; display: flex; align-items: center; }
+        .setting-label { font-size: 0.85rem; font-weight: 600; margin: 12px 0 6px 0; }
+
+        .segmented { display: inline-flex; flex-wrap: wrap; border: 2px solid var(--surface-light); border-radius: 10px; overflow: hidden; }
+        .segmented button { padding: 10px 16px; font-size: 0.9rem; font-weight: 600; background: var(--surface); color: var(--text-secondary); border: none; cursor: pointer; min-height: 44px; font-family: inherit; }
+        .segmented button.selected { background: var(--primary-color); color: white; }
+
+        .question-card { text-align: center; background: var(--surface); border-left: 4px solid var(--primary-color); border-radius: 12px; padding: 18px 16px; margin-bottom: 16px; }
+        .q-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); margin-top: 4px; }
+        .q-key { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
+        .q-romans { font-family: 'Georgia', serif; font-size: 1.9rem; color: var(--primary-color); margin-bottom: 8px; }
+
+        .slots { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin-bottom: 14px; }
+        .slot { text-align: center; padding: 10px 6px; background: var(--surface); color: var(--text-primary); border: 2px solid var(--surface-light); border-radius: 10px; cursor: pointer; font-family: inherit; min-height: 76px; }
+        .slot.active { border-color: var(--primary-color); background: rgba(99, 102, 241, 0.18); }
+        .slot.ok { border-color: var(--accent-happy); background: rgba(16, 185, 129, 0.15); }
+        .slot.bad { border-color: var(--accent-tense); background: rgba(239, 68, 68, 0.15); }
+        .slot-roman { font-family: 'Georgia', serif; font-size: 1.1rem; color: var(--primary-color); }
+        .slot-notes { font-family: 'Courier New', monospace; font-size: 0.85rem; min-height: 1.2em; margin: 2px 0; }
+        .slot-count { font-size: 0.7rem; color: var(--text-secondary); }
+
+        /* One-octave input keyboard */
+        .pk { position: relative; margin: 6px 0 14px 0; touch-action: manipulation; }
+        .pk-whites { display: flex; height: 150px; }
+        .pk-key { font-family: inherit; cursor: pointer; padding: 0; }
+        .pk-key span { display: block; font-size: 0.8rem; font-weight: 700; pointer-events: none; }
+        .pk-white { position: relative; flex: 1; background: #e2e8f0; color: #0f172a; border: 1px solid #64748b; border-radius: 0 0 8px 8px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px; }
+        .pk-black { position: absolute; top: 0; width: 11%; height: 62%; background: #0f172a; color: #cbd5e1; border: 1px solid #020617; border-radius: 0 0 6px 6px; z-index: 2; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 6px; }
+        .pk-black span { font-size: 0.6rem; line-height: 1.2; }
+        .pk-white.sel { background: #818cf8; color: white; }
+        .pk-black.sel { background: #6366f1; color: white; }
+        .pk-key:disabled { cursor: default; opacity: 0.7; }
+
+        .hint-box { margin: 8px 0; padding: 10px 14px; background: rgba(245, 158, 11, 0.12); border-left: 4px solid var(--accent-energetic); border-radius: 8px; font-size: 0.92rem; line-height: 1.5; }
+        .feedback { margin: 10px 0; padding: 10px 14px; border-radius: 8px; font-size: 0.95rem; line-height: 1.5; }
+        .feedback.ok { background: rgba(16, 185, 129, 0.15); border-left: 4px solid var(--accent-happy); }
+        .feedback.bad { background: rgba(239, 68, 68, 0.12); border-left: 4px solid var(--accent-tense); }
+        .feedback.info { background: rgba(99, 102, 241, 0.15); border-left: 4px solid var(--primary-color); }
+
+        .answer-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+        .answer-chord { padding: 8px 12px; background: var(--surface); border-radius: 8px; font-family: 'Courier New', monospace; font-size: 0.9rem; }
+        .answer-chord strong { font-family: inherit; color: var(--accent-happy); margin-right: 4px; }
+        .explain-list { margin: 8px 0 8px 22px; padding: 0; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.6; }
+        .explain-list li { margin-bottom: 8px; }
+
+        .button-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+        .nav-btn { padding: 12px 20px; font-size: 0.95rem; font-weight: 600; border-radius: 10px; border: 2px solid transparent; cursor: pointer; min-height: 46px; font-family: inherit; }
+        .nav-btn.primary { background: var(--primary-color); color: white; }
+        .nav-btn.secondary { background: var(--surface); color: var(--text-primary); border-color: var(--surface-light); }
+        .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .nav-btn:not(:disabled):hover { filter: brightness(1.1); }
+
+        @media (max-width: 600px) {
+            .slots { grid-template-columns: repeat(2, 1fr); }
+            .pk-whites { height: 130px; }
+            .q-romans { font-size: 1.5rem; }
+            .q-key { font-size: 1.6rem; }
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js"></script>
+    <script src="music-theory.js"></script>
+    <script src="compose-data.js"></script>
+    <script src="compose.js"></script>
+    <script src="compose-practice.js"></script>
+</body>
+</html>
