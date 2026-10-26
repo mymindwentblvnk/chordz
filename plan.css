@@ -1,0 +1,71 @@
+/* Four-week plan: overview page and the 28 day pages */
+
+.plan-section { max-width: 760px; margin: 0 auto 24px auto; }
+.plan-section h2 { font-size: 1.3rem; margin: 0 0 8px 0; }
+.plan-section h3 { font-size: 1.05rem; margin: 22px 0 8px 0; }
+.plan-intro { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.55; margin: 0 0 12px 0; }
+.plan-note { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.5; margin: 8px 0; }
+
+/* Progress */
+.plan-progress { background: var(--surface); border-radius: 12px; padding: 16px; margin-bottom: 18px; }
+.plan-progress-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; font-size: 0.95rem; }
+.plan-bar { height: 10px; background: var(--surface-light); border-radius: 999px; overflow: hidden; }
+.plan-bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--accent-happy)); border-radius: 999px; transition: width 0.3s ease; }
+.plan-continue { display: inline-block; margin-top: 12px; }
+
+/* Buttons */
+.plan-btn { display: inline-block; padding: 12px 20px; font-size: 0.95rem; font-weight: 600; border-radius: 10px; border: 2px solid transparent; cursor: pointer; min-height: 46px; font-family: inherit; text-decoration: none; text-align: center; line-height: 1.3; }
+.plan-btn.primary { background: var(--primary-color); color: white; }
+.plan-btn.secondary { background: var(--surface); color: var(--text-primary); border-color: var(--surface-light); }
+.plan-btn.done { background: var(--accent-happy); color: white; }
+.plan-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.plan-btn:not(:disabled):hover { filter: brightness(1.1); }
+.plan-btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+
+/* Messages and boxes */
+.plan-message { margin-top: 12px; padding: 10px 14px; border-radius: 8px; font-size: 0.9rem; line-height: 1.5; }
+.plan-message.ok { background: rgba(16, 185, 129, 0.15); border-left: 4px solid var(--accent-happy); }
+.plan-message.error { background: rgba(239, 68, 68, 0.12); border-left: 4px solid var(--accent-tense); }
+
+/* Weeks and day cards */
+.plan-week { margin-bottom: 26px; }
+.plan-week-header { margin-bottom: 10px; }
+.plan-week-title { font-size: 1.15rem; font-weight: 700; }
+.plan-week-goal { font-size: 0.9rem; color: var(--text-secondary); margin-top: 2px; }
+.plan-days { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.plan-card { position: relative; display: block; padding: 12px 14px; background: var(--surface); color: var(--text-primary); text-decoration: none; border: 2px solid var(--surface-light); border-radius: 12px; transition: all 0.2s ease; }
+.plan-card:hover { border-color: var(--primary-color); transform: translateY(-2px); }
+.plan-card.done { border-color: var(--accent-happy); background: rgba(16, 185, 129, 0.1); }
+.plan-card-top { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 4px; }
+.plan-card-day { font-weight: 700; color: var(--primary-color); }
+.plan-card-title { font-size: 0.98rem; font-weight: 600; line-height: 1.3; }
+.plan-card-check { position: absolute; top: 8px; right: 10px; color: var(--accent-happy); font-weight: 700; }
+
+/* Day page */
+.plan-day-head { text-align: center; margin-bottom: 18px; }
+.plan-day-kicker { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 4px; }
+.plan-day-title { font-size: 1.7rem; margin: 0 0 8px 0; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.plan-badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.plan-badge { padding: 4px 12px; font-size: 0.8rem; font-weight: 600; background: var(--surface); border: 1px solid var(--surface-light); border-radius: 999px; color: var(--text-secondary); }
+.plan-box { background: var(--surface); border-radius: 12px; padding: 14px 16px; margin: 14px 0; }
+.plan-box.goal { border-left: 4px solid var(--primary-color); }
+.plan-box.check { border-left: 4px solid var(--accent-happy); }
+.plan-box.exercise { border-left: 4px solid var(--secondary-color); }
+.plan-box.confirm { border-left: 4px solid var(--accent-happy); }
+.plan-badge.done { color: white; background: var(--accent-happy); border-color: var(--accent-happy); }
+.plan-box.tip { border-left: 4px solid var(--accent-energetic); background: rgba(245, 158, 11, 0.1); }
+.plan-box-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); margin-bottom: 4px; }
+.plan-steps { list-style: none; margin: 8px 0; padding: 0; counter-reset: step; }
+.plan-steps li { counter-increment: step; position: relative; padding: 12px 12px 12px 48px; margin-bottom: 8px; background: var(--surface); border-radius: 10px; line-height: 1.55; font-size: 0.95rem; }
+.plan-steps li::before { content: counter(step); position: absolute; left: 12px; top: 12px; width: 26px; height: 26px; border-radius: 50%; background: var(--primary-color); color: white; font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; }
+.plan-step-min { display: inline-block; margin-right: 6px; padding: 1px 8px; font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); background: var(--surface-light); border-radius: 999px; }
+.plan-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.plan-link { padding: 10px 14px; font-size: 0.9rem; font-weight: 600; color: var(--text-primary); background: var(--surface); border: 2px solid var(--surface-light); border-radius: 10px; text-decoration: none; min-height: 24px; }
+.plan-link:hover { border-color: var(--primary-color); }
+.plan-pager { display: flex; justify-content: space-between; gap: 10px; margin-top: 24px; }
+
+@media (max-width: 600px) {
+    .plan-day-title { font-size: 1.4rem; }
+    .plan-days { grid-template-columns: 1fr; }
+    .plan-pager .plan-btn { flex: 1; padding: 12px 8px; }
+}

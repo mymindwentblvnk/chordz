@@ -18,6 +18,7 @@
         <a href="training.html" class="nav-link">🎮 Training</a>
         <a href="chord-progressions.html" class="nav-link">📖 Chord Progressions</a>
         <a href="compose.html" class="nav-link active">🧭 Compose</a>
+        <a href="plan.html" class="nav-link">🗓️ Plan</a>
         <a href="metronome.html" class="nav-link">⏱️ Metronome</a>
         <a href="find-note.html" class="nav-link">🎤 Find Note</a>
         <a href="find-scale.html" class="nav-link">🎼 Find Scale</a>
@@ -93,6 +94,10 @@
         .pk-black.sel { background: #6366f1; color: white; }
         .pk-key:disabled { cursor: default; opacity: 0.7; }
 
+        .lesson-banner { background: var(--surface); border-left: 4px solid var(--secondary-color); border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; }
+        .lesson-banner-title { font-weight: 700; margin-bottom: 4px; }
+        .lesson-banner-line { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 6px; line-height: 1.5; }
+        .nav-btn { text-decoration: none; display: inline-flex; align-items: center; }
         .hint-box { margin: 8px 0; padding: 10px 14px; background: rgba(245, 158, 11, 0.12); border-left: 4px solid var(--accent-energetic); border-radius: 8px; font-size: 0.92rem; line-height: 1.5; }
         .feedback { margin: 10px 0; padding: 10px 14px; border-radius: 8px; font-size: 0.95rem; line-height: 1.5; }
         .feedback.ok { background: rgba(16, 185, 129, 0.15); border-left: 4px solid var(--accent-happy); }
@@ -124,6 +129,8 @@
     <script src="music-theory.js"></script>
     <script src="compose-data.js"></script>
     <script src="compose.js"></script>
+    <script src="plan-data.js"></script>
+    <script src="plan-core.js"></script>
     <script src="compose-practice.js"></script>
 </body>
 </html>
