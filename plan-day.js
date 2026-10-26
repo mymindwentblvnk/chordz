@@ -7,17 +7,17 @@
 
 function planDayRender(dayNumber) {
     const root = document.getElementById('day-root');
-    const day = PLAN_DAYS.find(d => d.day === dayNumber);
+    const day = planFindDay(dayNumber);
     if (!day) {
-        root.innerHTML = '<p class="plan-intro">This day does not exist. <a href="plan.html">Back to the plan</a></p>';
+        root.innerHTML = '<p class="plan-intro">This lesson does not exist. <a href="plan.html">Back to the plan</a></p>';
         return;
     }
 
     const week = PLAN_WEEKS.find(w => w.week === day.week);
     const type = PLAN_TYPES[day.type];
-    const done = planLoadProgress().has(day.day);
-    const prev = PLAN_DAYS.find(d => d.day === day.day - 1);
-    const next = PLAN_DAYS.find(d => d.day === day.day + 1);
+    const entry = planLoadProgress().get(day.day) || null;
+    const prev = planFindDay(day.day - 1);
+    const next = planFindDay(day.day + 1);
 
     document.title = `Day ${day.day}: ${day.title} - Chordz`;
 
@@ -37,15 +37,17 @@ function planDayRender(dayNumber) {
             <div class="plan-badges">
                 <span class="plan-badge">${type.icon} ${type.label}</span>
                 <span class="plan-badge">⏱️ ${day.minutes} min</span>
-                ${done ? '<span class="plan-badge">✓ Done</span>' : ''}
+                ${entry ? `<span class="plan-badge done">✓ Done${entry.how === 'auto' ? ' (exercise passed)' : ''}</span>` : ''}
             </div>
         </div>
 
         <div class="plan-section">
             <div class="plan-box goal"><div class="plan-box-label">Goal</div>${planEscape(day.goal)}</div>
 
-            <h3>Today's steps</h3>
+            <h3>The steps</h3>
             <ol class="plan-steps">${steps}</ol>
+
+            ${day.exercise ? planDayExerciseHtml(day) : ''}
 
             <h3>Open in Chordz</h3>
             <div class="plan-links">${links}</div>
@@ -53,11 +55,7 @@ function planDayRender(dayNumber) {
             <div class="plan-box check"><div class="plan-box-label">Check yourself</div>${planEscape(day.check)}</div>
             <div class="plan-box tip"><div class="plan-box-label">Tip</div>${planEscape(day.tip)}</div>
 
-            <div class="plan-btn-row">
-                <button class="plan-btn ${done ? 'done' : 'primary'}" data-action="toggle-done">${done ? '✓ Done (tap to undo)' : 'Mark as done'}</button>
-                <button class="plan-btn secondary" data-action="add-to-calendar">📅 Add this day to my calendar</button>
-            </div>
-            <div id="plan-message"></div>
+            ${planDayConfirmHtml(day, entry)}
 
             <div class="plan-pager">
                 ${prev ? `<a class="plan-btn secondary" href="${planDayFileName(prev.day)}">← Day ${prev.day}</a>` : '<span></span>'}
@@ -66,35 +64,73 @@ function planDayRender(dayNumber) {
         </div>`;
 }
 
+function planExerciseDescription(exercise) {
+    const scale = { major: 'major keys', minor: 'minor keys', both: 'major and minor keys' }[exercise.type];
+    const keys = { 1: 'Level 1', 2: 'Level 2', 3: 'Level 3 (all 12 keys)' }[exercise.level];
+    return `${scale}, ${keys}, ${exercise.ext === 'sevenths' ? '7th chords' : 'triads'}`;
+}
+
+function planExerciseUrl(day) {
+    return `compose-practice.html?lesson=${day.day}`;
+}
+
+function planDayExerciseHtml(day) {
+    const ex = day.exercise;
+    const round = planLoadExercise(day.day);
+    const done = planLoadProgress().has(day.day);
+    let status;
+    if (done) {
+        status = '<p class="plan-note">✓ This lesson is done. You can run the exercise again whenever you like.</p>';
+    } else if (round && round.status === 'running') {
+        status = `<p class="plan-note">In progress: ${round.answered} of ${ex.questions} questions answered, ${round.perfect} perfect.</p>`;
+    } else if (round && round.status === 'failed') {
+        status = `<p class="plan-note">Last round: ${round.perfect} of ${ex.questions} perfect, but ${ex.perfect} are needed. Try again, or confirm the lesson yourself below.</p>`;
+    } else {
+        status = '<p class="plan-note">The exercise is checked automatically. When you reach the goal, this lesson is marked as done.</p>';
+    }
+    const label = round && round.status === 'running' && !done ? 'Continue the exercise' : (round || done ? 'Start the exercise again' : 'Start the exercise');
+    return `
+            <div class="plan-box exercise">
+                <div class="plan-box-label">Exercise</div>
+                <strong>Answer ${ex.questions} questions, at least ${ex.perfect} perfect.</strong>
+                <div class="plan-note">${planEscape(planExerciseDescription(ex))}. "Perfect" means correct on the first try without a hint.</div>
+                ${status}
+                <div class="plan-btn-row"><a class="plan-btn primary" href="${planExerciseUrl(day)}" data-start-exercise="${day.day}">🏋️ ${label}</a></div>
+            </div>`;
+}
+
+function planDayConfirmHtml(day, entry) {
+    if (entry) {
+        return `
+            <div class="plan-btn-row">
+                <button class="plan-btn done" data-action="undo-done">✓ Done · tap to undo</button>
+            </div>`;
+    }
+    const text = day.exercise
+        ? 'Passing the exercise marks this lesson as done automatically. If you did the other steps and want to finish now, confirm here.'
+        : 'Did you finish the steps and the check above? Then confirm it, and Chordz will remember it.';
+    return `
+            <div class="plan-box confirm">
+                <div class="plan-box-label">Finished?</div>
+                <p class="plan-note">${text}</p>
+                <div class="plan-btn-row">
+                    <button class="plan-btn primary" data-action="confirm-done">✔ I finished this lesson</button>
+                </div>
+            </div>`;
+}
+
 function planDayCurrent() {
     return parseInt(document.body.dataset.day, 10);
 }
 
-function planDayAddToCalendar(dayNumber) {
-    const day = PLAN_DAYS.find(d => d.day === dayNumber);
-    const settings = planLoadSettings(planToday());
-    const ics = planBuildIcs({
-        days: [day],
-        startDate: settings.startDate,
-        time: settings.time,
-        alarmMinutes: planAlarmMinutes(settings.alarm),
-        dayUrl: d => planMakeDayUrl(d, window.location.href)
-    });
-    planDownloadText(`chordz-plan-day-${planPad(day.day)}.ics`, ics, 'text/calendar;charset=utf-8');
-    const date = planAddDays(planParseDate(settings.startDate), day.day - 1);
-    planShowMessage('ok', `Calendar entry for ${planFormatPreviewDate(date)} at ${planEscape(settings.time)} created. Open the downloaded file to add it. You can change the start date and time on the plan page.`);
-}
-
 function planDayHandleAction(action) {
     const dayNumber = planDayCurrent();
-    if (action === 'toggle-done') {
-        const done = planLoadProgress();
-        if (done.has(dayNumber)) done.delete(dayNumber);
-        else done.add(dayNumber);
-        planSaveProgress(done);
+    if (action === 'confirm-done') {
+        planMarkDone(dayNumber, 'manual');
         planDayRender(dayNumber);
-    } else if (action === 'add-to-calendar') {
-        planDayAddToCalendar(dayNumber);
+    } else if (action === 'undo-done') {
+        planUnmarkDone(dayNumber);
+        planDayRender(dayNumber);
     }
 }
 

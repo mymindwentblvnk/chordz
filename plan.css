@@ -22,13 +22,7 @@
 .plan-btn:not(:disabled):hover { filter: brightness(1.1); }
 .plan-btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
 
-/* Export panel */
-.plan-export { background: var(--surface); border-left: 4px solid var(--accent-energetic); border-radius: 12px; padding: 16px; margin-bottom: 24px; }
-.plan-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 12px 0; }
-.plan-field label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; }
-.plan-field input, .plan-field select { width: 100%; padding: 10px; font-size: 1rem; background: var(--surface-light); color: var(--text-primary); border: 2px solid var(--surface-light); border-radius: 8px; font-family: inherit; min-height: 44px; box-sizing: border-box; }
-.plan-field input:focus, .plan-field select:focus { outline: none; border-color: var(--primary-color); }
-.plan-preview { font-size: 0.88rem; color: var(--text-secondary); margin: 6px 0; }
+/* Messages and boxes */
 .plan-message { margin-top: 12px; padding: 10px 14px; border-radius: 8px; font-size: 0.9rem; line-height: 1.5; }
 .plan-message.ok { background: rgba(16, 185, 129, 0.15); border-left: 4px solid var(--accent-happy); }
 .plan-message.error { background: rgba(239, 68, 68, 0.12); border-left: 4px solid var(--accent-tense); }
@@ -56,6 +50,9 @@
 .plan-box { background: var(--surface); border-radius: 12px; padding: 14px 16px; margin: 14px 0; }
 .plan-box.goal { border-left: 4px solid var(--primary-color); }
 .plan-box.check { border-left: 4px solid var(--accent-happy); }
+.plan-box.exercise { border-left: 4px solid var(--secondary-color); }
+.plan-box.confirm { border-left: 4px solid var(--accent-happy); }
+.plan-badge.done { color: white; background: var(--accent-happy); border-color: var(--accent-happy); }
 .plan-box.tip { border-left: 4px solid var(--accent-energetic); background: rgba(245, 158, 11, 0.1); }
 .plan-box-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); margin-bottom: 4px; }
 .plan-steps { list-style: none; margin: 8px 0; padding: 0; counter-reset: step; }

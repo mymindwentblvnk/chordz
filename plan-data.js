@@ -109,9 +109,10 @@ const PLAN_DAYS = [
         steps: [
             { min: 5, text: 'Learn two lines. Major key: I ii iii IV V vi vii°. Minor key: i ii° III iv v VI VII. Uppercase means major, lowercase means minor, ° means diminished.' },
             { min: 5, text: 'Play the seven chords of C major in order. Hear which are bright (major), which are darker (minor) and which one is tense (the diminished vii°).' },
-            { min: 10, text: 'Open Compose Practice, set Scale to Major and Level 1, and answer 10 questions. Use the hints when you are stuck.' }
+            { min: 10, text: 'Start the exercise on this page (major keys, Level 1) and answer 10 questions. Use the hints when you are stuck.' }
         ],
         links: ['practice', 'wikiRoman', 'wikiNatural'],
+        exercise: { questions: 10, perfect: 5, level: 1, type: 'major', ext: 'triads' },
         check: 'At least 5 of your 10 questions are perfect.',
         tip: 'If you know the pattern of types, you do not have to memorize chords for 24 different keys.'
     },
@@ -165,9 +166,10 @@ const PLAN_DAYS = [
         steps: [
             { min: 6, text: 'A minor: Am, B°, C, Dm, Em, F, G. D minor: Dm, E°, F, Gm, Am, B♭, C. E minor: Em, F♯°, G, Am, Bm, C, D. Work each one out from its scale before you check.' },
             { min: 4, text: 'Say the pattern: i ii° III iv v VI VII. Notice that it is the same in every minor key.' },
-            { min: 10, text: 'Open Compose Practice, set Scale to Minor and Level 1, and answer 10 questions.' }
+            { min: 10, text: 'Start the exercise on this page (minor keys, Level 1) and answer 10 questions.' }
         ],
         links: ['practice', 'wikiMinor'],
+        exercise: { questions: 10, perfect: 6, level: 1, type: 'minor', ext: 'triads' },
         check: 'At least 6 of your 10 questions are perfect.',
         tip: 'The diminished chord (ii°) rarely needs to be memorized as a name. Just build it from the scale like the others.'
     },
@@ -191,10 +193,11 @@ const PLAN_DAYS = [
         steps: [
             { min: 5, text: 'Read the circle of fifths page. Going up a fifth from C adds one sharp each time: G (1 ♯), D (2 ♯), A (3 ♯). Going down a fifth adds flats: F (1 ♭), B♭ (2 ♭), E♭ (3 ♭).' },
             { min: 7, text: 'Build D major (D E F♯ G A B C♯), A major (A B C♯ D E F♯ G♯) and B♭ major (B♭ C D E♭ F G A) with the major pattern.' },
-            { min: 8, text: 'Open Compose Practice, set Level 2 and answer 8 questions.' }
+            { min: 8, text: 'Start the exercise on this page (Level 2, major and minor) and answer 8 questions.' }
         ],
         links: ['wikiCircle', 'practice', 'findScale'],
-        check: 'You can say how many sharps or flats D major, A major and B♭ major have.',
+        exercise: { questions: 8, perfect: 4, level: 2, type: 'both', ext: 'triads' },
+        check: 'At least 4 of your 8 questions are perfect, and you can say how many sharps or flats D major, A major and B♭ major have.',
         tip: 'You do not need to memorize all keys at once. Learn the pattern and add one key per day.'
     },
     {
@@ -229,11 +232,12 @@ const PLAN_DAYS = [
         title: 'Checkpoint',
         goal: 'Find out what is solid and what needs more work.',
         steps: [
-            { min: 10, text: 'Open Compose Practice, set Level 2, Scale Both, and answer 8 questions. Aim for 6 perfect.' },
+            { min: 10, text: 'Start the exercise on this page (Level 2, major and minor) and answer 8 questions. Aim for 6 perfect.' },
             { min: 5, text: 'Write down the keys that were hardest. You will use them in the next days.' },
             { min: 5, text: 'Pick a song you like. Find its key with Find Note by playing the bass note and trying the matching scale.' }
         ],
         links: ['practice', 'findNote'],
+        exercise: { questions: 8, perfect: 6, level: 2, type: 'both', ext: 'triads' },
         check: '6 of 8 questions are perfect, and you have a short list of keys to work on.',
         tip: 'Mistakes are information. A hard key just needs a few more repeats.'
     },
@@ -260,10 +264,11 @@ const PLAN_DAYS = [
         steps: [
             { min: 4, text: 'A 7th chord adds one more skip and pick on top: Am7 = A C E G.' },
             { min: 8, text: 'Build all seven in A minor and play them: Am7, Bm7♭5, Cmaj7, Dm7, Em7, Fmaj7, G7.' },
-            { min: 8, text: 'Open Compose Practice, switch Chords to 7th chords, set Scale to Minor and Level 1, and answer 6 questions.' }
+            { min: 8, text: 'Start the exercise on this page (minor keys, Level 1, 7th chords) and answer 6 questions.' }
         ],
         links: ['compose', 'practice'],
-        check: 'You can say Fmaj7 = F A C E and G7 = G B D F without looking.',
+        exercise: { questions: 6, perfect: 3, level: 1, type: 'minor', ext: 'sevenths' },
+        check: 'At least 3 of your 6 questions are perfect, and you can say Fmaj7 = F A C E and G7 = G B D F without looking.',
         tip: 'Listen to the difference between Am and Am7. The 7th adds a soft, smooth color.'
     },
     {
@@ -328,10 +333,11 @@ const PLAN_DAYS = [
         steps: [
             { min: 7, text: 'Pick two Drum & Bass tracks you like. Find the key with Find Note by playing the bass notes and testing which scale contains them.' },
             { min: 6, text: 'Try to find the bass notes of the first four bars and turn them into scale degrees (1 to 7).' },
-            { min: 7, text: 'Open Compose Practice, set Level 2 and 7th chords, and answer 6 questions.' }
+            { min: 7, text: 'Start the exercise on this page (Level 2, major and minor, 7th chords) and answer 6 questions.' }
         ],
         links: ['findNote', 'practice'],
-        check: 'You found the key of at least one track.',
+        exercise: { questions: 6, perfect: 3, level: 2, type: 'both', ext: 'sevenths' },
+        check: 'At least 3 of your 6 questions are perfect, and you found the key of at least one track.',
         tip: 'Hearing the bass notes is a big step toward writing your own.'
     },
 
@@ -343,9 +349,10 @@ const PLAN_DAYS = [
         steps: [
             { min: 5, text: 'Continue the circle of fifths: E (4 ♯), B (5 ♯), F♯ (6 ♯) and A♭ (4 ♭), D♭ (5 ♭).' },
             { min: 5, text: 'Spell E major: E F♯ G♯ A B C♯ D♯. Spell A♭ major: A♭ B♭ C D♭ E♭ F G.' },
-            { min: 10, text: 'Open Compose Practice, set Level 3 and answer 8 questions.' }
+            { min: 10, text: 'Start the exercise on this page (Level 3, all 12 keys) and answer 8 questions.' }
         ],
         links: ['wikiCircle', 'practice'],
+        exercise: { questions: 8, perfect: 5, level: 3, type: 'both', ext: 'triads' },
         check: 'At least 5 of 8 questions are perfect.',
         tip: 'In keys with many accidentals the black keys are no harder than white keys. The pattern of the scale is the same.'
     },
@@ -420,11 +427,12 @@ const PLAN_DAYS = [
         title: 'Showtime and what comes next',
         goal: 'Test yourself, listen back and plan the next steps.',
         steps: [
-            { min: 10, text: 'Open Compose Practice, set Level 3, Scale Both, and answer 10 questions. Aim for 7 perfect.' },
+            { min: 10, text: 'Start the exercise on this page (Level 3, all 12 keys, major and minor) and answer 10 questions. Aim for 7 perfect.' },
             { min: 10, text: 'Listen to the recording from Day 6 and to your 16-bar piece from Day 27. Notice what changed.' },
             { min: 10, text: 'Choose two things for the next four weeks: Dorian and Phrygian progressions, 9th chords, more inversions, or working out songs by ear.' }
         ],
         links: ['practice', 'compose'],
+        exercise: { questions: 10, perfect: 7, level: 3, type: 'both', ext: 'triads' },
         check: '7 of 10 questions are perfect, and you have written down your next two goals.',
         tip: 'Congratulations! You can now take any Roman numeral progression and play it in any key.'
     }

@@ -3,6 +3,7 @@
  * Drill: you see a Roman numeral progression and a key, and press the keys of every chord.
  *
  * Depends on: music-theory.js, compose-data.js, compose.js (scale spelling, chord building, sound)
+ * Optional: plan-data.js, plan-core.js (lesson mode, opened as compose-practice.html?lesson=N from the 4-week plan)
  */
 
 const PRACTICE_STORAGE_KEY = 'chordz-compose-practice';
@@ -159,6 +160,52 @@ let practiceSettings = { level: 1, type: 'both', ext: 'triads' };
 let practiceStats = { answered: 0, clean: 0, streak: 0, best: 0 };
 let practiceQuestion = null;
 
+// Lesson mode: { day, title, exercise, round } when opened from a plan lesson, otherwise null
+let practiceLesson = null;
+let practiceStoredSettings = null; // the learner's own settings, kept while a lesson overrides them
+
+/** Read ?lesson=N. Returns the lesson day with an exercise, or null. */
+function practiceLessonFromSearch(search) {
+    if (typeof planFindDay !== 'function') return null;
+    const match = /(?:^|[?&])lesson=(\d+)(?:&|$)/.exec(search || '');
+    if (!match) return null;
+    const day = planFindDay(parseInt(match[1], 10));
+    return day && day.exercise ? day : null;
+}
+
+function practiceStartLesson(day) {
+    practiceStoredSettings = Object.assign({}, practiceSettings);
+    const ex = day.exercise;
+    practiceSettings = { level: ex.level, type: ex.type, ext: ex.ext };
+    let round = planLoadExercise(day.day);
+    if (!round || round.status !== 'running') {
+        round = planNewExercise(day.day);
+        planSaveExercise(round);
+    }
+    practiceLesson = { day: day.day, title: day.title, exercise: ex, round };
+}
+
+function practiceLessonRestart() {
+    practiceLesson.round = planNewExercise(practiceLesson.day);
+    planSaveExercise(practiceLesson.round);
+}
+
+/** Count a finished question in the lesson round; marks the lesson done when the exercise is passed. */
+function practiceLessonRecord(question) {
+    const clean = question.solved && question.attempts === 1 && question.hintLevel === 0;
+    const round = practiceLesson.round;
+    planRecordAnswer(round, practiceLesson.exercise, clean);
+    planSaveExercise(round);
+    if (round.status === 'passed') planMarkDone(practiceLesson.day, 'auto');
+}
+
+/** Update statistics (once per question) and the lesson round. */
+function practiceFinalizeQuestion(question) {
+    if (question.finalized) return;
+    practiceFinalize(question, practiceStats);
+    if (practiceLesson) practiceLessonRecord(question);
+}
+
 function practiceLoad() {
     try {
         const stored = JSON.parse(localStorage.getItem(PRACTICE_STORAGE_KEY));
@@ -180,7 +227,7 @@ function practiceLoad() {
 
 function practiceSave() {
     try {
-        localStorage.setItem(PRACTICE_STORAGE_KEY, JSON.stringify({ settings: practiceSettings, stats: practiceStats }));
+        localStorage.setItem(PRACTICE_STORAGE_KEY, JSON.stringify({ settings: practiceStoredSettings || practiceSettings, stats: practiceStats }));
     } catch (e) {
         console.error('Failed to save practice state:', e);
     }
@@ -215,6 +262,41 @@ function practiceKeyboardHTML(question) {
 function practiceNoteList(pcs) {
     if (!pcs.length) return '–';
     return pcs.slice().sort((a, b) => a - b).map(pc => composePretty(CHROMATIC_SCALE[pc])).join(' ');
+}
+
+function practiceLessonBannerHtml() {
+    const l = practiceLesson;
+    const r = l.round;
+    const progress = r.status === 'running'
+        ? `Question ${Math.min(r.answered + 1, l.exercise.questions)} of ${l.exercise.questions}`
+        : `${r.answered} of ${l.exercise.questions} answered`;
+    return `
+        <div class="lesson-banner">
+            <div class="lesson-banner-title">📘 Lesson exercise · Day ${l.day}: ${l.title}</div>
+            <div class="lesson-banner-line">${progress} · <strong>${r.perfect}</strong> perfect · you need at least <strong>${l.exercise.perfect}</strong> perfect out of ${l.exercise.questions}</div>
+            <a class="back-link" href="${typeof planDayFileName === 'function' ? planDayFileName(l.day) : 'plan.html'}">← Back to the lesson</a>
+        </div>`;
+}
+
+function practiceLessonNextButtons() {
+    return practiceLesson.round.status === 'running'
+        ? '<button class="nav-btn primary" data-action="next-question">Next question →</button>'
+        : '';
+}
+
+function practiceLessonResultHtml() {
+    const l = practiceLesson;
+    const r = l.round;
+    if (r.status === 'running') return '';
+    const back = `<a class="nav-btn secondary" href="${planDayFileName(l.day)}">← Back to the lesson</a>`;
+    if (r.status === 'passed') {
+        return `
+        <div class="feedback ok lesson-result">🎉 Exercise passed: ${r.perfect} of ${l.exercise.questions} perfect. Lesson ${l.day} is marked as done.</div>
+        <div class="button-row">${back}<button class="nav-btn secondary" data-action="lesson-retry">Practice again</button></div>`;
+    }
+    return `
+        <div class="feedback bad lesson-result">Not yet: ${r.perfect} of ${l.exercise.questions} perfect, you need ${l.exercise.perfect}. Try another round, the keys will be different.</div>
+        <div class="button-row"><button class="nav-btn primary" data-action="lesson-retry">Try again</button>${back}</div>`;
 }
 
 function practiceRender() {
@@ -269,8 +351,9 @@ function practiceRender() {
         <ol class="explain-list">${explanation.steps.map(t => `<li>${t}</li>`).join('')}</ol>
         <div class="button-row">
             <button class="nav-btn secondary" data-action="hear-answer">▶ Hear it</button>
-            <button class="nav-btn primary" data-action="next-question">Next question →</button>
-        </div>`;
+            ${practiceLesson ? practiceLessonNextButtons() : '<button class="nav-btn primary" data-action="next-question">Next question →</button>'}
+        </div>
+        ${practiceLesson ? practiceLessonResultHtml() : ''}`;
     }
 
     const actions = (q.solved || q.revealed) ? '' : `
@@ -289,7 +372,9 @@ function practiceRender() {
             <span class="stat">🏆 best <strong>${practiceStats.best}</strong></span>
         </div>
 
-        <details class="settings">
+        ${practiceLesson ? practiceLessonBannerHtml() : ''}
+
+        ${practiceLesson ? '' : `<details class="settings">
             <summary>⚙️ Settings: ${PRACTICE_LEVELS[s.level].name}, ${s.type}, ${s.ext === 'sevenths' ? '7th chords' : 'triads'}</summary>
             <div class="setting-label">Keys <span class="alias">${PRACTICE_LEVELS[s.level].desc}</span></div>
             <div class="segmented">${levelButtons}</div>
@@ -297,7 +382,7 @@ function practiceRender() {
             <div class="segmented">${typeButtons}</div>
             <div class="setting-label">Chords</div>
             <div class="segmented">${extButtons}</div>
-        </details>
+        </details>`}
 
         <div class="question-card">
             <div class="q-label">Key</div>
@@ -330,16 +415,19 @@ async function practiceHandleAction(action, target) {
 
     switch (action) {
         case 'set-level':
+            if (practiceLesson) return;
             practiceSettings.level = parseInt(data.level, 10);
             practiceFinalizeIfStarted();
             practiceAskNew();
             break;
         case 'set-type':
+            if (practiceLesson) return;
             practiceSettings.type = data.type;
             practiceFinalizeIfStarted();
             practiceAskNew();
             break;
         case 'set-ext':
+            if (practiceLesson) return;
             practiceSettings.ext = data.ext;
             practiceFinalizeIfStarted();
             practiceAskNew();
@@ -369,7 +457,7 @@ async function practiceHandleAction(action, target) {
             if (!q.solved && !q.revealed) {
                 practiceCheck(q);
                 if (q.solved) {
-                    practiceFinalize(q, practiceStats);
+                    practiceFinalizeQuestion(q);
                     practiceSave();
                 }
             }
@@ -381,7 +469,7 @@ async function practiceHandleAction(action, target) {
             if (!q.solved && !q.revealed) {
                 q.revealed = true;
                 q.results = null;
-                practiceFinalize(q, practiceStats);
+                practiceFinalizeQuestion(q);
                 practiceSave();
             }
             break;
@@ -392,7 +480,13 @@ async function practiceHandleAction(action, target) {
             }
             return;
         case 'next-question':
+            if (practiceLesson && practiceLesson.round.status !== 'running') return;
             practiceFinalizeIfStarted();
+            practiceAskNew();
+            break;
+        case 'lesson-retry':
+            if (!practiceLesson) return;
+            practiceLessonRestart();
             practiceAskNew();
             break;
         default:
@@ -408,11 +502,13 @@ function practiceFinalizeIfStarted() {
     const q = practiceQuestion;
     if (!q || q.finalized) return;
     const touched = q.answers.some(a => a.length) || q.attempts > 0 || q.hintLevel > 0;
-    if (touched) practiceFinalize(q, practiceStats);
+    if (touched) practiceFinalizeQuestion(q);
 }
 
 function practiceInit() {
     practiceLoad();
+    const lessonDay = practiceLessonFromSearch(typeof location !== 'undefined' ? location.search : '');
+    if (lessonDay) practiceStartLesson(lessonDay);
     practiceAskNew();
     document.addEventListener('click', event => {
         const target = event.target.closest('[data-action]');
