@@ -33,6 +33,17 @@ A complete web application for learning piano through interactive training, disc
 - **Educational**: Includes Roman numeral notation and detailed descriptions
 - **Random Chord**: Get a random progression based on your current filters
 
+### 🧭 Compose (Decision Tree)
+- **From Feeling to Notes**: A guided six-step path: Mood → Style → Scale → Chords → Progression → Melody
+- **Mood to Scale**: Pick Melancholic, Happy, Dreamy or Dark & tense and get the scales that fit (Natural Minor, Dorian, Major, Lydian, Mixolydian, Phrygian)
+- **Style Aware**: Drum & Bass, Pop, Lo-fi, Cinematic or free noodling change the default chord type (triads or 7th chords) and give practical playing tips
+- **Any Key**: All 12 keys with correct note spelling (F minor shows A♭, B♭, not G♯, A♯). Keys that use only white keys are marked with ⭐ as the easiest place to start
+- **Calculated, Not Memorized**: Chord names, Roman numerals and notes are derived from the chosen scale, so every chord fits together
+- **Keyboard View**: Highlights the scale, the root and the notes of the selected chord
+- **Hear It**: Tap a chord or loop the whole progression (sound starts only when you press a button)
+- **Melody Helper**: Chord tones to aim for, mood-specific melody tips and a 🎲 motif generator that starts and ends on a chord tone
+- **Try-it Exercises**: A short practice task on every step, plus links to the matching wiki pages
+
 ### 🎹 Calculate Chords
 - **Interactive Breakdown**: See the complete step-by-step breakdown from scale to keyboard keys
 - **Scale Builder**: Watch how the W-W-H-W-W-W-H pattern builds your major scale
@@ -89,7 +100,13 @@ The app is designed for a seamless learning experience:
    - Click "Random Chord" to discover new progressions
    - Star your favorites for quick access
 
-3. **🎹 Calculate Chords**
+3. **🧭 Compose**
+   - Choose a mood, a style, a scale and a key
+   - See the chords that belong to the scale and hear them
+   - Pick a progression and loop it
+   - Get melody tips and roll a starting motif
+
+4. **🎹 Calculate Chords**
    - See the complete breakdown from scale to keyboard keys
    - Watch how the W-W-H-W-W-W-H pattern builds your scale
    - Understand which scale positions create which chords
@@ -97,14 +114,14 @@ The app is designed for a seamless learning experience:
    - Learn about borrowed chords if your progression uses them
    - Enter custom progressions in Roman numerals
 
-4. **🎤 Find Note**
+5. **🎤 Find Note**
    - Click "Start Listening" and allow microphone access
    - Play a note on your instrument or sing
    - See the detected note with real-time confidence and frequency
    - Review your note history sorted by score or play order
    - Click "Find Chords →" on any note to search progressions in that key
 
-5. **📚 Wiki**
+6. **📚 Wiki**
    - Organized knowledge base with individual topic pages
    - Fundamentals: Scales, master pattern, chromatic scale, relative pitch
    - Chords: Building chords, inversions, natural and borrowed chords
@@ -185,6 +202,7 @@ Simply open `index.html` in your browser, or use a local server. No build proces
 - `training-chord-inversions.html` - Chord Inversions Training
 - `chord-progressions.html` - Chord Progressions browser
 - `chord-detail.html` - Chord Detail View
+- `compose.html` - Compose (mood-to-melody decision tree)
 - `calculate-chords.html` - Calculate Chords (interactive builder)
 - `find-note.html` - Find Note (pitch detector)
 - `wiki.html` - Wiki index (music theory knowledge base)
@@ -234,6 +252,7 @@ chordz/
 ├── training-chord-inversions.html  # Chord Inversions training
 ├── chord-progressions.html     # Chord Progressions browser
 ├── chord-detail.html           # Chord Detail View
+├── compose.html                # Compose (mood-to-melody decision tree)
 ├── calculate-chords.html       # Calculate Chords (interactive builder)
 ├── find-note.html              # Find Note (pitch detector)
 ├── wiki.html                   # Wiki index (music theory)
@@ -244,6 +263,8 @@ chordz/
 ├── app.js                      # Chord Progressions logic
 ├── music-theory.js             # Core music theory functions
 ├── chord-data.js               # Chord progression library (40+ progressions)
+├── compose.js                  # Compose logic (scale spelling, chord building, UI)
+├── compose-data.js             # Compose content (moods, styles, scales, progressions)
 ├── pitch-detector.js           # Pitch detection algorithm
 ├── page-memory.js              # Page navigation tracking
 └── README.md
