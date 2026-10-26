@@ -616,7 +616,7 @@ function composeRenderProgression(ctx) {
         <ul class="tip-list">${tips}</ul>
 
         ${composeTryIt('Loop the progression. Play the root note of each chord with your left hand and the full chord with your right hand. Then try playing only the root with the left hand and the top notes of the chord with the right hand.')}
-        ${composeLearnMore([{ href: 'wiki-roman-numerals.html', label: 'Roman numerals' }, { href: 'chord-progressions.html', label: 'More progressions' }, { href: 'calculate-chords.html', label: 'Calculate Chords' }])}
+        ${composeLearnMore([{ href: 'wiki-roman-numerals.html', label: 'Roman numerals' }, { href: 'compose-practice.html', label: 'Practice mode' }, { href: 'chord-progressions.html', label: 'More progressions' }, { href: 'calculate-chords.html', label: 'Calculate Chords' }])}
     `;
 }
 

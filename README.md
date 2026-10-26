@@ -44,6 +44,14 @@ A complete web application for learning piano through interactive training, disc
 - **Melody Helper**: Chord tones to aim for, mood-specific melody tips and a 🎲 motif generator that starts and ends on a chord tone
 - **Try-it Exercises**: A short practice task on every step, plus links to the matching wiki pages
 
+### 🏋️ Compose Practice
+- **Roman Numerals to Keys**: You get a key and a progression like `i – VI – III – VII` and press the keys of every chord on an on-screen keyboard
+- **Three Levels**: Easy keys (at most one ♯ or ♭), up to three ♯/♭, then all 12 keys. Major, minor or both, triads or 7th chords
+- **Check and Retry**: Wrong chords are marked, the solution stays hidden until you ask for it
+- **Two Hints**: First the scale, then the chord types
+- **How to Work It Out**: After every question you see the steps: spell the scale, find the scale note, pick the chord type, skip-pick-skip-pick
+- **Progress**: Answered, perfect (first try, no hints), streak and best streak are saved locally
+
 ### 🎹 Calculate Chords
 - **Interactive Breakdown**: See the complete step-by-step breakdown from scale to keyboard keys
 - **Scale Builder**: Watch how the W-W-H-W-W-W-H pattern builds your major scale
@@ -203,6 +211,7 @@ Simply open `index.html` in your browser, or use a local server. No build proces
 - `chord-progressions.html` - Chord Progressions browser
 - `chord-detail.html` - Chord Detail View
 - `compose.html` - Compose (mood-to-melody decision tree)
+- `compose-practice.html` - Compose Practice (Roman numerals to keys drill)
 - `calculate-chords.html` - Calculate Chords (interactive builder)
 - `find-note.html` - Find Note (pitch detector)
 - `wiki.html` - Wiki index (music theory knowledge base)
@@ -253,6 +262,7 @@ chordz/
 ├── chord-progressions.html     # Chord Progressions browser
 ├── chord-detail.html           # Chord Detail View
 ├── compose.html                # Compose (mood-to-melody decision tree)
+├── compose-practice.html       # Compose Practice (Roman numerals to keys drill)
 ├── calculate-chords.html       # Calculate Chords (interactive builder)
 ├── find-note.html              # Find Note (pitch detector)
 ├── wiki.html                   # Wiki index (music theory)
@@ -265,6 +275,7 @@ chordz/
 ├── chord-data.js               # Chord progression library (40+ progressions)
 ├── compose.js                  # Compose logic (scale spelling, chord building, UI)
 ├── compose-data.js             # Compose content (moods, styles, scales, progressions)
+├── compose-practice.js         # Practice drill logic (questions, checking, hints, stats)
 ├── pitch-detector.js           # Pitch detection algorithm
 ├── page-memory.js              # Page navigation tracking
 └── README.md
