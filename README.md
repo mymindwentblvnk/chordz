@@ -52,6 +52,14 @@ A complete web application for learning piano through interactive training, disc
 - **How to Work It Out**: After every question you see the steps: spell the scale, find the scale note, pick the chord type, skip-pick-skip-pick
 - **Progress**: Answered, perfect (first try, no hints), streak and best streak are saved locally
 
+### 🗓️ 4-Week Plan
+- **28 Day Pages**: One short session per day (15 to 30 minutes) with a goal, timed steps, links to the right Chordz tools, a way to check yourself and a tip (`plan-day-01.html` to `plan-day-28.html`)
+- **Learning Path**: Week 1 scales and chords, week 2 Roman numerals in more keys, week 3 mood, 7th chords and the Drum & Bass feel, week 4 all 12 keys and a finished piece of your own
+- **Calendar Export**: Download an `.ics` file with one entry per day (choose start date, time and reminder). Each entry contains the goal, the steps and a link to that day's page. Importing again updates the entries instead of duplicating them
+- **Single Day Export**: Every day page can add just that day to your calendar
+- **Progress**: Mark days as done, see your progress on the plan page. Saved locally in your browser
+- **Editable Content**: All texts live in `plan-data.js`. The day pages are small shells that load their content from it
+
 ### 🎹 Calculate Chords
 - **Interactive Breakdown**: See the complete step-by-step breakdown from scale to keyboard keys
 - **Scale Builder**: Watch how the W-W-H-W-W-W-H pattern builds your major scale
@@ -212,6 +220,8 @@ Simply open `index.html` in your browser, or use a local server. No build proces
 - `chord-detail.html` - Chord Detail View
 - `compose.html` - Compose (mood-to-melody decision tree)
 - `compose-practice.html` - Compose Practice (Roman numerals to keys drill)
+- `plan.html` - 4-Week Plan (overview, progress, calendar export)
+- `plan-day-01.html` ... `plan-day-28.html` - The 28 day pages of the plan
 - `calculate-chords.html` - Calculate Chords (interactive builder)
 - `find-note.html` - Find Note (pitch detector)
 - `wiki.html` - Wiki index (music theory knowledge base)
@@ -263,6 +273,8 @@ chordz/
 ├── chord-detail.html           # Chord Detail View
 ├── compose.html                # Compose (mood-to-melody decision tree)
 ├── compose-practice.html       # Compose Practice (Roman numerals to keys drill)
+├── plan.html                   # 4-Week Plan overview, progress and calendar export
+├── plan-day-01..28.html        # The 28 day pages (small shells, content from plan-data.js)
 ├── calculate-chords.html       # Calculate Chords (interactive builder)
 ├── find-note.html              # Find Note (pitch detector)
 ├── wiki.html                   # Wiki index (music theory)
@@ -276,6 +288,12 @@ chordz/
 ├── compose.js                  # Compose logic (scale spelling, chord building, UI)
 ├── compose-data.js             # Compose content (moods, styles, scales, progressions)
 ├── compose-practice.js         # Practice drill logic (questions, checking, hints, stats)
+├── plan-data.js                # Plan content: 28 days, steps, links
+├── plan-core.js                # Plan dates, calendar (.ics) export, progress storage
+├── plan.js                     # Plan overview page logic
+├── plan-day.js                 # Day page logic
+├── plan.css                    # Plan styles
+├── tools/generate-plan-pages.js  # Regenerates the 28 day page shells (only needed if the template changes)
 ├── pitch-detector.js           # Pitch detection algorithm
 ├── page-memory.js              # Page navigation tracking
 └── README.md
