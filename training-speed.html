@@ -52,6 +52,17 @@
                 </div>
             </div>
 
+            <!-- Time Pressure Toggle -->
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: rgba(99, 102, 241, 0.1); border-left: 4px solid var(--primary-color); border-radius: 6px; margin-bottom: 12px; font-size: 0.85rem; gap: 15px;">
+                <div>
+                    <span style="color: var(--text-secondary);">⏱ Time pressure:</span>
+                    <span id="time-pressure-hint" style="color: var(--text-secondary); margin-left: 8px; font-size: 0.8rem;">60 seconds, counts for top list</span>
+                </div>
+                <button id="time-pressure-toggle" style="padding: 5px 10px; font-size: 0.8rem; font-weight: 600; background: var(--primary-color); color: white; border: none; border-radius: 5px; cursor: pointer; min-width: 70px;">
+                    On
+                </button>
+            </div>
+
             <button id="speed-start-btn" style="width: 100%; padding: 15px; font-size: 1.1rem; font-weight: 600; background: var(--primary-color); color: white; border: none; border-radius: 10px; cursor: pointer; margin-bottom: 15px;">
                 🎤 Start Speed Training
             </button>
@@ -296,6 +307,7 @@
                 this.score = 0;
                 this.timeLeft = 60;
                 this.timerInterval = null;
+                this.timePressure = this.loadTimePressure();
                 // All 12 chromatic notes using sharp notation (matches pitch detector output)
                 this.allNotes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
                 this.notation = loadNotationPreference();
@@ -309,8 +321,16 @@
                 const notationToggle = document.getElementById('notation-toggle');
 
                 startBtn.addEventListener('click', () => this.start());
-                stopBtn.addEventListener('click', () => this.stop());
+                stopBtn.addEventListener('click', () => {
+                    // In practice mode (no time pressure) stopping shows the result, but never saves it
+                    if (this.isRunning && !this.timePressure) {
+                        this.endTraining(false);
+                    } else {
+                        this.stop();
+                    }
+                });
                 notationToggle.addEventListener('click', () => this.toggleNotation());
+                document.getElementById('time-pressure-toggle').addEventListener('click', () => this.toggleTimePressure());
 
                 // Initialize Tone.js synth
                 if (typeof Tone !== 'undefined') {
@@ -319,7 +339,37 @@
 
                 // Display best score and notation
                 this.updateNotationToggle();
+                this.updateTimePressureToggle();
                 this.displayBestScore();
+            }
+
+            loadTimePressure() {
+                try {
+                    return localStorage.getItem('chordz-speed-time-pressure') !== 'off';
+                } catch (e) {
+                    return true;
+                }
+            }
+
+            toggleTimePressure() {
+                // Don't allow switching mid-session
+                if (this.isRunning) return;
+                this.timePressure = !this.timePressure;
+                try {
+                    localStorage.setItem('chordz-speed-time-pressure', this.timePressure ? 'on' : 'off');
+                } catch (e) {
+                    console.error('Failed to save time pressure setting:', e);
+                }
+                this.updateTimePressureToggle();
+            }
+
+            updateTimePressureToggle() {
+                const btn = document.getElementById('time-pressure-toggle');
+                btn.textContent = this.timePressure ? 'On' : 'Off';
+                btn.style.background = this.timePressure ? 'var(--primary-color)' : '#6b7280';
+                document.getElementById('time-pressure-hint').textContent = this.timePressure
+                    ? '60 seconds, counts for top list'
+                    : 'no time limit, not saved to top list';
             }
 
             toggleNotation() {
@@ -476,6 +526,9 @@
                     this.isRunning = true;
                     this.score = 0;
                     this.timeLeft = 60;
+                    document.getElementById('time-pressure-toggle').disabled = true;
+                    document.getElementById('time-pressure-toggle').style.opacity = '0.5';
+                    document.getElementById('speed-timer').parentElement.style.display = this.timePressure ? 'block' : 'none';
 
                     document.getElementById('countdown-display').style.display = 'none';
                     document.getElementById('speed-stop-btn').style.display = 'block';
@@ -483,7 +536,11 @@
                     document.getElementById('target-note-display').style.display = 'block';
 
                     this.nextNote();
-                    this.startTimer();
+                    if (this.timePressure) {
+                        this.startTimer();
+                    } else {
+                        this.updateStats();
+                    }
                     this.detect();
 
                     // Scroll to target note so it's always visible
@@ -631,14 +688,18 @@
                 }
 
                 // Update UI but keep results visible
+                document.getElementById('time-pressure-toggle').disabled = false;
+                document.getElementById('time-pressure-toggle').style.opacity = '1';
                 document.getElementById('speed-stop-btn').style.display = 'none';
                 document.getElementById('speed-start-btn').style.display = 'block';
                 // Don't hide success message or stats - keep them visible
             }
 
-            endTraining() {
-                // Save record
-                this.saveRecord(this.score);
+            endTraining(timed = true) {
+                // Only timed runs count for the top list
+                if (timed) {
+                    this.saveRecord(this.score);
+                }
 
                 // Show results
                 document.getElementById('speed-stats').style.display = 'none';
@@ -647,7 +708,7 @@
                 const successEl = document.getElementById('speed-success');
                 const finalStats = document.getElementById('speed-final-stats');
                 finalStats.innerHTML = `
-                    <p style="font-size: 1.2rem; color: var(--text-primary); margin: 0 0 20px 0;">Great job!</p>
+                    <p style="font-size: 1.2rem; color: var(--text-primary); margin: 0 0 20px 0;">Great job!${timed ? '' : ' <span style="font-size: 0.85rem; color: var(--text-secondary);">(practice mode, not saved to top list)</span>'}</p>
                     <div style="display: flex; justify-content: center; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px;">
                         <div>
                             <div style="font-size: 0.9rem; color: var(--text-secondary);">Score</div>
@@ -687,6 +748,8 @@
                 }
 
                 // Reset UI
+                document.getElementById('time-pressure-toggle').disabled = false;
+                document.getElementById('time-pressure-toggle').style.opacity = '1';
                 document.getElementById('speed-start-btn').style.display = 'block';
                 document.getElementById('speed-stop-btn').style.display = 'none';
                 document.getElementById('countdown-display').style.display = 'none';
