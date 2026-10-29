@@ -32,6 +32,7 @@ A complete web application for learning piano through interactive training, disc
 - **Starred Progressions**: Favorite your preferred progressions and filter to show only starred items
 - **Scale Type Filters**: Filter by Major or Minor progressions
 - **Borrowed Chords Filter**: Find progressions that use borrowed chords from parallel keys
+- **Play Along (MIDI)**: On a progression's detail page, connect your MIDI keyboard and play the chords in any order; the chord you play lights up. The piano visualization starts paused, press Play to start it
 - **Learn to Play**: Each progression has a "Learn to Play This" button that opens the interactive chord builder
 - **Educational**: Includes Roman numeral notation and detailed descriptions
 - **Random Chord**: Get a random progression based on your current filters

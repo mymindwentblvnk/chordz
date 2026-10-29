@@ -112,6 +112,19 @@
             transform: scale(1.05);
         }
 
+        /* Chord you are playing on the MIDI keyboard right now */
+        .chord-item.midi-lit {
+            background: var(--accent-happy);
+            border-left: 4px solid white;
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.8);
+            transform: scale(1.08);
+        }
+
+        .chord-item.midi-lit .chord-item-name,
+        .chord-item.midi-lit .chord-item-notes {
+            color: white;
+        }
+
         .chord-item-name {
             font-size: 1.3rem;
             font-weight: 700;
@@ -277,6 +290,22 @@
             </div>
         </div>
 
+        <!-- Play along with a MIDI keyboard -->
+        <div class="detail-card" id="midi-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px; flex-wrap: wrap;">
+                <div>
+                    <h3 style="color: var(--primary-color); margin: 0 0 4px 0;">🎹 Play along (MIDI)</h3>
+                    <div id="midi-hint" style="font-size: 0.85rem; color: var(--text-secondary);">Connect your MIDI keyboard and play the chords in any order. The chord you play lights up.</div>
+                </div>
+                <button id="midi-btn" class="action-btn primary" style="border: none; cursor: pointer;">Connect MIDI</button>
+            </div>
+            <div id="midi-live" style="display: none; margin-top: 15px; text-align: center;">
+                <div style="font-size: 0.85rem; color: var(--text-secondary);">You are playing:</div>
+                <div id="midi-now" style="font-size: 2.2rem; font-weight: bold; color: var(--accent-happy); min-height: 1.3em;">–</div>
+                <div id="midi-pressed" style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; min-height: 36px; margin-top: 8px;"></div>
+            </div>
+        </div>
+
         <!-- Piano Animation -->
         <div id="piano-animation-container"></div>
 
@@ -307,9 +336,13 @@
     <script src="music-theory.js"></script>
     <script src="chord-data.js"></script>
     <script src="piano.js"></script>
+    <script src="midi-input.js"></script>
     <script>
         // Global piano instance
         let pianoInstance = null;
+        let currentChords = [];
+        const midi = new MidiInput();
+        let midiActive = false;
 
         // Starred progressions management
         const STARRED_KEY = 'chordz-starred-progressions';
@@ -450,6 +483,7 @@
 
                 // Transpose and display chords
                 const chords = transposeProgression(progression.progression, selectedKey, progression.keyMode);
+                currentChords = chords;
                 document.getElementById('chord-names').textContent = chords.join(' - ');
 
                 // Display chord breakdown
@@ -470,8 +504,12 @@
                 if (pianoInstance) {
                     pianoInstance.updateChords(chords, displayNames);
                 } else {
-                    pianoInstance = new AnimatedPiano('piano-animation-container', chords, displayNames);
+                    // Paused on load, start it with the Play button
+                    pianoInstance = new AnimatedPiano('piano-animation-container', chords, displayNames, { autoplay: false });
                 }
+
+                // Re-apply the MIDI highlight after the breakdown was rebuilt (e.g. key change)
+                midiEvaluate();
             }
 
             // Display description
@@ -502,10 +540,93 @@
 
             // Initial display
             updateDisplay();
+            setupMidi();
+        }
+
+        // ---------- Play along with a MIDI keyboard (freestyle) ----------
+        function setupMidi() {
+            const btn = document.getElementById('midi-btn');
+            const hint = document.getElementById('midi-hint');
+
+            if (!MidiInput.isSupported()) {
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+                btn.style.cursor = 'not-allowed';
+                hint.textContent = 'Your browser does not support MIDI. Use Chrome, Edge, Opera or Firefox to play along.';
+                return;
+            }
+
+            btn.addEventListener('click', async () => {
+                if (midiActive) {
+                    midi.stop();
+                    midiActive = false;
+                    btn.textContent = 'Connect MIDI';
+                    hint.textContent = 'Connect your MIDI keyboard and play the chords in any order. The chord you play lights up.';
+                    document.getElementById('midi-live').style.display = 'none';
+                    midiEvaluate();
+                    return;
+                }
+                try {
+                    await midi.start(
+                        () => {},
+                        (names) => {
+                            hint.textContent = names.length
+                                ? 'MIDI: ' + names.join(', ') + ' · play the chords in any order'
+                                : 'No MIDI keyboard found, connect one';
+                        },
+                        () => midiEvaluate()
+                    );
+                } catch (error) {
+                    alert('Error accessing MIDI: ' + error.message);
+                    midi.stop();
+                    return;
+                }
+                midiActive = true;
+                btn.textContent = 'Disconnect';
+                document.getElementById('midi-live').style.display = 'block';
+                midiEvaluate();
+            });
+        }
+
+        // Light up every chord of the progression whose notes are held exactly
+        // (any octave, no other notes)
+        function midiEvaluate() {
+            const items = document.querySelectorAll('.chord-item');
+            const held = midiActive ? new Set([...midi.held].map(n => n % 12)) : new Set();
+            const matches = [];
+
+            currentChords.forEach((chord, i) => {
+                const pcs = new Set(getChordNotes(chord).map(n => CHROMATIC_SCALE.indexOf(normalizeNote(n))));
+                const isMatch = held.size > 0 && held.size === pcs.size && [...held].every(pc => pcs.has(pc));
+                if (isMatch) matches.push(i);
+                const item = document.querySelector(`.chord-item[data-chord-index="${i}"]`);
+                if (item) item.classList.toggle('midi-lit', isMatch);
+            });
+
+            if (!midiActive) return;
+
+            const nowEl = document.getElementById('midi-now');
+            nowEl.textContent = matches.length
+                ? `${currentChords[matches[0]]} · ${progression.progression[matches[0]]}`
+                : '–';
+
+            const matchedPcs = matches.length
+                ? new Set(getChordNotes(currentChords[matches[0]]).map(n => CHROMATIC_SCALE.indexOf(normalizeNote(n))))
+                : null;
+            const pressed = document.getElementById('midi-pressed');
+            pressed.innerHTML = '';
+            [...midi.held].sort((a, b) => a - b).forEach(n => {
+                const badge = document.createElement('div');
+                const ok = matchedPcs && matchedPcs.has(n % 12);
+                badge.style.cssText = `padding: 6px 12px; border-radius: 8px; font-weight: bold; color: white; background: ${ok ? 'var(--accent-happy)' : '#6b7280'};`;
+                badge.textContent = midiNoteToName(n) + (Math.floor(n / 12) - 1);
+                pressed.appendChild(badge);
+            });
         }
 
         // Cleanup Tone.js when leaving the page to prevent hanging notes
         window.addEventListener('beforeunload', () => {
+            midi.stop();
             if (pianoInstance) {
                 pianoInstance.destroy();
             }

@@ -4,12 +4,13 @@
  */
 
 class AnimatedPiano {
-    constructor(containerId, chords, chordNames) {
+    // options.autoplay (default true): start the animation right away
+    constructor(containerId, chords, chordNames, options = {}) {
         this.container = document.getElementById(containerId);
         this.chords = chords; // Array of chord names like ['C', 'G', 'Am', 'F']
         this.chordNames = chordNames; // Array of chord names to display
         this.currentChordIndex = 0;
-        this.isPlaying = true;
+        this.isPlaying = options.autoplay !== false;
         this.isMuted = true; // Default to muted
         this.speed = 2000; // milliseconds per chord
         this.intervalId = null;
@@ -21,8 +22,11 @@ class AnimatedPiano {
 
     init() {
         this.render();
+        this.updateButtonStates();
         this.updateDisplay();
-        this.startAnimation();
+        if (this.isPlaying) {
+            this.startAnimation();
+        }
     }
 
     render() {
