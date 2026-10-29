@@ -100,7 +100,9 @@
             <div id="done-box" style="display: none; text-align: center; padding: 30px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2)); border-radius: 15px; border: 3px solid var(--accent-happy); margin-top: 10px;">
                 <div style="font-size: 4rem; margin-bottom: 15px;">🎉</div>
                 <h2 style="color: var(--accent-happy); margin: 0 0 10px 0;">Progression complete!</h2>
-                <p id="done-text" style="font-size: 1.05rem; color: var(--text-primary); margin: 0 0 20px 0;"></p>
+                <p id="done-text" style="font-size: 1.05rem; color: var(--text-primary); margin: 0 0 12px 0;"></p>
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0 0 6px 0;">🎶 Freestyle: play the chords in any order. The chord you play lights up above.</p>
+                <p id="freestyle-now" style="font-size: 1.3rem; font-weight: bold; color: var(--accent-happy); min-height: 1.6em; margin: 0 0 16px 0;"></p>
                 <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
                     <button id="next-btn" style="padding: 12px 20px; font-size: 1rem; font-weight: 600; background: var(--primary-color); color: white; border: none; border-radius: 10px; cursor: pointer;">Next progression</button>
                     <button id="repeat-btn" style="padding: 12px 20px; font-size: 1rem; font-weight: 600; background: #6b7280; color: white; border: none; border-radius: 10px; cursor: pointer;">Repeat</button>
@@ -326,7 +328,11 @@
             }
 
             evaluate() {
-                if (!this.isRunning || this.finished) return;
+                if (!this.isRunning) return;
+                if (this.finished) {
+                    this.evaluateFreestyle();
+                    return;
+                }
 
                 const target = this.chords[this.index].pitchClasses;
                 const held = this.heldPitchClasses();
@@ -375,9 +381,37 @@
                 this.evaluate();
             }
 
+            // After a completed progression: free play, every chord of the progression that
+            // matches the held keys exactly (any octave, no other notes) lights up.
+            evaluateFreestyle() {
+                const held = this.heldPitchClasses();
+                const active = new Set();
+                if (held.size > 0) {
+                    this.chords.forEach((c, i) => {
+                        if (c.pitchClasses.size === held.size && [...held].every(pc => c.pitchClasses.has(pc))) {
+                            active.add(i);
+                        }
+                    });
+                }
+
+                const signature = [...active].join(',');
+                if (signature !== this.activeSignature) {
+                    this.activeSignature = signature;
+                    this.renderSteps(active);
+                    const first = [...active][0];
+                    document.getElementById('freestyle-now').textContent = first === undefined
+                        ? ''
+                        : `${this.chords[first].chord} · ${this.chords[first].roman}`;
+                }
+
+                const matched = active.size > 0 ? this.chords[[...active][0]].pitchClasses : null;
+                this.renderPressed(matched, true);
+            }
+
             finishProgression() {
                 this.finished = true;
                 this.completed++;
+                this.activeSignature = null;
                 this.renderSteps();
                 document.getElementById('current-box').style.display = 'none';
                 document.getElementById('done-text').textContent =
@@ -393,23 +427,39 @@
                 return FLAT_NAMES[name] ? `${name}/${FLAT_NAMES[name]}` : name;
             }
 
-            renderSteps() {
+            // active: indices of chords that are being played right now (freestyle only)
+            renderSteps(active = new Set()) {
                 const container = document.getElementById('steps');
                 container.innerHTML = '';
                 this.chords.forEach((c, i) => {
                     const done = i < this.index || this.finished;
                     const current = i === this.index && !this.finished;
+                    const lit = this.finished && active.has(i);
                     const box = document.createElement('div');
-                    box.style.cssText = `
-                        min-width: 62px; padding: 8px 10px; border-radius: 10px; text-align: center;
-                        border: 2px solid ${current ? 'var(--primary-color)' : (done ? 'var(--accent-happy)' : 'transparent')};
-                        background: ${done ? 'rgba(16, 185, 129, 0.2)' : 'var(--surface-light)'};
-                        opacity: ${current || done ? 1 : 0.6};
-                    `;
+                    if (this.finished) {
+                        // Freestyle: neutral boxes, the played chord lights up
+                        box.style.cssText = `
+                            min-width: 62px; padding: 8px 10px; border-radius: 10px; text-align: center;
+                            transition: all 0.12s ease;
+                            border: 2px solid ${lit ? 'var(--accent-happy)' : 'transparent'};
+                            background: ${lit ? 'var(--accent-happy)' : 'var(--surface-light)'};
+                            color: ${lit ? 'white' : 'inherit'};
+                            transform: scale(${lit ? 1.12 : 1});
+                            box-shadow: ${lit ? '0 0 18px rgba(16, 185, 129, 0.7)' : 'none'};
+                        `;
+                    } else {
+                        box.style.cssText = `
+                            min-width: 62px; padding: 8px 10px; border-radius: 10px; text-align: center;
+                            border: 2px solid ${current ? 'var(--primary-color)' : (done ? 'var(--accent-happy)' : 'transparent')};
+                            background: ${done ? 'rgba(16, 185, 129, 0.2)' : 'var(--surface-light)'};
+                            opacity: ${current || done ? 1 : 0.6};
+                        `;
+                    }
                     const alt = chordDisplayName(c.chord).alt;
+                    const check = done && !this.finished ? '✓ ' : '';
                     box.innerHTML = `
-                        <div style="font-size: 1.15rem; font-weight: bold;">${done ? '✓ ' : ''}${c.chord}</div>
-                        <div style="font-size: 0.7rem; color: var(--text-secondary);">${c.roman}${alt ? ' · ' + alt : ''}</div>
+                        <div style="font-size: 1.15rem; font-weight: bold;">${check}${c.chord}</div>
+                        <div style="font-size: 0.7rem; color: ${lit ? 'white' : 'var(--text-secondary)'};">${c.roman}${alt ? ' · ' + alt : ''}</div>
                     `;
                     container.appendChild(box);
                 });
@@ -468,16 +518,17 @@
                 }, 400);
             }
 
-            renderPressed(target) {
+            // freestyle: no "wrong" keys, unmatched keys are shown neutral
+            renderPressed(target, freestyle = false) {
                 const container = document.getElementById('pressed-list');
                 const keys = [...this.midi.held].sort((a, b) => a - b);
                 container.innerHTML = '';
                 keys.forEach(n => {
-                    const ok = target.has(n % 12);
+                    const ok = target ? target.has(n % 12) : false;
                     const badge = document.createElement('div');
                     badge.style.cssText = `
                         padding: 8px 14px; border-radius: 8px; font-weight: bold; font-size: 1.05rem; color: white;
-                        background: ${ok ? 'var(--accent-happy)' : '#ef4444'};
+                        background: ${ok ? 'var(--accent-happy)' : (freestyle ? '#6b7280' : '#ef4444')};
                     `;
                     badge.textContent = midiNoteToName(n) + (Math.floor(n / 12) - 1);
                     container.appendChild(badge);
