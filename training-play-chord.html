@@ -46,6 +46,17 @@
                 </div>
             </div>
 
+            <!-- Time Pressure Toggle -->
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: rgba(99, 102, 241, 0.1); border-left: 4px solid var(--primary-color); border-radius: 6px; margin-bottom: 12px; font-size: 0.85rem; gap: 15px;">
+                <div>
+                    <span style="color: var(--text-secondary);">⏱ Time pressure:</span>
+                    <span id="time-pressure-hint" style="color: var(--text-secondary); margin-left: 8px; font-size: 0.8rem;"></span>
+                </div>
+                <button id="time-pressure-toggle" style="padding: 5px 10px; font-size: 0.8rem; font-weight: 600; background: var(--primary-color); color: white; border: none; border-radius: 5px; cursor: pointer; min-width: 70px;">
+                    On
+                </button>
+            </div>
+
             <button id="start-btn" style="width: 100%; padding: 15px; font-size: 1.1rem; font-weight: 600; background: var(--primary-color); color: white; border: none; border-radius: 10px; cursor: pointer; margin-bottom: 15px;">
                 🎤 Start Training
             </button>
@@ -84,7 +95,7 @@
 
             <div id="success-message" style="display: none; text-align: center; padding: 30px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2)); border-radius: 15px; border: 3px solid var(--accent-happy); margin-top: 30px;">
                 <div style="font-size: 4rem; margin-bottom: 15px;">🎉</div>
-                <h2 style="color: var(--accent-happy); margin: 0 0 10px 0;">Time's Up!</h2>
+                <h2 id="success-title" style="color: var(--accent-happy); margin: 0 0 10px 0;">Time's Up!</h2>
                 <p id="final-score" style="font-size: 1.5rem; color: var(--text-primary); margin: 10px 0;"></p>
                 <p id="new-record" style="font-size: 1.2rem; color: var(--accent-happy); margin: 10px 0; display: none;">🏆 New Record!</p>
             </div>
@@ -93,6 +104,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js"></script>
     <script src="pitch-detector.js"></script>
+    <script src="time-pressure.js"></script>
     <script src="music-theory.js"></script>
     <script>
         const TRAINING_DURATION = 60; // seconds
@@ -207,6 +219,7 @@
                 this.score = 0;
                 this.timeLeft = TRAINING_DURATION;
                 this.timerInterval = null;
+                this.timePressure = loadTimePressure();
                 this.currentChord = null;
                 this.requiredNotes = [];
                 this.detectedNotes = new Set();
@@ -219,9 +232,35 @@
                 const stopBtn = document.getElementById('stop-btn');
 
                 startBtn.addEventListener('click', () => this.start());
-                stopBtn.addEventListener('click', () => this.stop());
+                stopBtn.addEventListener('click', () => {
+                    // Practice mode: stopping shows the result, but it is never saved
+                    if (this.isRunning && !this.timePressure) {
+                        this.finish(false);
+                    } else {
+                        this.stop();
+                    }
+                });
+                document.getElementById('time-pressure-toggle').addEventListener('click', () => this.toggleTimePressure());
 
+                this.updateTimePressureToggle();
                 this.displayBestScore();
+            }
+
+            toggleTimePressure() {
+                if (this.isRunning) return;
+                this.timePressure = !this.timePressure;
+                saveTimePressure(this.timePressure);
+                this.updateTimePressureToggle();
+            }
+
+            updateTimePressureToggle() {
+                renderTimePressureToggle(
+                    document.getElementById('time-pressure-toggle'),
+                    document.getElementById('time-pressure-hint'),
+                    this.timePressure,
+                    '60 seconds, counts for top list',
+                    'no time limit, not saved to top list'
+                );
             }
 
             displayBestScore() {
@@ -322,6 +361,11 @@
                     this.timeLeft = TRAINING_DURATION;
                     this.isRunning = true;
 
+                    const toggleBtn = document.getElementById('time-pressure-toggle');
+                    toggleBtn.disabled = true;
+                    toggleBtn.style.opacity = '0.5';
+                    document.getElementById('time-left').parentElement.style.display = this.timePressure ? 'block' : 'none';
+
                     document.getElementById('start-btn').style.display = 'none';
                     document.getElementById('stop-btn').style.display = 'block';
                     document.getElementById('stats-display').style.display = 'block';
@@ -340,14 +384,16 @@
                         });
                     }, 100);
 
-                    this.timerInterval = setInterval(() => {
-                        this.timeLeft--;
-                        this.updateDisplay();
+                    if (this.timePressure) {
+                        this.timerInterval = setInterval(() => {
+                            this.timeLeft--;
+                            this.updateDisplay();
 
-                        if (this.timeLeft <= 0) {
-                            this.finish();
-                        }
-                    }, 1000);
+                            if (this.timeLeft <= 0) {
+                                this.finish();
+                            }
+                        }, 1000);
+                    }
 
                     this.detect();
 
@@ -389,6 +435,10 @@
                 this.stableCount = 0;
                 this.detectionCooldown = false;
 
+                const toggleBtn = document.getElementById('time-pressure-toggle');
+                toggleBtn.disabled = false;
+                toggleBtn.style.opacity = '1';
+
                 document.getElementById('start-btn').style.display = 'block';
                 document.getElementById('stop-btn').style.display = 'none';
                 document.getElementById('stats-display').style.display = 'none';
@@ -397,7 +447,7 @@
                 document.getElementById('success-message').style.display = 'none';
             }
 
-            async finish() {
+            async finish(timed = true) {
                 this.isRunning = false;
 
                 if (this.timerInterval) {
@@ -430,14 +480,22 @@
                 this.stableCount = 0;
                 this.detectionCooldown = false;
 
-                const isNewRecord = this.saveRecord(this.score);
+                // Only timed runs count for the top list
+                const isNewRecord = timed ? this.saveRecord(this.score) : false;
+
+                const toggleBtn = document.getElementById('time-pressure-toggle');
+                toggleBtn.disabled = false;
+                toggleBtn.style.opacity = '1';
 
                 document.getElementById('stop-btn').style.display = 'none';
                 document.getElementById('stats-display').style.display = 'none';
                 document.getElementById('chord-display').style.display = 'none';
                 document.getElementById('detected-notes-display').style.display = 'none';
                 document.getElementById('success-message').style.display = 'block';
-                document.getElementById('final-score').textContent = `Final Score: ${this.score}`;
+                document.getElementById('success-title').textContent = timed ? "Time's Up!" : 'Nice practice!';
+                document.getElementById('final-score').textContent = timed
+                    ? `Final Score: ${this.score}`
+                    : `Score: ${this.score} (practice mode, not saved to top list)`;
 
                 if (isNewRecord) {
                     document.getElementById('new-record').style.display = 'block';

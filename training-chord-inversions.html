@@ -52,6 +52,17 @@
                 </div>
             </div>
 
+            <!-- Time Pressure Toggle -->
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: rgba(99, 102, 241, 0.1); border-left: 4px solid var(--primary-color); border-radius: 6px; margin-bottom: 12px; font-size: 0.85rem; gap: 15px;">
+                <div>
+                    <span style="color: var(--text-secondary);">⏱ Time pressure:</span>
+                    <span id="time-pressure-hint" style="color: var(--text-secondary); margin-left: 8px; font-size: 0.8rem;"></span>
+                </div>
+                <button id="time-pressure-toggle" style="padding: 5px 10px; font-size: 0.8rem; font-weight: 600; background: var(--primary-color); color: white; border: none; border-radius: 5px; cursor: pointer; min-width: 70px;">
+                    On
+                </button>
+            </div>
+
             <select id="training-chord" style="width: 100%; padding: 12px; font-size: 1rem; background: var(--background); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 10px; cursor: pointer; margin-bottom: 12px;">
                 <option value="random" selected>🎲 Random Chord</option>
                 <optgroup label="Major Chords">
@@ -122,6 +133,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js"></script>
     <script src="pitch-detector.js"></script>
+    <script src="time-pressure.js"></script>
     <script>
         // Notation conversion
         const NOTATION_STORAGE_KEY = 'chordz-notation-preference';
@@ -340,6 +352,7 @@
                 this.synth = null;
                 this.startTime = null;
                 this.timerInterval = null;
+                this.timePressure = loadTimePressure();
                 this.notation = loadNotationPreference();
 
                 this.init();
@@ -366,6 +379,7 @@
                     }
                 });
                 notationToggle.addEventListener('click', () => this.toggleNotation());
+                document.getElementById('time-pressure-toggle').addEventListener('click', () => this.toggleTimePressure());
 
                 // Initialize Tone.js synth for success sound
                 if (typeof Tone !== 'undefined') {
@@ -374,6 +388,7 @@
 
                 // Update notation toggle display
                 this.updateNotationToggle();
+                this.updateTimePressureToggle();
 
                 // Show sequence boxes on page load (or placeholder if random)
                 if (chordSelect.value === 'random') {
@@ -383,6 +398,23 @@
                     this.updateSequenceBoxes();
                     this.displayBestTime();
                 }
+            }
+
+            toggleTimePressure() {
+                if (this.isRunning) return;
+                this.timePressure = !this.timePressure;
+                saveTimePressure(this.timePressure);
+                this.updateTimePressureToggle();
+            }
+
+            updateTimePressureToggle() {
+                renderTimePressureToggle(
+                    document.getElementById('time-pressure-toggle'),
+                    document.getElementById('time-pressure-hint'),
+                    this.timePressure,
+                    'time is measured, counts for top list',
+                    'no timer, not saved to top list'
+                );
             }
 
             toggleNotation() {
@@ -603,10 +635,16 @@
 
                     // Reset performance tracking (start timer after countdown)
                     this.startTime = Date.now();
-                    this.updateStatsDisplay();
+                    this.runWithTimePressure = this.timePressure;
+                    const toggleBtn = document.getElementById('time-pressure-toggle');
+                    toggleBtn.disabled = true;
+                    toggleBtn.style.opacity = '0.5';
 
-                    // Start timer
-                    this.timerInterval = setInterval(() => this.updateStatsDisplay(), 100);
+                    // Start timer (only with time pressure)
+                    if (this.runWithTimePressure) {
+                        this.updateStatsDisplay();
+                        this.timerInterval = setInterval(() => this.updateStatsDisplay(), 100);
+                    }
 
                     this.isRunning = true;
                     this.updateUI();
@@ -615,7 +653,7 @@
                     // Update UI
                     document.getElementById('countdown-display').style.display = 'none';
                     document.getElementById('stop-training').style.display = 'block';
-                    document.getElementById('current-stats').style.display = 'block';
+                    document.getElementById('current-stats').style.display = this.runWithTimePressure ? 'block' : 'none';
 
                     // Scroll to sequence boxes so they're visible
                     setTimeout(() => {
@@ -667,6 +705,8 @@
                 }
 
                 // Update UI but keep results visible
+                document.getElementById('time-pressure-toggle').disabled = false;
+                document.getElementById('time-pressure-toggle').style.opacity = '1';
                 document.getElementById('start-training').style.display = 'block';
                 document.getElementById('stop-training').style.display = 'none';
                 document.getElementById('countdown-display').style.display = 'none';
@@ -781,8 +821,10 @@
                 const mins = Math.floor(finalTime / 60);
                 const secs = finalTime % 60;
 
-                // Save record
-                this.saveRecord(this.currentChord, finalTime);
+                // Only timed runs count for the top list
+                if (this.runWithTimePressure) {
+                    this.saveRecord(this.currentChord, finalTime);
+                }
 
                 // Update success message
                 const successMsg = document.getElementById('success-message');
@@ -790,12 +832,12 @@
                     <div style="font-size: 4rem; margin-bottom: 15px;">🎉</div>
                     <h2 style="color: var(--accent-happy); margin: 0 0 10px 0;">Perfect!</h2>
                     <p style="font-size: 1.2rem; color: var(--text-primary); margin: 0 0 20px 0;">You've mastered all inversions!</p>
-                    <div style="display: flex; justify-content: center; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+                    ${this.runWithTimePressure ? `<div style="display: flex; justify-content: center; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px;">
                         <div>
                             <div style="font-size: 0.9rem; color: var(--text-secondary);">Time</div>
                             <div style="font-size: 1.8rem; font-weight: bold; font-family: 'Courier New', monospace;">${mins}:${secs.toString().padStart(2, '0')}</div>
                         </div>
-                    </div>
+                    </div>` : `<p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">Practice mode, not saved to top list</p>`}
                 `;
                 successMsg.style.display = 'block';
 

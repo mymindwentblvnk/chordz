@@ -56,7 +56,7 @@
             <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: rgba(99, 102, 241, 0.1); border-left: 4px solid var(--primary-color); border-radius: 6px; margin-bottom: 12px; font-size: 0.85rem; gap: 15px;">
                 <div>
                     <span style="color: var(--text-secondary);">⏱ Time pressure:</span>
-                    <span id="time-pressure-hint" style="color: var(--text-secondary); margin-left: 8px; font-size: 0.8rem;">60 seconds, counts for top list</span>
+                    <span id="time-pressure-hint" style="color: var(--text-secondary); margin-left: 8px; font-size: 0.8rem;"></span>
                 </div>
                 <button id="time-pressure-toggle" style="padding: 5px 10px; font-size: 0.8rem; font-weight: 600; background: var(--primary-color); color: white; border: none; border-radius: 5px; cursor: pointer; min-width: 70px;">
                     On
@@ -109,6 +109,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js"></script>
     <script src="pitch-detector.js"></script>
+    <script src="time-pressure.js"></script>
     <script>
         // Notation conversion
         const NOTATION_STORAGE_KEY = 'chordz-notation-preference';
@@ -307,7 +308,7 @@
                 this.score = 0;
                 this.timeLeft = 60;
                 this.timerInterval = null;
-                this.timePressure = this.loadTimePressure();
+                this.timePressure = loadTimePressure();
                 // All 12 chromatic notes using sharp notation (matches pitch detector output)
                 this.allNotes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
                 this.notation = loadNotationPreference();
@@ -343,33 +344,22 @@
                 this.displayBestScore();
             }
 
-            loadTimePressure() {
-                try {
-                    return localStorage.getItem('chordz-speed-time-pressure') !== 'off';
-                } catch (e) {
-                    return true;
-                }
-            }
-
             toggleTimePressure() {
                 // Don't allow switching mid-session
                 if (this.isRunning) return;
                 this.timePressure = !this.timePressure;
-                try {
-                    localStorage.setItem('chordz-speed-time-pressure', this.timePressure ? 'on' : 'off');
-                } catch (e) {
-                    console.error('Failed to save time pressure setting:', e);
-                }
+                saveTimePressure(this.timePressure);
                 this.updateTimePressureToggle();
             }
 
             updateTimePressureToggle() {
-                const btn = document.getElementById('time-pressure-toggle');
-                btn.textContent = this.timePressure ? 'On' : 'Off';
-                btn.style.background = this.timePressure ? 'var(--primary-color)' : '#6b7280';
-                document.getElementById('time-pressure-hint').textContent = this.timePressure
-                    ? '60 seconds, counts for top list'
-                    : 'no time limit, not saved to top list';
+                renderTimePressureToggle(
+                    document.getElementById('time-pressure-toggle'),
+                    document.getElementById('time-pressure-hint'),
+                    this.timePressure,
+                    '60 seconds, counts for top list',
+                    'no time limit, not saved to top list'
+                );
             }
 
             toggleNotation() {
@@ -450,7 +440,7 @@
                     document.getElementById('best-score-date').textContent = 'No records yet';
                 }
 
-                displayEl.style.display = 'block';
+                if (displayEl) displayEl.style.display = 'block';
             }
 
             loadRecords() {
