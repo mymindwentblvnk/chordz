@@ -52,6 +52,17 @@
                 </div>
             </div>
 
+            <!-- Input Source Toggle -->
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: rgba(99, 102, 241, 0.1); border-left: 4px solid var(--primary-color); border-radius: 6px; margin-bottom: 12px; font-size: 0.85rem; gap: 15px;">
+                <div>
+                    <span style="color: var(--text-secondary);">🎹 Input:</span>
+                    <span id="input-mode-hint" style="color: var(--text-secondary); margin-left: 8px; font-size: 0.8rem;"></span>
+                </div>
+                <button id="input-mode-toggle" style="padding: 5px 10px; font-size: 0.8rem; font-weight: 600; background: var(--primary-color); color: white; border: none; border-radius: 5px; cursor: pointer; min-width: 70px;">
+                    Mic
+                </button>
+            </div>
+
             <!-- Time Pressure Toggle -->
             <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: rgba(99, 102, 241, 0.1); border-left: 4px solid var(--primary-color); border-radius: 6px; margin-bottom: 12px; font-size: 0.85rem; gap: 15px;">
                 <div>
@@ -110,6 +121,7 @@
     <script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js"></script>
     <script src="pitch-detector.js"></script>
     <script src="time-pressure.js"></script>
+    <script src="midi-input.js"></script>
     <script>
         // Notation conversion
         const NOTATION_STORAGE_KEY = 'chordz-notation-preference';
@@ -309,6 +321,8 @@
                 this.timeLeft = 60;
                 this.timerInterval = null;
                 this.timePressure = loadTimePressure();
+                this.inputMode = loadInputMode();
+                this.midi = new MidiInput();
                 // All 12 chromatic notes using sharp notation (matches pitch detector output)
                 this.allNotes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
                 this.notation = loadNotationPreference();
@@ -332,6 +346,8 @@
                 });
                 notationToggle.addEventListener('click', () => this.toggleNotation());
                 document.getElementById('time-pressure-toggle').addEventListener('click', () => this.toggleTimePressure());
+                document.getElementById('input-mode-toggle').addEventListener('click', () => this.toggleInputMode());
+                this.updateInputModeToggle();
 
                 // Initialize Tone.js synth
                 if (typeof Tone !== 'undefined') {
@@ -342,6 +358,32 @@
                 this.updateNotationToggle();
                 this.updateTimePressureToggle();
                 this.displayBestScore();
+            }
+
+            toggleInputMode() {
+                if (this.isRunning) return;
+                this.inputMode = this.inputMode === 'midi' ? 'mic' : 'midi';
+                saveInputMode(this.inputMode);
+                this.updateInputModeToggle();
+            }
+
+            updateInputModeToggle() {
+                renderInputModeToggle(
+                    document.getElementById('input-mode-toggle'),
+                    document.getElementById('input-mode-hint'),
+                    this.inputMode
+                );
+            }
+
+            async startMidi() {
+                await this.midi.start(
+                    (note) => { if (this.isRunning) this.handleDetectedNote(note); },
+                    (names) => {
+                        document.getElementById('input-mode-hint').textContent = names.length
+                            ? 'MIDI: ' + names.join(', ')
+                            : 'no MIDI keyboard found, connect one';
+                    }
+                );
             }
 
             toggleTimePressure() {
@@ -486,21 +528,25 @@
                     }
 
                     // Request microphone access
-                    this.mediaStream = await navigator.mediaDevices.getUserMedia({
-                        audio: {
-                            echoCancellation: false,
-                            autoGainControl: false,
-                            noiseSuppression: false
-                        }
-                    });
+                    if (this.inputMode === 'midi') {
+                        await this.startMidi();
+                    } else {
+                        this.mediaStream = await navigator.mediaDevices.getUserMedia({
+                            audio: {
+                                echoCancellation: false,
+                                autoGainControl: false,
+                                noiseSuppression: false
+                            }
+                        });
 
-                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    this.analyser = this.audioContext.createAnalyser();
-                    this.analyser.fftSize = 8192;
-                    this.analyser.smoothingTimeConstant = 0.3;
+                        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        this.analyser = this.audioContext.createAnalyser();
+                        this.analyser.fftSize = 8192;
+                        this.analyser.smoothingTimeConstant = 0.3;
 
-                    this.microphone = this.audioContext.createMediaStreamSource(this.mediaStream);
-                    this.microphone.connect(this.analyser);
+                        this.microphone = this.audioContext.createMediaStreamSource(this.mediaStream);
+                        this.microphone.connect(this.analyser);
+                    }
 
                     // Request wake lock
                     await this.requestWakeLock();
@@ -531,7 +577,7 @@
                     } else {
                         this.updateStats();
                     }
-                    this.detect();
+                    if (this.inputMode !== 'midi') this.detect();
 
                     // Scroll to target note so it's always visible
                     setTimeout(() => {
@@ -542,7 +588,7 @@
                     }, 100);
 
                 } catch (error) {
-                    alert('Error accessing microphone: ' + error.message);
+                    alert((this.inputMode === 'midi' ? 'Error accessing MIDI: ' : 'Error accessing microphone: ') + error.message);
                     this.cleanup();
                 }
             }
@@ -594,13 +640,13 @@
                 console.log('Detected:', note, 'Target:', this.targetNote, 'Match:', isMatch);
 
                 // Ignore all notes during cooldown
-                if (this.detectionCooldown) {
+                if (this.detectionCooldown && this.inputMode !== 'midi') {
                     return;
                 }
 
                 if (isMatch) {
                     // Cooldown to prevent multiple detections of same correct note
-                    if (note === this.lastDetectedNote) {
+                    if (note === this.lastDetectedNote && this.inputMode !== 'midi') {
                         return;
                     }
 
@@ -608,6 +654,7 @@
                     this.lastDetectedNote = note;
                     this.detectionCooldown = true;
                     this.score++;
+                    this.updateStats();
 
                     // Show green flash
                     this.flashCorrect();
@@ -653,6 +700,7 @@
 
             stop() {
                 this.isRunning = false;
+                this.midi.stop();
 
                 if (this.timerInterval) {
                     clearInterval(this.timerInterval);
@@ -714,6 +762,7 @@
 
             cleanup() {
                 this.isRunning = false;
+                this.midi.stop();
 
                 if (this.timerInterval) {
                     clearInterval(this.timerInterval);

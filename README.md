@@ -9,6 +9,8 @@ A complete web application for learning piano through interactive training, disc
 ### 🎮 Training Modes
 - **Speed Training**: Race against the clock! Play as many random notes as you can in 60 seconds using real-time pitch detection
 - **Chord Inversions**: Master chord inversions by playing complete sequences (root position, 1st inversion, 2nd inversion) for any chord
+- **MIDI Keyboard Input**: Switch the input to "MIDI" in any training to play on a connected MIDI keyboard instead of using the microphone (browsers with Web MIDI support: Chrome, Edge, Opera, Firefox; not Safari)
+- **Time Pressure Toggle**: Turn the timer off for relaxed practice; such runs are not saved to the top list
 - **Real-Time Feedback**: Instant visual feedback with green flash for correct notes, red for wrong notes
 - **Score Tracking**: Best scores saved locally with timestamps
 - **100% Local**: All pitch detection happens in your browser using the Web Audio API
