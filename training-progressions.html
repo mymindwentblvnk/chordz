@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Chordz">
+    <title>Progressions - Chordz</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="guide-styles.css">
+    <script src="page-memory.js"></script>
+</head>
+<body>
+    <nav class="main-nav">
+        <a href="training.html" class="nav-link active">🎮 Training</a>
+        <a href="chord-progressions.html" class="nav-link">📖 Chord Progressions</a>
+        <a href="compose.html" class="nav-link">🧭 Compose</a>
+        <a href="plan.html" class="nav-link">🗓️ Plan</a>
+        <a href="metronome.html" class="nav-link">⏱️ Metronome</a>
+        <a href="find-note.html" class="nav-link">🎤 Find Note</a>
+        <a href="find-scale.html" class="nav-link">🎼 Find Scale</a>
+        <a href="wiki.html" class="nav-link">📚 Wiki</a>
+    </nav>
+
+    <div class="guide-container">
+        <div class="back-nav">
+            <a href="training.html" class="back-link">← Back to Training</a>
+        </div>
+
+        <div class="guide-section" style="max-width: 600px; margin: 0 auto; padding: 10px 20px 20px 20px;">
+            <header style="text-align: center; margin-bottom: 15px;">
+                <div style="font-size: 2rem; margin-bottom: 5px;">🎼</div>
+                <h1 style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin: 0 0 5px 0; font-size: 1.5rem;">Chord Progressions</h1>
+                <p class="subtitle" style="font-size: 0.85rem; margin: 0;">Play the chords in order. Hold every chord for 3 seconds, with exactly its notes and no others.</p>
+            </header>
+
+            <!-- MIDI status -->
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: rgba(99, 102, 241, 0.1); border-left: 4px solid var(--primary-color); border-radius: 6px; margin-bottom: 12px; font-size: 0.85rem; gap: 15px;">
+                <div>
+                    <span style="color: var(--text-secondary);">🎹 MIDI:</span>
+                    <span id="midi-hint" style="color: var(--text-secondary); margin-left: 8px; font-size: 0.8rem;">connect your keyboard and press Start</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; white-space: nowrap;">
+                    <span style="color: var(--text-secondary);">Show notes:</span>
+                    <button id="hint-toggle" style="padding: 5px 10px; font-size: 0.8rem; font-weight: 600; background: #6b7280; color: white; border: none; border-radius: 5px; cursor: pointer; min-width: 50px;">Off</button>
+                </div>
+            </div>
+
+            <div id="unsupported" style="display: none; padding: 12px; margin-bottom: 12px; background: rgba(239, 68, 68, 0.15); border-left: 4px solid #ef4444; border-radius: 6px; font-size: 0.9rem;">
+                This training needs a MIDI keyboard, because it has to know exactly which keys you hold. Your browser does not support Web MIDI. Please use Chrome, Edge, Opera or Firefox.
+            </div>
+
+            <!-- Setup -->
+            <div id="setup">
+                <select id="progression-select" style="width: 100%; padding: 12px; font-size: 1rem; background: var(--background); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 10px; cursor: pointer; margin-bottom: 10px;"></select>
+                <select id="key-select" style="width: 100%; padding: 12px; font-size: 1rem; background: var(--background); color: var(--text-primary); border: 2px solid var(--primary-color); border-radius: 10px; cursor: pointer; margin-bottom: 12px;"></select>
+            </div>
+
+            <button id="start-btn" style="width: 100%; padding: 15px; font-size: 1.1rem; font-weight: 600; background: var(--primary-color); color: white; border: none; border-radius: 10px; cursor: pointer; margin-bottom: 15px;">
+                🎹 Start Training
+            </button>
+
+            <button id="stop-btn" style="width: 100%; padding: 15px; font-size: 1.1rem; font-weight: 600; background: #ef4444; color: white; border: none; border-radius: 10px; cursor: pointer; margin-bottom: 15px; display: none;">
+                ⏹ Stop Training
+            </button>
+
+            <!-- Session -->
+            <div id="session" style="display: none;">
+                <div id="progression-title" style="text-align: center; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;"></div>
+
+                <!-- All chords of the progression -->
+                <div id="steps" style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 12px;"></div>
+
+                <!-- Current chord -->
+                <div id="current-box" style="margin-bottom: 15px; padding: 25px 20px; background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2)); border-radius: 15px; text-align: center; border: 3px solid var(--primary-color); transition: border-color 0.15s ease, background 0.15s ease;">
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Play and hold this chord:</div>
+                    <div style="display: flex; align-items: baseline; justify-content: center; gap: 12px; flex-wrap: wrap;">
+                        <span id="current-chord" style="font-size: 4rem; font-weight: bold; color: var(--primary-color); font-family: 'Georgia', serif;">-</span>
+                        <span id="current-info" style="font-size: 0.95rem; color: var(--text-secondary);"></span>
+                    </div>
+                    <div id="current-notes" style="display: none; margin-top: 8px; font-size: 1rem; color: var(--text-secondary);"></div>
+
+                    <!-- Hold progress -->
+                    <div style="margin-top: 15px; height: 12px; background: rgba(255,255,255,0.12); border-radius: 6px; overflow: hidden;">
+                        <div id="hold-bar" style="height: 100%; width: 0%; background: var(--accent-happy); border-radius: 6px;"></div>
+                    </div>
+                    <div id="status-text" style="margin-top: 8px; min-height: 1.3em; font-size: 0.9rem; color: var(--text-secondary);"></div>
+                </div>
+
+                <!-- Pressed keys -->
+                <div style="margin-bottom: 20px; padding: 15px; background: var(--surface-light); border-radius: 10px;">
+                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px; text-align: center;">Keys you are holding:</div>
+                    <div id="pressed-list" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; min-height: 40px;"></div>
+                </div>
+            </div>
+
+            <div id="done-box" style="display: none; text-align: center; padding: 30px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2)); border-radius: 15px; border: 3px solid var(--accent-happy); margin-top: 10px;">
+                <div style="font-size: 4rem; margin-bottom: 15px;">🎉</div>
+                <h2 style="color: var(--accent-happy); margin: 0 0 10px 0;">Progression complete!</h2>
+                <p id="done-text" style="font-size: 1.05rem; color: var(--text-primary); margin: 0 0 20px 0;"></p>
+                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                    <button id="next-btn" style="padding: 12px 20px; font-size: 1rem; font-weight: 600; background: var(--primary-color); color: white; border: none; border-radius: 10px; cursor: pointer;">Next progression</button>
+                    <button id="repeat-btn" style="padding: 12px 20px; font-size: 1rem; font-weight: 600; background: #6b7280; color: white; border: none; border-radius: 10px; cursor: pointer;">Repeat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js"></script>
+    <script src="music-theory.js"></script>
+    <script src="chord-data.js"></script>
+    <script src="midi-input.js"></script>
+    <script>
+        const HOLD_MS = 3000; // how long a chord has to be held
+        const HINT_KEY = 'chordz-progressions-show-notes';
+
+        const FLAT_NAMES = { 'C#': 'Db', 'D#': 'Eb', 'F#': 'Gb', 'G#': 'Ab', 'A#': 'Bb' };
+
+        function pitchClass(note) {
+            return CHROMATIC_SCALE.indexOf(normalizeNote(note));
+        }
+
+        // Name with the flat spelling next to it for black keys, e.g. "A#m" -> { main: "A#m", alt: "Bbm" }
+        function chordDisplayName(chord) {
+            const { root } = parseChordName(chord);
+            const suffix = chord.slice(root.length);
+            return { main: chord, alt: FLAT_NAMES[root] ? FLAT_NAMES[root] + suffix : null };
+        }
+
+        function keyDisplayName(root, mode) {
+            const alt = FLAT_NAMES[root] ? ' / ' + FLAT_NAMES[root] : '';
+            return `${root}${alt} ${mode}`;
+        }
+
+        // Resolve a progression from chord-data.js to concrete chords in a key.
+        // A major "VII" is treated as the flatted seventh (e.g. Bb in C), as the progression descriptions say.
+        function resolveProgression(def, keyRoot) {
+            return def.progression.map(roman => {
+                let chord;
+                let shownRoman = roman;
+                if (def.keyMode === 'major' && roman === 'VII') {
+                    chord = getNoteAtInterval(keyRoot, 10);
+                    shownRoman = '♭VII';
+                } else {
+                    chord = romanNumeralToChord(roman, keyRoot, def.keyMode);
+                }
+                const notes = getChordNotes(chord);
+                return {
+                    chord,
+                    roman: shownRoman,
+                    notes,
+                    pitchClasses: new Set(notes.map(pitchClass))
+                };
+            });
+        }
+
+        class ProgressionTrainer {
+            constructor() {
+                this.midi = new MidiInput();
+                this.isRunning = false;
+                this.def = null;
+                this.keyRoot = null;
+                this.chords = [];
+                this.index = 0;
+                this.holdStart = null;
+                this.carryOver = null; // pitch classes of the chord that was just completed (still held)
+                this.tickTimer = null;
+                this.completed = 0;
+                this.finished = false;
+                this.showNotes = this.loadShowNotes();
+
+                this.progressionSelect = document.getElementById('progression-select');
+                this.keySelect = document.getElementById('key-select');
+
+                this.buildSelects();
+                this.bindEvents();
+                this.updateHintToggle();
+
+                if (!MidiInput.isSupported()) {
+                    document.getElementById('unsupported').style.display = 'block';
+                    document.getElementById('start-btn').disabled = true;
+                    document.getElementById('start-btn').style.opacity = '0.5';
+                    document.getElementById('midi-hint').textContent = 'not supported in this browser';
+                }
+            }
+
+            loadShowNotes() {
+                try { return localStorage.getItem(HINT_KEY) === 'on'; } catch (e) { return false; }
+            }
+
+            buildSelects() {
+                const addGroup = (label, mode) => {
+                    const group = document.createElement('optgroup');
+                    group.label = label;
+                    CHORD_PROGRESSIONS.forEach((p, i) => {
+                        if (p.keyMode !== mode) return;
+                        const option = document.createElement('option');
+                        option.value = String(i);
+                        option.textContent = `${p.name} (${p.progression.join(' – ')})`;
+                        group.appendChild(option);
+                    });
+                    this.progressionSelect.appendChild(group);
+                };
+                const random = document.createElement('option');
+                random.value = 'random';
+                random.textContent = '🎲 Random progression';
+                this.progressionSelect.appendChild(random);
+                addGroup('Major progressions', 'major');
+                addGroup('Minor progressions', 'minor');
+
+                const randomKey = document.createElement('option');
+                randomKey.value = 'random';
+                randomKey.textContent = '🎲 Random key';
+                this.keySelect.appendChild(randomKey);
+                getAllNotes().forEach(n => {
+                    const option = document.createElement('option');
+                    option.value = n.value;
+                    option.textContent = n.display;
+                    this.keySelect.appendChild(option);
+                });
+            }
+
+            bindEvents() {
+                document.getElementById('start-btn').addEventListener('click', () => this.start());
+                document.getElementById('stop-btn').addEventListener('click', () => this.stop());
+                document.getElementById('next-btn').addEventListener('click', () => this.beginProgression(true));
+                document.getElementById('repeat-btn').addEventListener('click', () => this.beginProgression(false));
+                document.getElementById('hint-toggle').addEventListener('click', () => {
+                    this.showNotes = !this.showNotes;
+                    try { localStorage.setItem(HINT_KEY, this.showNotes ? 'on' : 'off'); } catch (e) { /* ignore */ }
+                    this.updateHintToggle();
+                    this.renderCurrent();
+                });
+            }
+
+            updateHintToggle() {
+                const btn = document.getElementById('hint-toggle');
+                btn.textContent = this.showNotes ? 'On' : 'Off';
+                btn.style.background = this.showNotes ? 'var(--primary-color)' : '#6b7280';
+            }
+
+            // ---------- lifecycle ----------
+
+            async start() {
+                try {
+                    await this.midi.start(
+                        () => {},
+                        (names) => {
+                            document.getElementById('midi-hint').textContent = names.length
+                                ? 'MIDI: ' + names.join(', ')
+                                : 'no MIDI keyboard found, connect one';
+                        },
+                        () => this.evaluate()
+                    );
+                } catch (error) {
+                    alert('Error accessing MIDI: ' + error.message);
+                    this.midi.stop();
+                    return;
+                }
+
+                this.isRunning = true;
+                document.getElementById('start-btn').style.display = 'none';
+                document.getElementById('stop-btn').style.display = 'block';
+                document.getElementById('session').style.display = 'block';
+                document.getElementById('setup').style.opacity = '0.5';
+                this.progressionSelect.disabled = true;
+                this.keySelect.disabled = true;
+                this.completed = 0;
+
+                this.beginProgression(true);
+                this.tickTimer = setInterval(() => this.evaluate(), 50);
+            }
+
+            stop() {
+                this.isRunning = false;
+                clearInterval(this.tickTimer);
+                this.tickTimer = null;
+                this.holdStart = null;
+                this.midi.stop();
+
+                document.getElementById('start-btn').style.display = 'block';
+                document.getElementById('stop-btn').style.display = 'none';
+                document.getElementById('session').style.display = 'none';
+                document.getElementById('done-box').style.display = 'none';
+                document.getElementById('setup').style.opacity = '1';
+                this.progressionSelect.disabled = false;
+                this.keySelect.disabled = false;
+            }
+
+            // fresh = pick (again) according to the selects, otherwise repeat the same progression and key
+            beginProgression(fresh) {
+                if (fresh || !this.def) {
+                    const progValue = this.progressionSelect.value;
+                    this.def = progValue === 'random'
+                        ? CHORD_PROGRESSIONS[Math.floor(Math.random() * CHORD_PROGRESSIONS.length)]
+                        : CHORD_PROGRESSIONS[Number(progValue)];
+                    const keyValue = this.keySelect.value;
+                    this.keyRoot = keyValue === 'random'
+                        ? CHROMATIC_SCALE[Math.floor(Math.random() * 12)]
+                        : keyValue;
+                    this.chords = resolveProgression(this.def, this.keyRoot);
+                }
+
+                this.index = 0;
+                this.holdStart = null;
+                this.carryOver = null;
+                this.finished = false;
+                document.getElementById('done-box').style.display = 'none';
+                document.getElementById('current-box').style.display = 'block';
+
+                document.getElementById('progression-title').textContent =
+                    `${this.def.name} · ${keyDisplayName(this.keyRoot, this.def.keyMode)}`;
+                this.renderSteps();
+                this.renderCurrent();
+                this.evaluate();
+            }
+
+            // ---------- checking the keys ----------
+
+            // pitch classes of all held keys (octaves do not matter)
+            heldPitchClasses() {
+                return new Set([...this.midi.held].map(n => n % 12));
+            }
+
+            evaluate() {
+                if (!this.isRunning || this.finished) return;
+
+                const target = this.chords[this.index].pitchClasses;
+                const held = this.heldPitchClasses();
+                const extra = [...held].filter(pc => !target.has(pc));
+                const missing = [...target].filter(pc => !held.has(pc));
+
+                // Right after a chord was completed the keys are still down: that is not a mistake
+                if (this.carryOver && !(held.size === this.carryOver.size && [...held].every(pc => this.carryOver.has(pc)))) {
+                    this.carryOver = null;
+                }
+
+                let state;
+                if (held.size === 0) state = 'idle';
+                else if (this.carryOver) state = 'carry';
+                else if (extra.length > 0) state = 'wrong';
+                else if (missing.length > 0) state = 'partial';
+                else state = 'exact';
+
+                // The chord must be exactly right for the whole time
+                if (state === 'exact') {
+                    if (this.holdStart === null) this.holdStart = Date.now();
+                } else {
+                    this.holdStart = null;
+                }
+
+                const elapsed = this.holdStart === null ? 0 : Date.now() - this.holdStart;
+                this.renderFeedback(state, extra, missing, elapsed);
+                this.renderPressed(target);
+
+                if (state === 'exact' && elapsed >= HOLD_MS) {
+                    this.chordDone();
+                }
+            }
+
+            chordDone() {
+                this.holdStart = null;
+                this.carryOver = this.heldPitchClasses();
+                this.index++;
+                if (this.index >= this.chords.length) {
+                    this.finishProgression();
+                    return;
+                }
+                this.renderSteps();
+                this.renderCurrent();
+                this.flashBox('var(--accent-happy)');
+                this.evaluate();
+            }
+
+            finishProgression() {
+                this.finished = true;
+                this.completed++;
+                this.renderSteps();
+                document.getElementById('current-box').style.display = 'none';
+                document.getElementById('done-text').textContent =
+                    `${this.def.name} in ${keyDisplayName(this.keyRoot, this.def.keyMode)}: ${this.chords.map(c => c.chord).join(' → ')}` +
+                    ` · Completed this session: ${this.completed}`;
+                document.getElementById('done-box').style.display = 'block';
+            }
+
+            // ---------- rendering ----------
+
+            noteLabel(pc) {
+                const name = CHROMATIC_SCALE[pc];
+                return FLAT_NAMES[name] ? `${name}/${FLAT_NAMES[name]}` : name;
+            }
+
+            renderSteps() {
+                const container = document.getElementById('steps');
+                container.innerHTML = '';
+                this.chords.forEach((c, i) => {
+                    const done = i < this.index || this.finished;
+                    const current = i === this.index && !this.finished;
+                    const box = document.createElement('div');
+                    box.style.cssText = `
+                        min-width: 62px; padding: 8px 10px; border-radius: 10px; text-align: center;
+                        border: 2px solid ${current ? 'var(--primary-color)' : (done ? 'var(--accent-happy)' : 'transparent')};
+                        background: ${done ? 'rgba(16, 185, 129, 0.2)' : 'var(--surface-light)'};
+                        opacity: ${current || done ? 1 : 0.6};
+                    `;
+                    const alt = chordDisplayName(c.chord).alt;
+                    box.innerHTML = `
+                        <div style="font-size: 1.15rem; font-weight: bold;">${done ? '✓ ' : ''}${c.chord}</div>
+                        <div style="font-size: 0.7rem; color: var(--text-secondary);">${c.roman}${alt ? ' · ' + alt : ''}</div>
+                    `;
+                    container.appendChild(box);
+                });
+            }
+
+            renderCurrent() {
+                if (!this.chords.length || this.finished) return;
+                const c = this.chords[this.index];
+                const name = chordDisplayName(c.chord);
+                document.getElementById('current-chord').textContent = name.main;
+                document.getElementById('current-info').textContent =
+                    `${name.alt ? name.alt + ' · ' : ''}${c.roman} in ${keyDisplayName(this.keyRoot, this.def.keyMode)}`;
+                const notesEl = document.getElementById('current-notes');
+                notesEl.style.display = this.showNotes ? 'block' : 'none';
+                notesEl.textContent = 'Notes: ' + c.notes.join('  ');
+            }
+
+            renderFeedback(state, extra, missing, elapsed) {
+                const bar = document.getElementById('hold-bar');
+                bar.style.width = Math.min(100, (elapsed / HOLD_MS) * 100) + '%';
+
+                const status = document.getElementById('status-text');
+                if (state === 'exact') {
+                    const left = Math.max(0, (HOLD_MS - elapsed) / 1000);
+                    status.textContent = `Hold it … ${left.toFixed(1)} s`;
+                    status.style.color = 'var(--accent-happy)';
+                    this.setBoxColor('var(--accent-happy)');
+                } else if (state === 'wrong') {
+                    status.textContent = 'Wrong note: ' + extra.map(pc => this.noteLabel(pc)).join(', ');
+                    status.style.color = '#ef4444';
+                    this.setBoxColor('#ef4444');
+                } else if (state === 'carry') {
+                    status.textContent = 'Good! Now move on to the next chord';
+                    status.style.color = 'var(--text-secondary)';
+                    this.setBoxColor('var(--primary-color)');
+                } else if (state === 'partial') {
+                    status.textContent = `${missing.length} note${missing.length > 1 ? 's' : ''} missing`;
+                    status.style.color = 'var(--text-secondary)';
+                    this.setBoxColor('var(--primary-color)');
+                } else {
+                    status.textContent = '';
+                    this.setBoxColor('var(--primary-color)');
+                }
+            }
+
+            setBoxColor(color) {
+                document.getElementById('current-box').style.borderColor = color;
+            }
+
+            flashBox(color) {
+                const box = document.getElementById('current-box');
+                box.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.35), rgba(5, 150, 105, 0.35))';
+                box.style.borderColor = color;
+                setTimeout(() => {
+                    box.style.background = 'linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2))';
+                }, 400);
+            }
+
+            renderPressed(target) {
+                const container = document.getElementById('pressed-list');
+                const keys = [...this.midi.held].sort((a, b) => a - b);
+                container.innerHTML = '';
+                keys.forEach(n => {
+                    const ok = target.has(n % 12);
+                    const badge = document.createElement('div');
+                    badge.style.cssText = `
+                        padding: 8px 14px; border-radius: 8px; font-weight: bold; font-size: 1.05rem; color: white;
+                        background: ${ok ? 'var(--accent-happy)' : '#ef4444'};
+                    `;
+                    badge.textContent = midiNoteToName(n) + (Math.floor(n / 12) - 1);
+                    container.appendChild(badge);
+                });
+            }
+        }
+
+        const trainer = new ProgressionTrainer();
+
+        window.addEventListener('beforeunload', () => trainer.midi.stop());
+    </script>
+</body>
+</html>

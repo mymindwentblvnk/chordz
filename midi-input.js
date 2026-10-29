@@ -51,20 +51,29 @@ class MidiInput {
         this.access = null;
         this.onNote = null;
         this.onDevices = null;
+        this.onHeldChange = null;
+        this.held = new Set(); // MIDI numbers of the keys that are currently pressed
         this.synth = null;
         this._messageHandler = (event) => this._handleMessage(event);
     }
 
     // onNote(noteName, midiNumber) is called for every key press (note-on).
     // onDevices(names[]) is called whenever the list of connected inputs changes.
-    async start(onNote, onDevices) {
+    // onHeldChange(heldSet) is optional and called whenever the set of pressed keys changes.
+    async start(onNote, onDevices, onHeldChange) {
         this.onNote = onNote;
         this.onDevices = onDevices || null;
+        this.onHeldChange = onHeldChange || null;
+        this.held.clear();
         if (!this.access) {
             this.access = await navigator.requestMIDIAccess();
         }
         await this._startSynth();
-        this.access.onstatechange = () => this._attach();
+        this.access.onstatechange = (event) => {
+            this._attach();
+            // Keys of a device that was unplugged can never be released anymore
+            if (event && event.port && event.port.state === 'disconnected') this._releaseAll();
+        };
         this._attach();
     }
 
@@ -105,14 +114,31 @@ class MidiInput {
         const names = [];
         for (const input of this.access.inputs.values()) {
             input.onmidimessage = this._messageHandler;
-            names.push(input.name || 'MIDI device');
+            if (input.state !== 'disconnected') names.push(input.name || 'MIDI device');
         }
         if (this.onDevices) this.onDevices(names);
+    }
+
+    _releaseAll() {
+        if (this.synth) {
+            try { this.synth.releaseAll(); } catch (e) { /* ignore */ }
+        }
+        if (this.held.size > 0) {
+            this.held.clear();
+            if (this.onHeldChange) this.onHeldChange(this.held);
+        }
     }
 
     _handleMessage(event) {
         const [status, note, velocity] = event.data;
         const type = status & 0xF0;
+
+        // "All sound off" / "all notes off" control change
+        if (type === 0xB0 && (note === 120 || note === 123)) {
+            this._releaseAll();
+            return;
+        }
+
         const isDrumChannel = (status & 0x0F) === 9; // channel 10 = drum pads
         if (isDrumChannel) return;
 
@@ -121,9 +147,12 @@ class MidiInput {
 
         if (isNoteOn) {
             this._playNote(note, velocity);
+            this.held.add(note);
             if (this.onNote) this.onNote(midiNoteToName(note), note);
+            if (this.onHeldChange) this.onHeldChange(this.held);
         } else if (isNoteOff) {
             this._releaseNote(note);
+            if (this.held.delete(note) && this.onHeldChange) this.onHeldChange(this.held);
         }
     }
 
@@ -143,7 +172,9 @@ class MidiInput {
             }
             this.synth = null;
         }
+        this.held.clear();
         this.onNote = null;
         this.onDevices = null;
+        this.onHeldChange = null;
     }
 }
