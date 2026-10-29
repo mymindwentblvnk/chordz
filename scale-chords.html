@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Chordz">
+    <title>Scale Chords - Chordz</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="guide-styles.css">
+    <script src="page-memory.js"></script>
+    <style>
+        .sc-select {
+            flex: 1;
+            min-width: 120px;
+            padding: 10px 12px;
+            font-size: 1rem;
+            background: var(--background);
+            color: var(--text-primary);
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .sc-block {
+            padding: 16px;
+            background: var(--surface);
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .sc-block-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        .sc-notes {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .sc-note {
+            min-width: 44px;
+            padding: 10px 8px;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 8px;
+            background: var(--surface-light);
+            border: 2px solid transparent;
+            transition: all 0.12s ease;
+        }
+
+        .sc-note.root {
+            border-color: var(--primary-color);
+        }
+
+        .sc-note.held {
+            background: var(--accent-happy);
+            color: white;
+        }
+
+        .sc-chords {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sc-chord {
+            display: grid;
+            grid-template-columns: 110px 1fr auto;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: var(--surface-light);
+            border-left: 4px solid var(--primary-color);
+            cursor: pointer;
+            transition: all 0.12s ease;
+        }
+
+        .sc-chord:hover {
+            filter: brightness(1.1);
+        }
+
+        .sc-roman {
+            font-size: 1.6rem;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            color: var(--primary-color);
+        }
+
+        .sc-symbol {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .sc-chord-notes {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            font-family: 'Courier New', monospace;
+        }
+
+        .sc-chord.lit {
+            background: var(--accent-happy);
+            border-left-color: white;
+            box-shadow: 0 0 22px rgba(16, 185, 129, 0.75);
+            transform: scale(1.03);
+        }
+
+        .sc-chord.lit .sc-roman,
+        .sc-chord.lit .sc-symbol,
+        .sc-chord.lit .sc-chord-notes {
+            color: white;
+        }
+
+        @media (max-width: 480px) {
+            .sc-chord {
+                grid-template-columns: 80px 1fr auto;
+                gap: 8px;
+                padding: 8px 10px;
+            }
+
+            .sc-roman {
+                font-size: 1.25rem;
+            }
+
+            .sc-chord-notes {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="main-nav">
+        <a href="training.html" class="nav-link active">🎮 Training</a>
+        <a href="chord-progressions.html" class="nav-link">📖 Chord Progressions</a>
+        <a href="compose.html" class="nav-link">🧭 Compose</a>
+        <a href="plan.html" class="nav-link">🗓️ Plan</a>
+        <a href="metronome.html" class="nav-link">⏱️ Metronome</a>
+        <a href="find-note.html" class="nav-link">🎤 Find Note</a>
+        <a href="find-scale.html" class="nav-link">🎼 Find Scale</a>
+        <a href="wiki.html" class="nav-link">📚 Wiki</a>
+    </nav>
+
+    <div class="guide-container">
+        <div class="back-nav">
+            <a href="training.html" class="back-link">← Back to Training</a>
+        </div>
+
+        <div class="guide-section" style="max-width: 600px; margin: 0 auto; padding: 10px 20px 20px 20px;">
+            <!-- Scale selection -->
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px;">
+                <select id="key-select" class="sc-select" aria-label="Key"></select>
+                <select id="mode-select" class="sc-select" aria-label="Scale"></select>
+                <select id="ext-select" class="sc-select" aria-label="Chord type">
+                    <option value="triads">Triads</option>
+                    <option value="sevenths">7th chords</option>
+                </select>
+            </div>
+
+            <!-- MIDI -->
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: rgba(99, 102, 241, 0.1); border-left: 4px solid var(--primary-color); border-radius: 6px; margin-bottom: 15px; font-size: 0.85rem; gap: 15px;">
+                <div>
+                    <span style="color: var(--text-secondary);">🎹 MIDI:</span>
+                    <span id="midi-hint" style="color: var(--text-secondary); margin-left: 8px; font-size: 0.8rem;">connect your keyboard and play any chord of the scale</span>
+                </div>
+                <button id="midi-btn" style="padding: 6px 12px; font-size: 0.85rem; font-weight: 600; background: var(--primary-color); color: white; border: none; border-radius: 6px; cursor: pointer; white-space: nowrap;">Connect MIDI</button>
+            </div>
+
+            <!-- Header -->
+            <header style="text-align: center; margin-bottom: 15px;">
+                <h1 id="scale-title" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin: 0; font-size: 3rem;">C</h1>
+                <div id="scale-subtitle" style="color: var(--text-secondary); font-size: 0.95rem;">Major</div>
+            </header>
+
+            <!-- First block: the notes of the scale -->
+            <div class="sc-block">
+                <div class="sc-block-title">Notes of the scale</div>
+                <div id="scale-notes" class="sc-notes"></div>
+                <div id="outside-notes" style="margin-top: 10px; text-align: center; font-size: 0.85rem; color: #ef4444; min-height: 1.2em;"></div>
+            </div>
+
+            <!-- Second block: the chords of the scale -->
+            <div class="sc-block">
+                <div class="sc-block-title">Chords of the scale · play them in any order, click to listen</div>
+                <div id="scale-chords" class="sc-chords"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js"></script>
+    <script src="music-theory.js"></script>
+    <script src="compose-data.js"></script>
+    <script src="compose.js"></script>
+    <script src="midi-input.js"></script>
+    <script>
+        const SC_STORAGE_KEY = 'chordz-scale-chords';
+        const SC_KEY_LABELS = ['C', 'C♯ / D♭', 'D', 'D♯ / E♭', 'E', 'F', 'F♯ / G♭', 'G', 'G♯ / A♭', 'A', 'A♯ / B♭', 'B'];
+
+        const keySelect = document.getElementById('key-select');
+        const modeSelect = document.getElementById('mode-select');
+        const extSelect = document.getElementById('ext-select');
+        const midi = new MidiInput();
+        let midiActive = false;
+        let scale = null; // { rootPc, mode, names, chords }
+
+        // ---------- setup ----------
+
+        SC_KEY_LABELS.forEach((label, pc) => {
+            const option = document.createElement('option');
+            option.value = String(pc);
+            option.textContent = label;
+            keySelect.appendChild(option);
+        });
+        Object.values(COMPOSE_MODES).forEach(mode => {
+            const option = document.createElement('option');
+            option.value = mode.id;
+            option.textContent = mode.name === mode.alias ? mode.name : `${mode.name} (${mode.alias})`;
+            modeSelect.appendChild(option);
+        });
+
+        function loadSettings() {
+            const params = new URLSearchParams(window.location.search);
+            let saved = {};
+            try { saved = JSON.parse(localStorage.getItem(SC_STORAGE_KEY)) || {}; } catch (e) { /* ignore */ }
+
+            const keyParam = params.get('key');
+            const keyPc = keyParam !== null ? CHROMATIC_SCALE.indexOf(normalizeNote(keyParam)) : -1;
+            keySelect.value = String(keyPc >= 0 ? keyPc : (saved.rootPc ?? 0));
+            const modeParam = params.get('mode');
+            modeSelect.value = COMPOSE_MODES[modeParam] ? modeParam : (COMPOSE_MODES[saved.mode] ? saved.mode : 'ionian');
+            extSelect.value = saved.ext === 'sevenths' ? 'sevenths' : 'triads';
+        }
+
+        function saveSettings() {
+            try {
+                localStorage.setItem(SC_STORAGE_KEY, JSON.stringify({
+                    rootPc: Number(keySelect.value), mode: modeSelect.value, ext: extSelect.value
+                }));
+            } catch (e) { /* ignore */ }
+        }
+
+        // ---------- rendering ----------
+
+        function buildScale() {
+            const rootPc = Number(keySelect.value);
+            const mode = COMPOSE_MODES[modeSelect.value];
+            const names = composeChooseSpelling(rootPc, mode.intervals).map(composePretty);
+            const chords = composeBuildChords(mode, rootPc, extSelect.value);
+            scale = { rootPc, mode, names, chords, pcs: composeScalePcs(mode, rootPc) };
+
+            document.getElementById('scale-title').textContent = names[0];
+            document.getElementById('scale-subtitle').textContent =
+                mode.name === mode.alias ? mode.name : `${mode.name} · ${mode.alias}`;
+
+            // First block: C D E F G A B C
+            const notesEl = document.getElementById('scale-notes');
+            notesEl.innerHTML = '';
+            [...names, names[0]].forEach((name, i) => {
+                const div = document.createElement('div');
+                div.className = 'sc-note' + (i === 0 || i === 7 ? ' root' : '');
+                div.dataset.pc = String(scale.pcs[i % 7]);
+                div.textContent = name;
+                notesEl.appendChild(div);
+            });
+
+            // Second block: I, ii, iii, ...
+            const chordsEl = document.getElementById('scale-chords');
+            chordsEl.innerHTML = '';
+            chords.forEach((chord, i) => {
+                const row = document.createElement('div');
+                row.className = 'sc-chord';
+                row.dataset.index = String(i);
+                row.innerHTML = `
+                    <div class="sc-roman">${chord.roman}</div>
+                    <div class="sc-symbol">${chord.symbol}</div>
+                    <div class="sc-chord-notes">${chord.notes.join(' ')}</div>
+                `;
+                row.addEventListener('click', async () => {
+                    await composeStartAudio();
+                    composePlayChord(chord);
+                });
+                chordsEl.appendChild(row);
+            });
+
+            const url = new URL(window.location.href);
+            url.searchParams.set('key', CHROMATIC_SCALE[rootPc]);
+            url.searchParams.set('mode', mode.id);
+            history.replaceState(null, '', url);
+
+            evaluate();
+        }
+
+        // ---------- what is being played ----------
+
+        function sameSet(a, b) {
+            return a.size === b.size && [...a].every(x => b.has(x));
+        }
+
+        function evaluate() {
+            if (!scale) return;
+            const held = midiActive ? new Set([...midi.held].map(n => n % 12)) : new Set();
+
+            // Highlight the chord(s) whose notes are held exactly (any octave, no other notes)
+            document.querySelectorAll('.sc-chord').forEach(row => {
+                const chord = scale.chords[Number(row.dataset.index)];
+                row.classList.toggle('lit', held.size > 0 && sameSet(held, new Set(chord.pcs)));
+            });
+
+            // Light up the held notes in the first block
+            document.querySelectorAll('.sc-note').forEach(el => {
+                el.classList.toggle('held', held.has(Number(el.dataset.pc)));
+            });
+
+            const outside = [...held].filter(pc => !scale.pcs.includes(pc));
+            document.getElementById('outside-notes').textContent = outside.length
+                ? 'Not in the scale: ' + outside.map(pc => {
+                    const flat = COMPOSE_FLAT_NAMES[pc];
+                    const sharp = CHROMATIC_SCALE[pc];
+                    return flat === sharp ? sharp : composePretty(sharp) + '/' + composePretty(flat);
+                }).join(', ')
+                : '';
+        }
+
+        // ---------- MIDI ----------
+
+        function setupMidi() {
+            const btn = document.getElementById('midi-btn');
+            const hint = document.getElementById('midi-hint');
+
+            if (!MidiInput.isSupported()) {
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+                btn.style.cursor = 'not-allowed';
+                hint.textContent = 'not supported in this browser (use Chrome, Edge, Opera or Firefox)';
+                return;
+            }
+
+            btn.addEventListener('click', async () => {
+                if (midiActive) {
+                    midi.stop();
+                    midiActive = false;
+                    btn.textContent = 'Connect MIDI';
+                    hint.textContent = 'connect your keyboard and play any chord of the scale';
+                    evaluate();
+                    return;
+                }
+                try {
+                    await midi.start(
+                        () => {},
+                        (names) => {
+                            hint.textContent = names.length ? names.join(', ') : 'no MIDI keyboard found, connect one';
+                        },
+                        () => evaluate()
+                    );
+                } catch (error) {
+                    alert('Error accessing MIDI: ' + error.message);
+                    midi.stop();
+                    return;
+                }
+                midiActive = true;
+                btn.textContent = 'Disconnect';
+                evaluate();
+            });
+        }
+
+        [keySelect, modeSelect, extSelect].forEach(select => {
+            select.addEventListener('change', () => {
+                saveSettings();
+                buildScale();
+            });
+        });
+
+        loadSettings();
+        buildScale();
+        setupMidi();
+
+        window.addEventListener('beforeunload', () => midi.stop());
+    </script>
+</body>
+</html>
