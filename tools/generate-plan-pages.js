@@ -36,6 +36,7 @@ function template(day) {
     <link rel="stylesheet" href="guide-styles.css">
     <link rel="stylesheet" href="plan.css">
     <script src="page-memory.js"></script>
+    <script src="keep-awake.js" defer></script>
 </head>
 <body data-day="${day.day}">
     <nav class="main-nav">

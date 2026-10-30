@@ -11,6 +11,7 @@ A complete web application for learning piano through interactive training, disc
 - **Chord Inversions**: Master chord inversions by playing complete sequences (root position, 1st inversion, 2nd inversion) for any chord
 - **Chord Progressions Training** (MIDI keyboard required): Play a progression chord by chord in the right order. Each chord must be held for 3 seconds with exactly its notes (any octave, bass notes allowed) and no other key. After finishing, play freestyle in any order and the chord you play lights up
 - **Scale Chords** (MIDI): Pick a key and scale (major, minor and modes) to see its notes and its chords (triads or 7th chords). Play freely on your MIDI keyboard; the Roman numeral of the chord you play lights up
+- **Keep Screen On**: A button in the bottom right corner of every page keeps the display awake (Screen Wake Lock in Chrome/Edge/Safari, with a fallback for older iOS). The setting is remembered across pages
 - **MIDI Keyboard Input**: Switch the input to "MIDI" in any training to play on a connected MIDI keyboard instead of using the microphone (browsers with Web MIDI support: Chrome, Edge, Opera, Firefox; not Safari)
 - **Time Pressure Toggle**: Turn the timer off for relaxed practice; such runs are not saved to the top list
 - **Real-Time Feedback**: Instant visual feedback with green flash for correct notes, red for wrong notes
